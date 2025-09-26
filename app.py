@@ -37,7 +37,7 @@ def days_calculation(start_date, end_date, base):
     return days
 
 # Función para procesar flujos irregulares
-def process_irregular_flows(flows_df, settlement_date, base_calculo="30/360"):
+def process_irregular_flows(flows_df, settlement_date, valor_nominal, base_calculo="30/360"):
     """Procesa flujos irregulares y calcula días desde liquidación"""
     processed_flows = []
     
@@ -47,9 +47,9 @@ def process_irregular_flows(flows_df, settlement_date, base_calculo="30/360"):
         if flow_date > settlement_date:
             days = days_calculation(settlement_date, flow_date, base_calculo)
             
-            # Calcular flujo total (capital + cupón)
-            capital_payment = row['pago_capital_porcentaje'] / 100
-            coupon_payment = row['cupon_porcentaje'] / 100
+            # Calcular flujo total (capital + cupón) en términos absolutos
+            capital_payment = (row['pago_capital_porcentaje'] / 100) * valor_nominal
+            coupon_payment = (row['cupon_porcentaje'] / 100) * valor_nominal
             total_flow = capital_payment + coupon_payment
             
             processed_flows.append({
@@ -239,7 +239,7 @@ if flows_df is not None:
     if st.button("🔄 Calcular", type="primary"):
         try:
             # Procesar flujos
-            cash_flows = process_irregular_flows(bono_flows, settlement_date, base_calculo)
+            cash_flows = process_irregular_flows(bono_flows, settlement_date, valor_nominal, base_calculo)
             
             if not cash_flows:
                 st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
@@ -271,9 +271,9 @@ if flows_df is not None:
                 st.subheader("💰 Flujos de Caja Detallados")
                 df_cash_flows = pd.DataFrame(cash_flows)
                 df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
-                df_cash_flows['Pago_Capital'] = (df_cash_flows['Pago_Capital'] * valor_nominal).round(2)
-                df_cash_flows['Cupon'] = (df_cash_flows['Cupon'] * valor_nominal).round(2)
-                df_cash_flows['Flujo_Total'] = (df_cash_flows['Flujo_Total'] * valor_nominal).round(2)
+                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].round(2)
+                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].round(2)
+                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].round(2)
                 df_cash_flows['Días'] = df_cash_flows['Días'].astype(int)
                 df_cash_flows['Períodos'] = (df_cash_flows['Días'] / 365).round(4)
                 df_cash_flows['VP'] = (df_cash_flows['Flujo_Total'] / ((1 + ytm) ** df_cash_flows['Períodos'])).round(2)
