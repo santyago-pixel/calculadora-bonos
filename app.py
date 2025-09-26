@@ -37,10 +37,20 @@ def days_calculation(start_date, end_date, base):
     return days
 
 # Función para procesar flujos irregulares
-def process_irregular_flows(flows_df, settlement_date, valor_nominal, base_calculo="30/360"):
-    """Procesa flujos irregulares y calcula días desde liquidación"""
+def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo="30/360"):
+    """Procesa flujos irregulares incluyendo el precio dirty como flujo inicial"""
     processed_flows = []
     
+    # Agregar flujo inicial negativo (precio dirty pagado)
+    processed_flows.append({
+        'Fecha': settlement_date,
+        'Pago_Capital': 0,
+        'Cupon': 0,
+        'Flujo_Total': -dirty_price,  # Flujo negativo (pago)
+        'Días': 0
+    })
+    
+    # Procesar flujos futuros
     for _, row in flows_df.iterrows():
         flow_date = pd.to_datetime(row['fecha']).date()
         
@@ -48,8 +58,8 @@ def process_irregular_flows(flows_df, settlement_date, valor_nominal, base_calcu
             days = days_calculation(settlement_date, flow_date, base_calculo)
             
             # Calcular flujo total (capital + cupón) en términos absolutos
-            capital_payment = (row['pago_capital_porcentaje'] / 100) * valor_nominal
-            coupon_payment = (row['cupon_porcentaje'] / 100) * valor_nominal
+            capital_payment = (row['pago_capital_porcentaje'] / 100) * 100  # Asumir valor nominal de 100
+            coupon_payment = (row['cupon_porcentaje'] / 100) * 100
             total_flow = capital_payment + coupon_payment
             
             processed_flows.append({
@@ -63,7 +73,7 @@ def process_irregular_flows(flows_df, settlement_date, valor_nominal, base_calcu
     return processed_flows
 
 # Función para calcular TIR
-def calculate_ytm_irregular(cash_flows, price, settlement_date, max_iterations=100, tolerance=1e-6):
+def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
     """Calcula la TIR usando Newton-Raphson para flujos irregulares"""
     
     def pv_function(yield_rate):
@@ -88,9 +98,9 @@ def calculate_ytm_irregular(cash_flows, price, settlement_date, max_iterations=1
         for _ in range(50):  # Máximo 50 iteraciones
             mid = (low + high) / 2
             pv = pv_function(mid)
-            if abs(pv - price) < tolerance:
+            if abs(pv) < tolerance:
                 return mid
-            elif pv < price:
+            elif pv < 0:
                 high = mid
             else:
                 low = mid
@@ -106,7 +116,7 @@ def calculate_ytm_irregular(cash_flows, price, settlement_date, max_iterations=1
             if abs(derivative) < 1e-10:  # Evitar división por cero
                 break
                 
-            ytm_new = ytm - (pv - price) / derivative
+            ytm_new = ytm - pv / derivative
             
             # Verificar que no sea complejo y esté en rango razonable
             if isinstance(ytm_new, complex) or ytm_new < -0.99 or ytm_new > 10.0:
@@ -203,11 +213,13 @@ if flows_df is not None:
         )
     
     with col2:
-        valor_nominal = st.number_input(
-            "Valor nominal:",
-            min_value=1.0,
+        dirty_price = st.number_input(
+            "Precio Dirty:",
+            min_value=0.0,
             value=100.0,
-            step=1.0
+            step=0.01,
+            format="%.2f",
+            help="Precio limpio + interés corrido"
         )
     
     with col3:
@@ -239,16 +251,16 @@ if flows_df is not None:
     if st.button("🔄 Calcular", type="primary"):
         try:
             # Procesar flujos
-            cash_flows = process_irregular_flows(bono_flows, settlement_date, valor_nominal, base_calculo)
+            cash_flows = process_irregular_flows(bono_flows, settlement_date, dirty_price, base_calculo)
             
-            if not cash_flows:
+            if len(cash_flows) <= 1:
                 st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
             else:
                 # Calcular TIR
-                ytm = calculate_ytm_irregular(cash_flows, bond_price, settlement_date)
+                ytm = calculate_ytm_irregular(cash_flows)
                 
                 # Calcular duraciones
-                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price)
+                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, dirty_price)
                 
                 # Mostrar resultados
                 st.subheader("📈 Resultados")
