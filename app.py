@@ -82,22 +82,45 @@ def calculate_ytm_irregular(cash_flows, price, settlement_date, max_iterations=1
             derivative -= cf['Flujo_Total'] * periods / ((1 + yield_rate) ** (periods + 1))
         return derivative
     
+    # Usar búsqueda binaria como fallback si Newton-Raphson falla
+    def binary_search_ytm():
+        low, high = -0.99, 10.0  # Límites razonables para TIR
+        for _ in range(50):  # Máximo 50 iteraciones
+            mid = (low + high) / 2
+            pv = pv_function(mid)
+            if abs(pv - price) < tolerance:
+                return mid
+            elif pv < price:
+                high = mid
+            else:
+                low = mid
+        return (low + high) / 2
+    
+    # Intentar Newton-Raphson primero
     ytm = 0.05
     for i in range(max_iterations):
-        pv = pv_function(ytm)
-        derivative = pv_derivative(ytm)
-        
-        if abs(derivative) < 1e-10:  # Evitar división por cero
-            break
+        try:
+            pv = pv_function(ytm)
+            derivative = pv_derivative(ytm)
             
-        ytm_new = ytm - (pv - price) / derivative
-        
-        if abs(ytm_new - ytm) < tolerance:
-            return ytm_new
-        
-        ytm = ytm_new
+            if abs(derivative) < 1e-10:  # Evitar división por cero
+                break
+                
+            ytm_new = ytm - (pv - price) / derivative
+            
+            # Verificar que no sea complejo y esté en rango razonable
+            if isinstance(ytm_new, complex) or ytm_new < -0.99 or ytm_new > 10.0:
+                return binary_search_ytm()
+            
+            if abs(ytm_new - ytm) < tolerance:
+                return ytm_new
+            
+            ytm = ytm_new
+        except:
+            return binary_search_ytm()
     
-    return ytm
+    # Si Newton-Raphson falla, usar búsqueda binaria
+    return binary_search_ytm()
 
 # Función para calcular duración
 def calculate_duration_irregular(cash_flows, ytm, price):
