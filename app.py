@@ -57,9 +57,9 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
         if flow_date > settlement_date:
             days = days_calculation(settlement_date, flow_date, base_calculo)
             
-            # Calcular flujo total (capital + cupón) en términos absolutos
-            capital_payment = (row['pago_capital_porcentaje'] / 100) * 100  # Asumir valor nominal de 100
-            coupon_payment = (row['cupon_porcentaje'] / 100) * 100
+            # Los porcentajes ya están en la escala correcta (4.5% = 4.5, no 0.045)
+            capital_payment = row['pago_capital_porcentaje']  # 10% = 10
+            coupon_payment = row['cupon_porcentaje']  # 4.5% = 4.5
             total_flow = capital_payment + coupon_payment
             
             processed_flows.append({
