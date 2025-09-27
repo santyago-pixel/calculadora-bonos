@@ -552,7 +552,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             "Fecha de liquidación:",
             value=datetime(2025, 9, 16),  # Cambiado a 16 de septiembre
             min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
-            max_value=pd.to_datetime(bono_flows['fecha'].max()).date()
+            max_value=pd.to_datetime(bono_flows['fecha'].max()).date(),
+            format="DD/MM/YYYY"
         )
     
     with col2:
