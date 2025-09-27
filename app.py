@@ -617,18 +617,18 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Cupón Vigente**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
                 with col2:
-                    st.markdown("**Vida Media**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
-                with col3:
-                    st.markdown("**Paridad**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{parity:.4f}</h3>", unsafe_allow_html=True)
-                with col4:
                     st.markdown("**Próximo Cupón**")
                     if next_coupon_date:
                         next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
                         st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{next_coupon_str}</h3>", unsafe_allow_html=True)
                     else:
                         st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>N/A</h3>", unsafe_allow_html=True)
+                with col3:
+                    st.markdown("**Paridad**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{parity:.4f}</h3>", unsafe_allow_html=True)
+                with col4:
+                    st.markdown("**Vida Media**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
                 
                 # Tercera fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
                 col1, col2, col3, col4 = st.columns(4)
