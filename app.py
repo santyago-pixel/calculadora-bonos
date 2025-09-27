@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 import math
 import io
@@ -16,6 +16,15 @@ st.set_page_config(
 
 st.title("Calculadora de Bonos")
 st.markdown("---")
+
+# Función para calcular el próximo día hábil
+def get_next_business_day():
+    """Calcula el próximo día hábil (lunes a viernes) a partir de hoy"""
+    today = date.today()
+    next_day = today + timedelta(days=1)
+    while next_day.weekday() >= 5:  # 5 = Sábado, 6 = Domingo
+        next_day += timedelta(days=1)
+    return next_day
 
 # Función para calcular días usando diferentes bases
 def days_calculation(start_date, end_date, base):
@@ -554,7 +563,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
         
         settlement_date = st.date_input(
             "Fecha de liquidación:",
-            value=datetime(2025, 9, 16),
+            value=get_next_business_day(),  # Próximo día hábil
             min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
             max_value=pd.to_datetime(bono_flows['fecha'].max()).date(),
             format="DD/MM/YYYY"
