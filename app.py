@@ -177,11 +177,11 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='ACT/36
     return macaulay_duration, modified_duration
 
 def calculate_average_life(bono_flows, settlement_date, day_count_basis):
-    """Calcula la vida media del bono considerando los repagos de capital"""
+    """Calcula la vida media del bono considerando todos los repagos de capital desde liquidación hasta vencimiento"""
     
-    # Filtrar flujos futuros desde la fecha de liquidación
+    # Filtrar flujos futuros desde la fecha de liquidación (incluyendo la fecha de liquidación)
     settlement_ts = pd.Timestamp(settlement_date)
-    future_flows = bono_flows[bono_flows['fecha'] > settlement_ts].copy()
+    future_flows = bono_flows[bono_flows['fecha'] >= settlement_ts].copy()
     
     if len(future_flows) == 0:
         return 0.0
