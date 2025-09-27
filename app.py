@@ -442,6 +442,10 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Calcular TIR
                 ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
                 
+                # Calcular TIR según periodicidad
+                periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
+                ytm_periodica = ytm / periodicidad
+                
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
                 
@@ -471,11 +475,23 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 col1, col2 = st.columns(2)
                 col3, col4 = st.columns(2)
                 
+                # Convertir periodicidad a texto para el título
+                if periodicidad == 1:
+                    periodicidad_titulo = "Anual"
+                elif periodicidad == 2:
+                    periodicidad_titulo = "Semestral"
+                elif periodicidad == 4:
+                    periodicidad_titulo = "Trimestral"
+                elif periodicidad == 12:
+                    periodicidad_titulo = "Mensual"
+                else:
+                    periodicidad_titulo = f"Cada {12//periodicidad} meses"
+                
                 with col1:
-                    st.metric("TIR Anual", f"{ytm:.4%}", help="Tasa Interna de Retorno anual")
+                    st.metric(f"TIR {periodicidad_titulo}", f"{ytm_periodica:.4%}", help=f"Tasa Interna de Retorno {periodicidad_titulo.lower()}")
                 
                 with col2:
-                    st.metric("TIR Efectiva", f"{ytm:.4%}", help="TIR efectiva (equivalente a TIR.NO.PER de Excel)")
+                    st.metric("TIR Efectiva", f"{ytm:.4%}", help="TIR efectiva anual (equivalente a TIR.NO.PER de Excel)")
                 
                 with col3:
                     st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años", help="Tiempo promedio ponderado de los flujos de caja")
