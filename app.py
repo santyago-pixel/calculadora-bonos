@@ -536,10 +536,10 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 df_cash_flows['Cupon'] = df_cash_flows['Cupon'].round(2)
                 df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].round(2)
                 
-                # Reemplazar valores cero con NaN para que aparezcan en blanco
-                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].replace(0, np.nan)
-                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].replace(0, np.nan)
-                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].replace(0, np.nan)
+                # Reemplazar valores cero con string vacío para que aparezcan en blanco
+                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].replace(0, '')
+                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].replace(0, '')
+                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].replace(0, '')
                 
                 # Renombrar columnas para mejor presentación
                 df_cash_flows = df_cash_flows.rename(columns={
@@ -562,22 +562,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                             "Fecha de Pago",
                             help="Fecha del pago"
                         ),
-                        "Capital": st.column_config.NumberColumn(
+                        "Capital": st.column_config.TextColumn(
                             "Capital",
                             help="Pago de capital",
-                            format="%.2f",
                             width="medium"
                         ),
-                        "Cupón": st.column_config.NumberColumn(
+                        "Cupón": st.column_config.TextColumn(
                             "Cupón", 
                             help="Pago de cupón",
-                            format="%.2f",
                             width="medium"
                         ),
-                        "Flujo Total": st.column_config.NumberColumn(
+                        "Flujo Total": st.column_config.TextColumn(
                             "Flujo Total",
                             help="Flujo total de caja",
-                            format="%.2f",
                             width="medium"
                         )
                     }
