@@ -176,8 +176,8 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='ACT/36
     
     return macaulay_duration, modified_duration
 
-def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono):
-    """Calcula intereses corridos hasta la fecha de liquidación"""
+def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad):
+    """Calcula intereses corridos hasta la fecha de liquidación en base a 100 nominales"""
     
     # Filtrar solo flujos de cupón (donde hay tasa de cupón)
     cupon_flows = bono_flows[bono_flows['tasa_cupon'] > 0].copy()
@@ -209,19 +209,24 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono):
     settlement_ts = pd.Timestamp(settlement_date)
     last_coupon_ts = pd.Timestamp(last_coupon_date)
     
+    # Calcular días según la base de cálculo
     if base_calculo_bono == "30/360":
         # Simplificado: usar días reales / 360
         days = (settlement_ts - last_coupon_ts).days
-        accrued_interest = current_coupon_rate * (days / 360.0)
+        days_in_period = 360.0 / periodicidad
     elif base_calculo_bono == "ACT/360":
         days = (settlement_ts - last_coupon_ts).days
-        accrued_interest = current_coupon_rate * (days / 360.0)
+        days_in_period = 360.0 / periodicidad
     elif base_calculo_bono == "ACT/365":
         days = (settlement_ts - last_coupon_ts).days
-        accrued_interest = current_coupon_rate * (days / 365.0)
+        days_in_period = 365.0 / periodicidad
     else:  # Default ACT/365
         days = (settlement_ts - last_coupon_ts).days
-        accrued_interest = current_coupon_rate * (days / 365.0)
+        days_in_period = 365.0 / periodicidad
+    
+    # Calcular intereses corridos en base a 100 nominales
+    # Fórmula: (Tasa anual / periodicidad) * (días transcurridos / días del período) * 100
+    accrued_interest = (current_coupon_rate / 100.0) * (days / days_in_period) * 100.0
     
     return accrued_interest
 
@@ -300,6 +305,12 @@ try:
                     base_calculo_bono = str(row[1]).strip() if not pd.isna(row[1]) else "ACT/365"
                 except:
                     base_calculo_bono = "ACT/365"
+                
+                # Extraer periodicidad de la siguiente celda (columna C)
+                try:
+                    periodicidad = int(float(str(row[2]))) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 12
+                except:
+                    periodicidad = 12
                 continue
             
             # Si tenemos un nombre de bono y es una fecha válida, procesar
@@ -338,6 +349,7 @@ try:
                         processed_data.append({
                             'nombre_bono': current_bono_name,
                             'base_calculo': base_calculo_bono,
+                            'periodicidad': periodicidad,
                             'fecha': fecha_valida,
                             'tasa_cupon': tasa_cupon,
                             'cupon_porcentaje': cupon,
@@ -425,13 +437,14 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Calcular intereses corridos
                 base_calculo_bono = bono_flows['base_calculo'].iloc[0] if 'base_calculo' in bono_flows.columns else "ACT/365"
-                accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono)
+                periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
+                accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad)
                 
                 # Mostrar resultados
                 st.subheader("Resultados del Análisis")
                 
-                # Información de la base de cálculo
-                st.info(f"**Base de cálculo utilizada:** {day_count_basis}")
+                # Información de la base de cálculo y periodicidad
+                st.info(f"**Base de cálculo utilizada:** {day_count_basis} | **Base del bono:** {base_calculo_bono} | **Periodicidad:** {periodicidad} meses")
                 
                 col1, col2 = st.columns(2)
                 col3, col4 = st.columns(2)
@@ -453,7 +466,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.metric("Intereses Corridos", f"{accrued_interest:.4f}%", help=f"Intereses acumulados desde el último cupón (base: {base_calculo_bono})")
+                    st.metric("Intereses Corridos", f"{accrued_interest:.4f}", help=f"Intereses acumulados desde el último cupón (base: {base_calculo_bono}, periodicidad: {periodicidad} meses)")
                 
                 with col2:
                     clean_price = bond_price - accrued_interest
