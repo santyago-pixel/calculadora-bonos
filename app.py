@@ -188,14 +188,17 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, p
     # Ordenar por fecha
     cupon_flows = cupon_flows.sort_values('fecha')
     
+    # Convertir settlement_date a Timestamp para comparación
+    settlement_ts = pd.Timestamp(settlement_date)
+    
     # Encontrar el último pago de cupón anterior a la fecha de liquidación
     last_coupon_date = None
     current_coupon_rate = 0.0
     
+    # Buscar el pago de cupón inmediatamente anterior a la fecha de liquidación
     for _, row in cupon_flows.iterrows():
-        # Convertir settlement_date a Timestamp para comparación
-        settlement_ts = pd.Timestamp(settlement_date)
-        if row['fecha'] <= settlement_ts:
+        row_date = pd.Timestamp(row['fecha'])
+        if row_date < settlement_ts:
             last_coupon_date = row['fecha']
             current_coupon_rate = row['tasa_cupon']
         else:
@@ -205,28 +208,27 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, p
         return 0.0
     
     # Calcular días según la base de cálculo del bono
-    # Convertir ambos a Timestamp para el cálculo
-    settlement_ts = pd.Timestamp(settlement_date)
     last_coupon_ts = pd.Timestamp(last_coupon_date)
+    days = (settlement_ts - last_coupon_ts).days
     
-    # Calcular días según la base de cálculo
+    # Calcular días del período según la base de cálculo
     if base_calculo_bono == "30/360":
-        # Simplificado: usar días reales / 360
-        days = (settlement_ts - last_coupon_ts).days
         days_in_period = 360.0 / periodicidad
     elif base_calculo_bono == "ACT/360":
-        days = (settlement_ts - last_coupon_ts).days
         days_in_period = 360.0 / periodicidad
     elif base_calculo_bono == "ACT/365":
-        days = (settlement_ts - last_coupon_ts).days
         days_in_period = 365.0 / periodicidad
     else:  # Default ACT/365
-        days = (settlement_ts - last_coupon_ts).days
         days_in_period = 365.0 / periodicidad
     
     # Calcular intereses corridos en base a 100 nominales
-    # Fórmula: (Tasa anual / periodicidad) * (días transcurridos / días del período) * 100
+    # Fórmula: (Tasa anual / 100) * (días transcurridos / días del período) * 100
     accrued_interest = (current_coupon_rate / 100.0) * (days / days_in_period) * 100.0
+    
+    # Debug info (temporal)
+    print(f"DEBUG - Último cupón: {last_coupon_date}, Settlement: {settlement_date}")
+    print(f"DEBUG - Días transcurridos: {days}, Días del período: {days_in_period}")
+    print(f"DEBUG - Tasa cupón: {current_coupon_rate}%, Intereses corridos: {accrued_interest}")
     
     return accrued_interest
 
