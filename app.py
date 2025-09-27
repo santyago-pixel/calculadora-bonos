@@ -171,29 +171,42 @@ if st.checkbox("Usar archivo por defecto (bonos_flujos.xlsx)"):
         # Extraer nombre del bono de la celda A1
         bono_name = str(flows_df.iloc[0, 0]) if not pd.isna(flows_df.iloc[0, 0]) else "Bono por defecto"
         
-        # Procesar datos (asumiendo que los datos empiezan desde la fila 2)
-        data_rows = flows_df.iloc[1:].dropna(subset=[0])  # Filas con datos, excluyendo A1
-        
+        # Procesar datos - manejar múltiples bonos
         processed_data = []
-        for _, row in data_rows.iterrows():
-            if len(row) >= 4 and not pd.isna(row[0]):  # Verificar que hay al menos 4 columnas
-                # Validar que la fecha sea válida
-                try:
-                    fecha_valida = pd.to_datetime(row[0])
-                    if not pd.isna(fecha_valida):
-                        processed_data.append({
-                            'nombre_bono': bono_name,
-                            'fecha': fecha_valida,  # Columna A (convertida a datetime)
-                            'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
-                            'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
-                            'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
-                        })
-                except:
-                    # Si la fecha no es válida, saltar esta fila
+        current_bono_name = None
+        
+        for _, row in flows_df.iterrows():
+            if len(row) >= 4 and not pd.isna(row[0]):
+                cell_value = str(row[0]).strip()
+                
+                # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
+                if cell_value.lower().startswith('bono'):
+                    current_bono_name = cell_value
                     continue
+                
+                # Si tenemos un nombre de bono y es una fecha válida, procesar
+                if current_bono_name:
+                    try:
+                        fecha_valida = pd.to_datetime(row[0])
+                        if not pd.isna(fecha_valida):
+                            processed_data.append({
+                                'nombre_bono': current_bono_name,
+                                'fecha': fecha_valida,  # Columna A (convertida a datetime)
+                                'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
+                                'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
+                                'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
+                            })
+                    except:
+                        # Si la fecha no es válida, saltar esta fila
+                        continue
         
         flows_df = pd.DataFrame(processed_data)
-        st.success(f"Archivo por defecto cargado: {len(flows_df)} flujos para '{bono_name}'")
+        if len(flows_df) > 0:
+            unique_bonos = flows_df['nombre_bono'].unique()
+            st.success(f"Archivo por defecto cargado: {len(flows_df)} flujos para {len(unique_bonos)} bonos")
+            st.write(f"Bonos encontrados: {', '.join(unique_bonos)}")
+        else:
+            st.warning("No se encontraron flujos válidos en el archivo")
         
     except Exception as e:
         st.error(f"Error al cargar el archivo por defecto: {e}")
@@ -221,29 +234,42 @@ if uploaded_file is not None:
         # Extraer nombre del bono de la celda A1
         bono_name = str(raw_df.iloc[0, 0]) if not pd.isna(raw_df.iloc[0, 0]) else "Bono cargado"
         
-        # Procesar datos (asumiendo que los datos empiezan desde la fila 2)
-        data_rows = raw_df.iloc[1:].dropna(subset=[0])  # Filas con datos, excluyendo A1
-        
+        # Procesar datos - manejar múltiples bonos
         processed_data = []
-        for _, row in data_rows.iterrows():
-            if len(row) >= 4 and not pd.isna(row[0]):  # Verificar que hay al menos 4 columnas
-                # Validar que la fecha sea válida
-                try:
-                    fecha_valida = pd.to_datetime(row[0])
-                    if not pd.isna(fecha_valida):
-                        processed_data.append({
-                            'nombre_bono': bono_name,
-                            'fecha': fecha_valida,  # Columna A (convertida a datetime)
-                            'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
-                            'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
-                            'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
-                        })
-                except:
-                    # Si la fecha no es válida, saltar esta fila
+        current_bono_name = None
+        
+        for _, row in raw_df.iterrows():
+            if len(row) >= 4 and not pd.isna(row[0]):
+                cell_value = str(row[0]).strip()
+                
+                # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
+                if cell_value.lower().startswith('bono'):
+                    current_bono_name = cell_value
                     continue
+                
+                # Si tenemos un nombre de bono y es una fecha válida, procesar
+                if current_bono_name:
+                    try:
+                        fecha_valida = pd.to_datetime(row[0])
+                        if not pd.isna(fecha_valida):
+                            processed_data.append({
+                                'nombre_bono': current_bono_name,
+                                'fecha': fecha_valida,  # Columna A (convertida a datetime)
+                                'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
+                                'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
+                                'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
+                            })
+                    except:
+                        # Si la fecha no es válida, saltar esta fila
+                        continue
         
         flows_df = pd.DataFrame(processed_data)
-        st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos para '{bono_name}'")
+        if len(flows_df) > 0:
+            unique_bonos = flows_df['nombre_bono'].unique()
+            st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos para {len(unique_bonos)} bonos")
+            st.write(f"Bonos encontrados: {', '.join(unique_bonos)}")
+        else:
+            st.warning("No se encontraron flujos válidos en el archivo")
         
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
