@@ -249,7 +249,7 @@ def find_next_coupon_date(bono_flows, settlement_date):
     
     # Buscar el primer flujo con pago de cupón
     for _, row in future_flows.iterrows():
-        if row['pago_cupon_porcentaje'] > 0:
+        if row['cupon_porcentaje'] > 0:
             return row['fecha']
     
     return None
