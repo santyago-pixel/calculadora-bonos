@@ -189,21 +189,17 @@ try:
         except:
             flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
     
-    # Debug: Mostrar información del archivo
-    st.write(f"Archivo cargado: {flows_df.shape[0]} filas, {flows_df.shape[1]} columnas")
-    
     # Procesar datos - manejar múltiples bonos
     processed_data = []
     current_bono_name = None
     
-    for i, row in flows_df.iterrows():
+    for _, row in flows_df.iterrows():
         if len(row) >= 4 and not pd.isna(row[0]):
             cell_value = str(row[0]).strip()
             
             # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
             if cell_value.lower().startswith('bono'):
                 current_bono_name = cell_value
-                st.write(f"Bono encontrado: {current_bono_name}")
                 continue
             
             # Si tenemos un nombre de bono y es una fecha válida, procesar
@@ -218,23 +214,18 @@ try:
                             'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
                             'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
                         })
-                except Exception as e:
-                    st.write(f"Error en fila {i}: {e}")
+                except:
                     # Si la fecha no es válida, saltar esta fila
                     continue
     
     flows_df = pd.DataFrame(processed_data)
-    st.write(f"Flujos procesados: {len(flows_df)}")
     
     if len(flows_df) == 0:
         st.error("❌ No se encontraron flujos válidos en el archivo")
         flows_df = None
-    else:
-        st.success(f"✅ {len(flows_df)} flujos cargados correctamente")
         
 except Exception as e:
     st.error(f"❌ Error al cargar el archivo: {e}")
-    st.write(f"Tipo de error: {type(e).__name__}")
     flows_df = None
 
 
