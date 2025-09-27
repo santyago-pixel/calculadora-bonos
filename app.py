@@ -608,14 +608,14 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{capital_residual:.2f}</h3>", unsafe_allow_html=True)
                 
                 with col4:
-                    st.markdown("**Cupón Vigente**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
-                
-                # Segunda fila - Valor Técnico, Vida Media, Paridad, Próximo Cupón
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
                     st.markdown("**Valor Técnico**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{technical_value:.2f}</h3>", unsafe_allow_html=True)
+                
+                # Segunda fila - Cupón Vigente, Vida Media, Paridad, Próximo Cupón
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.markdown("**Cupón Vigente**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
                 with col2:
                     st.markdown("**Vida Media**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
