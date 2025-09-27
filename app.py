@@ -485,6 +485,21 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 else:
                     periodicidad_titulo = f"Cada {12//periodicidad} meses"
                 
+                # CSS para reducir tamaño de fuente de métricas
+                st.markdown("""
+                <style>
+                .metric-container {
+                    font-size: 0.8rem !important;
+                }
+                .metric-container .metric-value {
+                    font-size: 1.2rem !important;
+                }
+                .metric-container .metric-label {
+                    font-size: 0.9rem !important;
+                }
+                </style>
+                """, unsafe_allow_html=True)
+                
                 # Primera fila - TIRs
                 col1, col2 = st.columns(2)
                 with col1:
@@ -529,10 +544,10 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 df_cash_flows['Cupon'] = df_cash_flows['Cupon'].round(2)
                 df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].round(2)
                 
-                # Reemplazar valores cero con celdas en blanco
-                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].replace(0, '')
-                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].replace(0, '')
-                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].replace(0, '')
+                # Reemplazar valores cero con NaN para que aparezcan en blanco
+                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].replace(0, np.nan)
+                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].replace(0, np.nan)
+                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].replace(0, np.nan)
                 
                 # Renombrar columnas para mejor presentación
                 df_cash_flows = df_cash_flows.rename(columns={
@@ -558,17 +573,20 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         "Capital": st.column_config.NumberColumn(
                             "Capital",
                             help="Pago de capital",
-                            format="%.2f"
+                            format="%.2f",
+                            width="medium"
                         ),
                         "Cupón": st.column_config.NumberColumn(
                             "Cupón", 
                             help="Pago de cupón",
-                            format="%.2f"
+                            format="%.2f",
+                            width="medium"
                         ),
                         "Flujo Total": st.column_config.NumberColumn(
                             "Flujo Total",
                             help="Flujo total de caja",
-                            format="%.2f"
+                            format="%.2f",
+                            width="medium"
                         )
                     }
                 )
