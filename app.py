@@ -575,193 +575,192 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
         # Botón de calcular
         calcular = st.button("🔄 Calcular", type="primary")
     
-    # SECCIÓN DERECHA: Mantener en blanco por ahora
+    # SECCIÓN DERECHA: Resultados
     with col_right:
         st.subheader("Resultados")
-        st.write("Esta sección estará disponible próximamente...")
-    
-    # Lógica de cálculo (mantener fuera de las columnas para que funcione correctamente)
-    if calcular:
-        try:
-            # Procesar flujos
-            cash_flows = process_irregular_flows(bono_flows, settlement_date, bond_price, day_count_basis)
-            
-            if len(cash_flows) <= 1:
-                st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
-            elif len(cash_flows) == 1:
-                st.error("Solo hay el flujo inicial. No hay flujos futuros para calcular TIR")
-            else:
-                # Calcular TIR
-                ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
+        
+        # Lógica de cálculo
+        if calcular:
+            try:
+                # Procesar flujos
+                cash_flows = process_irregular_flows(bono_flows, settlement_date, bond_price, day_count_basis)
                 
-                # Calcular TIR según periodicidad (anualizada)
-                periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
-                # Fórmula: periodicidad * ((1 + TIR efectiva)^(1/periodicidad) - 1)
-                ytm_anualizada = periodicidad * ((1 + ytm) ** (1.0 / periodicidad) - 1)
-                
-                # Calcular duraciones
-                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
-                
-                # Calcular vida media
-                average_life = calculate_average_life(bono_flows, settlement_date, day_count_basis)
-                
-                # Calcular intereses corridos
-                base_calculo_bono = bono_flows['base_calculo'].iloc[0] if 'base_calculo' in bono_flows.columns else "ACT/365"
-                periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
-                accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad)
-                
-                # Calcular paridad y próximo cupón
-                clean_price = bond_price - accrued_interest
-                capital_amortizado = 0.0
-                settlement_ts = pd.Timestamp(settlement_date)
-                for _, row in bono_flows.iterrows():
-                    row_date = pd.Timestamp(row['fecha'])
-                    if row_date < settlement_ts:
-                        capital_amortizado += row['pago_capital_porcentaje']
-                capital_residual = 100.0 - capital_amortizado
-                technical_value = capital_residual + accrued_interest
-                parity = calculate_parity(clean_price, technical_value)
-                next_coupon_date = find_next_coupon_date(bono_flows, settlement_date)
-                
-                # Mostrar resultados
-                st.subheader("Resultados")
-                
-                # Información de la base de cálculo y periodicidad
-                # Convertir periodicidad a texto descriptivo
-                if periodicidad == 1:
-                    periodicidad_texto = "anual"
-                elif periodicidad == 2:
-                    periodicidad_texto = "semestral"
-                elif periodicidad == 4:
-                    periodicidad_texto = "trimestral"
-                elif periodicidad == 12:
-                    periodicidad_texto = "mensual"
+                if len(cash_flows) <= 1:
+                    st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
+                elif len(cash_flows) == 1:
+                    st.error("Solo hay el flujo inicial. No hay flujos futuros para calcular TIR")
                 else:
-                    periodicidad_texto = f"{periodicidad} meses"
-                
-                st.info(f"**Base de cálculo de días:** {base_calculo_bono} | **Periodicidad:** {periodicidad_texto}")
-                
-                # Convertir periodicidad a texto para el título
-                if periodicidad == 1:
-                    periodicidad_titulo = "Anual"
-                elif periodicidad == 2:
-                    periodicidad_titulo = "Semianual"
-                elif periodicidad == 4:
-                    periodicidad_titulo = "Trimestral"
-                elif periodicidad == 12:
-                    periodicidad_titulo = "Mensual"
-                else:
-                    periodicidad_titulo = f"Cada {12//periodicidad} meses"
-                
-                # Primera fila - Precio Limpio, Intereses Corridos, Capital Residual, Cupón Vigente
-                col1, col2, col3, col4 = st.columns(4)
-                
-                # Obtener la tasa de cupón vigente usada para calcular intereses corridos
-                cupon_vigente = 0.0
-                settlement_ts = pd.Timestamp(settlement_date)
-                for _, row in bono_flows.iterrows():
-                    row_date = pd.Timestamp(row['fecha'])
-                    if row_date < settlement_ts and row['tasa_cupon'] > 0:
-                        cupon_vigente = row['tasa_cupon']
-                
-                with col1:
-                    st.markdown("**Precio Limpio**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
-                
-                with col2:
-                    st.markdown("**Intereses Corridos**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{accrued_interest:.4f}</h3>", unsafe_allow_html=True)
-                
-                with col3:
-                    st.markdown("**Capital Residual**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{capital_residual:.2f}</h3>", unsafe_allow_html=True)
-                
-                with col4:
-                    st.markdown("**Valor Técnico**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{technical_value:.2f}</h3>", unsafe_allow_html=True)
-                
-                # Segunda fila - Cupón Vigente, Vida Media, Paridad, Próximo Cupón
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.markdown("**Cupón Vigente**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
-                with col2:
-                    st.markdown("**Próximo Cupón**")
-                    if next_coupon_date:
-                        next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
-                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{next_coupon_str}</h3>", unsafe_allow_html=True)
+                    # Calcular TIR
+                    ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
+                    
+                    # Calcular TIR según periodicidad (anualizada)
+                    periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
+                    # Fórmula: periodicidad * ((1 + TIR efectiva)^(1/periodicidad) - 1)
+                    ytm_anualizada = periodicidad * ((1 + ytm) ** (1.0 / periodicidad) - 1)
+                    
+                    # Calcular duraciones
+                    macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
+                    
+                    # Calcular vida media
+                    average_life = calculate_average_life(bono_flows, settlement_date, day_count_basis)
+                    
+                    # Calcular intereses corridos
+                    base_calculo_bono = bono_flows['base_calculo'].iloc[0] if 'base_calculo' in bono_flows.columns else "ACT/365"
+                    periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
+                    accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad)
+                    
+                    # Calcular paridad y próximo cupón
+                    clean_price = bond_price - accrued_interest
+                    capital_amortizado = 0.0
+                    settlement_ts = pd.Timestamp(settlement_date)
+                    for _, row in bono_flows.iterrows():
+                        row_date = pd.Timestamp(row['fecha'])
+                        if row_date < settlement_ts:
+                            capital_amortizado += row['pago_capital_porcentaje']
+                    capital_residual = 100.0 - capital_amortizado
+                    technical_value = capital_residual + accrued_interest
+                    parity = calculate_parity(clean_price, technical_value)
+                    next_coupon_date = find_next_coupon_date(bono_flows, settlement_date)
+                    
+                    # Información de la base de cálculo y periodicidad
+                    # Convertir periodicidad a texto descriptivo
+                    if periodicidad == 1:
+                        periodicidad_texto = "anual"
+                    elif periodicidad == 2:
+                        periodicidad_texto = "semestral"
+                    elif periodicidad == 4:
+                        periodicidad_texto = "trimestral"
+                    elif periodicidad == 12:
+                        periodicidad_texto = "mensual"
                     else:
-                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>N/A</h3>", unsafe_allow_html=True)
-                with col3:
-                    st.markdown("**Paridad**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{parity:.4f}</h3>", unsafe_allow_html=True)
-                with col4:
-                    st.markdown("**Vida Media**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
-                
-                # Tercera fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.markdown("**TIR Efectiva**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
-                with col2:
-                    st.markdown(f"**TIR {periodicidad_titulo}**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
-                with col3:
-                    st.markdown("**Duración Modificada**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
-                with col4:
-                    st.markdown("**Duración Macaulay**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
-                
-                # Tabla de flujos detallada
-                st.subheader("Flujo de Fondos")
-                
-                df_cash_flows = pd.DataFrame(cash_flows)
-                df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
-                
-                # Formatear valores numéricos y manejar ceros
-                def format_value(value):
-                    if value == 0 or pd.isna(value):
-                        return ""
+                        periodicidad_texto = f"{periodicidad} meses"
+                    
+                    st.info(f"**Base de cálculo de días:** {base_calculo_bono} | **Periodicidad:** {periodicidad_texto}")
+                    
+                    # Convertir periodicidad a texto para el título
+                    if periodicidad == 1:
+                        periodicidad_titulo = "Anual"
+                    elif periodicidad == 2:
+                        periodicidad_titulo = "Semianual"
+                    elif periodicidad == 4:
+                        periodicidad_titulo = "Trimestral"
+                    elif periodicidad == 12:
+                        periodicidad_titulo = "Mensual"
                     else:
-                        return f"{value:.2f}"
+                        periodicidad_titulo = f"Cada {12//periodicidad} meses"
+                    
+                    # Primera fila - Precio Limpio, Intereses Corridos, Capital Residual, Valor Técnico
+                    col1, col2, col3, col4 = st.columns(4)
+                    
+                    # Obtener la tasa de cupón vigente usada para calcular intereses corridos
+                    cupon_vigente = 0.0
+                    settlement_ts = pd.Timestamp(settlement_date)
+                    for _, row in bono_flows.iterrows():
+                        row_date = pd.Timestamp(row['fecha'])
+                        if row_date < settlement_ts and row['tasa_cupon'] > 0:
+                            cupon_vigente = row['tasa_cupon']
+                    
+                    with col1:
+                        st.markdown("**Precio Limpio**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
+                    
+                    with col2:
+                        st.markdown("**Intereses Corridos**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{accrued_interest:.4f}</h3>", unsafe_allow_html=True)
+                    
+                    with col3:
+                        st.markdown("**Capital Residual**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{capital_residual:.2f}</h3>", unsafe_allow_html=True)
+                    
+                    with col4:
+                        st.markdown("**Valor Técnico**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{technical_value:.2f}</h3>", unsafe_allow_html=True)
+                    
+                    # Segunda fila - Cupón Vigente, Próximo Cupón, Paridad, Vida Media
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.markdown("**Cupón Vigente**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
+                    with col2:
+                        st.markdown("**Próximo Cupón**")
+                        if next_coupon_date:
+                            next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
+                            st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{next_coupon_str}</h3>", unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>N/A</h3>", unsafe_allow_html=True)
+                    with col3:
+                        st.markdown("**Paridad**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{parity:.4f}</h3>", unsafe_allow_html=True)
+                    with col4:
+                        st.markdown("**Vida Media**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
+                    
+                    # Tercera fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.markdown("**TIR Efectiva**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
+                    with col2:
+                        st.markdown(f"**TIR {periodicidad_titulo}**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
+                    with col3:
+                        st.markdown("**Duración Modificada**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
+                    with col4:
+                        st.markdown("**Duración Macaulay**")
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
                 
-                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].apply(format_value)
-                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].apply(format_value)
-                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].apply(format_value)
-                
-                # Renombrar columnas para mejor presentación
-                df_cash_flows = df_cash_flows.rename(columns={
-                    'Fecha': 'Fecha de Pago',
-                    'Pago_Capital': 'Capital',
-                    'Cupon': 'Cupón',
-                    'Flujo_Total': 'Flujo Total'
-                })
-                
-                # Eliminar la columna de días
-                df_cash_flows = df_cash_flows.drop('Días', axis=1)
-                
-                # Crear tabla HTML personalizada para control total
-                html_table = "<table style='width: 100%; border-collapse: collapse;'>"
-                html_table += "<thead><tr>"
-                html_table += "<th style='text-align: left; padding: 8px; border-bottom: 1px solid #ddd;'>Fecha de Pago</th>"
-                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Capital</th>"
-                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Cupón</th>"
-                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Flujo Total</th>"
-                html_table += "</tr></thead><tbody>"
-                
-                for _, row in df_cash_flows.iterrows():
-                    html_table += "<tr>"
-                    html_table += f"<td style='text-align: left; padding: 8px; border-bottom: 1px solid #eee;'>{row['Fecha de Pago']}</td>"
-                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Capital']}</td>"
-                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Cupón']}</td>"
-                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Flujo Total']}</td>"
-                    html_table += "</tr>"
-                
-                html_table += "</tbody></table>"
-                
-                st.markdown(html_table, unsafe_allow_html=True)
                 
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
+    
+    # Tabla de flujo de fondos (fuera de las columnas, ocupando todo el ancho)
+    if calcular and 'cash_flows' in locals():
+        st.markdown("---")  # Separador
+        st.subheader("Flujo de Fondos")
+        
+        df_cash_flows = pd.DataFrame(cash_flows)
+        df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
+        
+        # Formatear valores numéricos y manejar ceros
+        def format_value(value):
+            if value == 0 or pd.isna(value):
+                return ""
+            else:
+                return f"{value:.2f}"
+        
+        df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].apply(format_value)
+        df_cash_flows['Cupon'] = df_cash_flows['Cupon'].apply(format_value)
+        df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].apply(format_value)
+        
+        # Renombrar columnas para mejor presentación
+        df_cash_flows = df_cash_flows.rename(columns={
+            'Fecha': 'Fecha de Pago',
+            'Pago_Capital': 'Capital',
+            'Cupon': 'Cupón',
+            'Flujo_Total': 'Flujo Total'
+        })
+        
+        # Eliminar la columna de días
+        df_cash_flows = df_cash_flows.drop('Días', axis=1)
+        
+        # Crear tabla HTML personalizada para control total
+        html_table = "<table style='width: 100%; border-collapse: collapse;'>"
+        html_table += "<thead><tr>"
+        html_table += "<th style='text-align: left; padding: 8px; border-bottom: 1px solid #ddd;'>Fecha de Pago</th>"
+        html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Capital</th>"
+        html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Cupón</th>"
+        html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Flujo Total</th>"
+        html_table += "</tr></thead><tbody>"
+        
+        for _, row in df_cash_flows.iterrows():
+            html_table += "<tr>"
+            html_table += f"<td style='text-align: left; padding: 8px; border-bottom: 1px solid #eee;'>{row['Fecha de Pago']}</td>"
+            html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Capital']}</td>"
+            html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Cupón']}</td>"
+            html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Flujo Total']}</td>"
+            html_table += "</tr>"
+        
+        html_table += "</tbody></table>"
+        
+        st.markdown(html_table, unsafe_allow_html=True)
