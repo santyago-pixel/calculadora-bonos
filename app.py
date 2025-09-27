@@ -659,15 +659,56 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         if row_date < settlement_ts and row['tasa_cupon'] > 0:
                             cupon_vigente = row['tasa_cupon']
                     
-                    # Mostrar métricas principales
-                    st.metric("Precio Limpio", f"{clean_price:.2f}")
-                    st.metric("Intereses Corridos", f"{accrued_interest:.4f}")
-                    st.metric("Capital Residual", f"{capital_residual:.2f}")
-                    st.metric("Valor Técnico", f"{technical_value:.2f}")
-                    st.metric("TIR Efectiva", f"{ytm:.4%}")
-                    st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}")
-                    st.metric("Duración Modificada", f"{modified_duration:.2f} años")
-                    st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años")
+                    # Matriz 3x4 para mostrar métricas
+                    
+                    # Primera fila - Precio Limpio, Intereses Corridos, Capital Residual, Valor Técnico
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.markdown("**Precio Limpio**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{clean_price:.2f}</h4>", unsafe_allow_html=True)
+                    with col2:
+                        st.markdown("**Intereses Corridos**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{accrued_interest:.4f}</h4>", unsafe_allow_html=True)
+                    with col3:
+                        st.markdown("**Capital Residual**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{capital_residual:.2f}</h4>", unsafe_allow_html=True)
+                    with col4:
+                        st.markdown("**Valor Técnico**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{technical_value:.2f}</h4>", unsafe_allow_html=True)
+                    
+                    # Segunda fila - Cupón Vigente, Próximo Cupón, Paridad, Vida Media
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.markdown("**Cupón Vigente**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{(cupon_vigente * 100):.2f}%</h4>", unsafe_allow_html=True)
+                    with col2:
+                        st.markdown("**Próximo Cupón**")
+                        if next_coupon_date:
+                            next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
+                            st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{next_coupon_str}</h4>", unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>N/A</h4>", unsafe_allow_html=True)
+                    with col3:
+                        st.markdown("**Paridad**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{parity:.4f}</h4>", unsafe_allow_html=True)
+                    with col4:
+                        st.markdown("**Vida Media**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{average_life:.2f} años</h4>", unsafe_allow_html=True)
+                    
+                    # Tercera fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.markdown("**TIR Efectiva**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{ytm:.4%}</h4>", unsafe_allow_html=True)
+                    with col2:
+                        st.markdown(f"**TIR {periodicidad_titulo}**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{ytm_anualizada:.4%}</h4>", unsafe_allow_html=True)
+                    with col3:
+                        st.markdown("**Duración Modificada**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{modified_duration:.2f} años</h4>", unsafe_allow_html=True)
+                    with col4:
+                        st.markdown("**Duración Macaulay**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{macaulay_duration:.2f} años</h4>", unsafe_allow_html=True)
                 
                 
         except Exception as e:
