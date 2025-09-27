@@ -400,6 +400,12 @@ try:
                     periodicidad = int(float(str(row[2]))) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 12
                 except:
                     periodicidad = 12
+                
+                # Extraer tipo de bono de la siguiente celda (columna D)
+                try:
+                    tipo_bono = str(row[3]).strip() if not pd.isna(row[3]) else "Sin clasificar"
+                except:
+                    tipo_bono = "Sin clasificar"
                 continue
             
             # Si tenemos un nombre de bono y es una fecha válida, procesar
@@ -439,6 +445,7 @@ try:
                             'nombre_bono': current_bono_name,
                             'base_calculo': base_calculo_bono,
                             'periodicidad': periodicidad,
+                            'tipo_bono': tipo_bono,
                             'fecha': fecha_valida,
                             'tasa_cupon': tasa_cupon,
                             'cupon_porcentaje': cupon,
@@ -454,18 +461,51 @@ try:
     if len(flows_df) == 0:
         st.error("❌ No se encontraron flujos válidos en el archivo")
         flows_df = None
+    else:
+        # Leer tipos de bonos desde las celdas J6:J8
+        tipos_bonos_disponibles = []
+        try:
+            # Leer celdas J6, J7, J8 (fila 5, 6, 7 en índice 0-based, columna J = índice 9)
+            for i in range(5, 8):  # filas 6, 7, 8 en Excel
+                if i < len(flows_df) and len(flows_df.columns) > 9:
+                    tipo = str(flows_df.iloc[i, 9]).strip()
+                    if tipo and tipo.lower() not in ['nan', 'none', '']:
+                        tipos_bonos_disponibles.append(tipo)
+            
+            if not tipos_bonos_disponibles:
+                tipos_bonos_disponibles = ["Todos"]  # Valor por defecto
+        except:
+            tipos_bonos_disponibles = ["Todos"]  # Valor por defecto si falla
         
 except Exception as e:
     st.error(f"❌ Error al cargar el archivo: {e}")
     flows_df = None
+    tipos_bonos_disponibles = ["Todos"]
 
 
 # Mostrar selector de bonos
 if flows_df is not None and 'nombre_bono' in flows_df.columns:
+    # Selector de tipo de bono
+    st.subheader("Tipo de Bono")
+    tipo_selected = st.selectbox(
+        "Selecciona el tipo de bono:",
+        options=["Todos"] + tipos_bonos_disponibles
+    )
+    
     st.subheader("Elija un Bono")
     
-    # Agrupar por nombre de bono
-    unique_bonos = flows_df['nombre_bono'].unique()
+    # Filtrar bonos por tipo seleccionado
+    if tipo_selected == "Todos":
+        flows_filtered = flows_df
+    else:
+        flows_filtered = flows_df[flows_df['tipo_bono'] == tipo_selected]
+    
+    # Agrupar por nombre de bono (solo los filtrados)
+    unique_bonos = flows_filtered['nombre_bono'].unique()
+    
+    if len(unique_bonos) == 0:
+        st.warning(f"⚠️ No se encontraron bonos del tipo '{tipo_selected}'")
+        st.stop()
     
     # Selector de bono
     bono_selected = st.selectbox(
@@ -474,7 +514,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     )
     
     # Filtrar flujos del bono seleccionado
-    bono_flows = flows_df[flows_df['nombre_bono'] == bono_selected].copy()
+    bono_flows = flows_filtered[flows_filtered['nombre_bono'] == bono_selected].copy()
     
     # Convertir fechas a datetime y ordenar
     bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
