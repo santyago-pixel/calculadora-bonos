@@ -57,13 +57,11 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
         if flow_date > settlement_date:
             days = days_calculation(settlement_date, flow_date, base_calculo)
             
-            # Los porcentajes están sobre el valor nominal de 100, pero necesitamos escalarlos al precio dirty
-            # Si el precio dirty es 100, los porcentajes se mantienen igual
-            # Si el precio dirty es diferente, escalamos proporcionalmente
-            scale_factor = dirty_price / 100.0
-            
-            capital_payment = row['pago_capital_porcentaje'] * scale_factor
-            coupon_payment = row['cupon_porcentaje'] * scale_factor
+            # Los porcentajes están sobre el valor nominal del bono (100)
+            # Los flujos se calculan sobre el valor nominal, no sobre el precio dirty
+            # El precio dirty solo afecta el flujo inicial (pago)
+            capital_payment = row['pago_capital_porcentaje']  # 10% = 10
+            coupon_payment = row['cupon_porcentaje']  # 4.5% = 4.5
             total_flow = capital_payment + coupon_payment
             
             processed_flows.append({
