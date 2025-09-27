@@ -150,7 +150,7 @@ def calculate_ytm_irregular(cash_flows, day_count_basis='30/360', max_iterations
 
 # Función para calcular duración
 def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360'):
-    """Calcula duración Macaulay y modificada para flujos irregulares"""
+    """Calcula duración Macaulay y modificada para flujos irregulares en años"""
     
     # Determinar el divisor según la base de cálculo
     if day_count_basis == "30/360":
@@ -169,9 +169,13 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
     
     for cf in cash_flows:
         days = cf['Días']
+        # Calcular períodos para descuento (usando la base de cálculo)
         periods = days / divisor
+        # Calcular años para duración (siempre usando 365 días por año)
+        years = days / 365.0
+        
         pv = cf['Flujo_Total'] / ((1 + ytm) ** periods)
-        weighted_pv += periods * pv
+        weighted_pv += years * pv  # Usar años para la duración
         total_pv += pv
     
     macaulay_duration = weighted_pv / total_pv if total_pv > 0 else 0
@@ -401,6 +405,12 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 st.write("**Flujos de caja para verificación:**")
                 for cf in cash_flows:
                     st.write(f"Fecha: {cf['Fecha']}, Días: {cf['Días']}, Flujo: {cf['Flujo_Total']:.2f}")
+                
+                # Debug: Mostrar información de duración
+                st.write("**Debug duración:**")
+                st.write(f"Base de cálculo para descuento: {day_count_basis}")
+                st.write(f"Divisor para descuento: {360 if day_count_basis in ['30/360', 'ACT/360'] else 365}")
+                st.write(f"Divisor para duración: 365 (años)")
                 
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
