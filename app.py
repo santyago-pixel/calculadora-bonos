@@ -307,8 +307,13 @@ try:
             if not cell_value or cell_value.lower() in ['nan', 'none', '']:
                 continue
             
-            # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
-            if cell_value.lower().startswith('bono'):
+            # Verificar si es el inicio de un nuevo bono (cualquier carácter que no sea una fecha)
+            try:
+                # Intentar convertir a fecha
+                pd.to_datetime(cell_value, errors='raise')
+                # Si llegamos aquí, es una fecha válida, continuar procesando
+            except:
+                # No es una fecha, es el inicio de un nuevo bono
                 current_bono_name = cell_value
                 # Extraer base de cálculo de la celda contigua (columna B)
                 try:
