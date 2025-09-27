@@ -204,8 +204,16 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, p
         else:
             break
     
+    # Si no hay cupón anterior, usar fecha de emisión
     if last_coupon_date is None:
-        return 0.0
+        # Obtener fecha de emisión del bono
+        fecha_emision = bono_flows['fecha_emision'].iloc[0] if 'fecha_emision' in bono_flows.columns else None
+        if fecha_emision is None or pd.isna(fecha_emision):
+            return 0.0
+        
+        last_coupon_date = fecha_emision
+        # Usar la primera tasa de cupón disponible
+        current_coupon_rate = cupon_flows['tasa_cupon'].iloc[0] if len(cupon_flows) > 0 else 0.0
     
     # Calcular capital residual no amortizado
     # Capital residual = 100 - sumatoria de todos los flujos de capital anteriores a la fecha de liquidación
@@ -307,8 +315,13 @@ try:
             if not cell_value or cell_value.lower() in ['nan', 'none', '']:
                 continue
             
-            # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
-            if cell_value.lower().startswith('bono'):
+            # Verificar si es el inicio de un nuevo bono (cualquier carácter que no sea una fecha)
+            try:
+                # Intentar convertir a fecha
+                pd.to_datetime(cell_value, errors='raise')
+                # Si llegamos aquí, es una fecha válida, continuar procesando
+            except:
+                # No es una fecha, es el inicio de un nuevo bono
                 current_bono_name = cell_value
                 # Extraer base de cálculo de la celda contigua (columna B)
                 try:
@@ -321,6 +334,12 @@ try:
                     periodicidad = int(float(str(row[2]))) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 12
                 except:
                     periodicidad = 12
+                
+                # Extraer fecha de emisión de la siguiente celda (columna D)
+                try:
+                    fecha_emision = pd.to_datetime(str(row[3])) if not pd.isna(row[3]) and str(row[3]).strip() not in ['', 'nan'] else None
+                except:
+                    fecha_emision = None
                 continue
             
             # Si tenemos un nombre de bono y es una fecha válida, procesar
@@ -360,6 +379,7 @@ try:
                             'nombre_bono': current_bono_name,
                             'base_calculo': base_calculo_bono,
                             'periodicidad': periodicidad,
+                            'fecha_emision': fecha_emision,
                             'fecha': fecha_valida,
                             'tasa_cupon': tasa_cupon,
                             'cupon_porcentaje': cupon,
