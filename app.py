@@ -611,22 +611,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Cupón Vigente**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
                 
-                # Segunda fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.markdown("**TIR Efectiva**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
-                with col2:
-                    st.markdown(f"**TIR {periodicidad_titulo}**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
-                with col3:
-                    st.markdown("**Duración Modificada**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
-                with col4:
-                    st.markdown("**Duración Macaulay**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
-                
-                # Tercera fila - Valor Técnico, Vida Media, Paridad, Próximo Cupón
+                # Segunda fila - Valor Técnico, Vida Media, Paridad, Próximo Cupón
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
                     st.markdown("**Valor Técnico**")
@@ -644,6 +629,21 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{next_coupon_str}</h3>", unsafe_allow_html=True)
                     else:
                         st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>N/A</h3>", unsafe_allow_html=True)
+                
+                # Tercera fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.markdown("**TIR Efectiva**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
+                with col2:
+                    st.markdown(f"**TIR {periodicidad_titulo}**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
+                with col3:
+                    st.markdown("**Duración Modificada**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
+                with col4:
+                    st.markdown("**Duración Macaulay**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
                 
                 # Tabla de flujos detallada
                 st.subheader("Flujo de Fondos")
