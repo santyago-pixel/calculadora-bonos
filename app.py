@@ -57,9 +57,13 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
         if flow_date > settlement_date:
             days = days_calculation(settlement_date, flow_date, base_calculo)
             
-            # Los porcentajes ya están en la escala correcta (4.5% = 4.5, no 0.045)
-            capital_payment = row['pago_capital_porcentaje']  # 10% = 10
-            coupon_payment = row['cupon_porcentaje']  # 4.5% = 4.5
+            # Los porcentajes están sobre el valor nominal de 100, pero necesitamos escalarlos al precio dirty
+            # Si el precio dirty es 100, los porcentajes se mantienen igual
+            # Si el precio dirty es diferente, escalamos proporcionalmente
+            scale_factor = dirty_price / 100.0
+            
+            capital_payment = row['pago_capital_porcentaje'] * scale_factor
+            coupon_payment = row['cupon_porcentaje'] * scale_factor
             total_flow = capital_payment + coupon_payment
             
             processed_flows.append({
@@ -94,8 +98,8 @@ def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
     
     # Usar búsqueda binaria como fallback si Newton-Raphson falla
     def binary_search_ytm():
-        low, high = -0.99, 10.0  # Límites razonables para TIR
-        for _ in range(50):  # Máximo 50 iteraciones
+        low, high = -0.99, 2.0  # Límites más conservadores para TIR
+        for _ in range(100):  # Más iteraciones para mayor precisión
             mid = (low + high) / 2
             pv = pv_function(mid)
             if abs(pv) < tolerance:
@@ -107,7 +111,7 @@ def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
         return (low + high) / 2
     
     # Intentar Newton-Raphson primero
-    ytm = 0.05
+    ytm = 0.05  # Empezar con 5%
     for i in range(max_iterations):
         try:
             pv = pv_function(ytm)
@@ -119,7 +123,7 @@ def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
             ytm_new = ytm - pv / derivative
             
             # Verificar que no sea complejo y esté en rango razonable
-            if isinstance(ytm_new, complex) or ytm_new < -0.99 or ytm_new > 10.0:
+            if isinstance(ytm_new, complex) or ytm_new < -0.99 or ytm_new > 2.0:
                 return binary_search_ytm()
             
             if abs(ytm_new - ytm) < tolerance:
@@ -260,6 +264,10 @@ if flows_df is not None:
             else:
                 # Calcular TIR
                 ytm = calculate_ytm_irregular(cash_flows)
+                
+                # Debug: Mostrar información de TIR
+                st.write(f"TIR calculada: {ytm:.6f} ({ytm*100:.4f}%)")
+                st.write(f"TIR efectiva: {((1 + ytm) ** 2 - 1)*100:.4f}%")
                 
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, dirty_price)
