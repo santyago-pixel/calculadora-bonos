@@ -510,14 +510,25 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Precio Limpio**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
                 
-                # Segunda fila - TIRs usando markdown para controlar tamaño
-                col1, col2 = st.columns(2)
+                # Segunda fila - TIRs y Cupón Vigente usando markdown para controlar tamaño
+                col1, col2, col3 = st.columns(3)
                 with col1:
                     st.markdown(f"**TIR {periodicidad_titulo}**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
                 with col2:
                     st.markdown("**TIR Efectiva**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
+                with col3:
+                    # Obtener la tasa de cupón vigente usada para calcular intereses corridos
+                    cupon_vigente = 0.0
+                    settlement_ts = pd.Timestamp(settlement_date)
+                    for _, row in bono_flows.iterrows():
+                        row_date = pd.Timestamp(row['fecha'])
+                        if row_date < settlement_ts and row['tasa_cupon'] > 0:
+                            cupon_vigente = row['tasa_cupon']
+                    
+                    st.markdown("**Cupón Vigente**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{cupon_vigente:.2f}%</h3>", unsafe_allow_html=True)
                 
                 # Tercera fila - Duraciones
                 col3, col4 = st.columns(2)
