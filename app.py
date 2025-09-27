@@ -177,13 +177,20 @@ if st.checkbox("Usar archivo por defecto (bonos_flujos.xlsx)"):
         processed_data = []
         for _, row in data_rows.iterrows():
             if len(row) >= 4 and not pd.isna(row[0]):  # Verificar que hay al menos 4 columnas
-                processed_data.append({
-                    'nombre_bono': bono_name,
-                    'fecha': row[0],  # Columna A
-                    'cupon_porcentaje': row[1] if not pd.isna(row[1]) else 0,  # Columna B
-                    'pago_capital_porcentaje': row[2] if not pd.isna(row[2]) else 0,  # Columna C
-                    'flujo_total': row[3] if not pd.isna(row[3]) else 0  # Columna D
-                })
+                # Validar que la fecha sea válida
+                try:
+                    fecha_valida = pd.to_datetime(row[0])
+                    if not pd.isna(fecha_valida):
+                        processed_data.append({
+                            'nombre_bono': bono_name,
+                            'fecha': fecha_valida,  # Columna A (convertida a datetime)
+                            'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
+                            'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
+                            'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
+                        })
+                except:
+                    # Si la fecha no es válida, saltar esta fila
+                    continue
         
         flows_df = pd.DataFrame(processed_data)
         st.success(f"Archivo por defecto cargado: {len(flows_df)} flujos para '{bono_name}'")
@@ -220,13 +227,20 @@ if uploaded_file is not None:
         processed_data = []
         for _, row in data_rows.iterrows():
             if len(row) >= 4 and not pd.isna(row[0]):  # Verificar que hay al menos 4 columnas
-                processed_data.append({
-                    'nombre_bono': bono_name,
-                    'fecha': row[0],  # Columna A
-                    'cupon_porcentaje': row[1] if not pd.isna(row[1]) else 0,  # Columna B
-                    'pago_capital_porcentaje': row[2] if not pd.isna(row[2]) else 0,  # Columna C
-                    'flujo_total': row[3] if not pd.isna(row[3]) else 0  # Columna D
-                })
+                # Validar que la fecha sea válida
+                try:
+                    fecha_valida = pd.to_datetime(row[0])
+                    if not pd.isna(fecha_valida):
+                        processed_data.append({
+                            'nombre_bono': bono_name,
+                            'fecha': fecha_valida,  # Columna A (convertida a datetime)
+                            'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
+                            'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
+                            'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
+                        })
+                except:
+                    # Si la fecha no es válida, saltar esta fila
+                    continue
         
         flows_df = pd.DataFrame(processed_data)
         st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos para '{bono_name}'")
@@ -249,6 +263,9 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     
     # Filtrar flujos del bono seleccionado
     bono_flows = flows_df[flows_df['nombre_bono'] == bono_selected].copy()
+    
+    # Convertir fechas a datetime y ordenar
+    bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
     bono_flows = bono_flows.sort_values('fecha')
     
     st.subheader(f"📊 Flujos del Bono: {bono_selected}")
