@@ -485,34 +485,23 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 else:
                     periodicidad_titulo = f"Cada {12//periodicidad} meses"
                 
-                # CSS para reducir tamaño de fuente de métricas
-                st.markdown("""
-                <style>
-                .metric-container {
-                    font-size: 0.8rem !important;
-                }
-                .metric-container .metric-value {
-                    font-size: 1.2rem !important;
-                }
-                .metric-container .metric-label {
-                    font-size: 0.9rem !important;
-                }
-                </style>
-                """, unsafe_allow_html=True)
-                
-                # Primera fila - TIRs
+                # Primera fila - TIRs usando markdown para controlar tamaño
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}", help=f"Tasa Interna de Retorno {periodicidad_titulo.lower()}")
+                    st.markdown(f"**TIR {periodicidad_titulo}**")
+                    st.markdown(f"<h3 style='margin-top: 0; margin-bottom: 0;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
                 with col2:
-                    st.metric("TIR Efectiva", f"{ytm:.4%}", help="TIR efectiva anual (equivalente a TIR.NO.PER de Excel)")
+                    st.markdown("**TIR Efectiva**")
+                    st.markdown(f"<h3 style='margin-top: 0; margin-bottom: 0;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
                 
                 # Segunda fila - Duraciones
                 col3, col4 = st.columns(2)
                 with col3:
-                    st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años", help="Tiempo promedio ponderado de los flujos de caja")
+                    st.markdown("**Duración Macaulay**")
+                    st.markdown(f"<h3 style='margin-top: 0; margin-bottom: 0;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
                 with col4:
-                    st.metric("Duración Modificada", f"{modified_duration:.2f} años", help="Sensibilidad del precio a cambios en la tasa de interés")
+                    st.markdown("**Duración Modificada**")
+                    st.markdown(f"<h3 style='margin-top: 0; margin-bottom: 0;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
                 
                 # Mostrar capital residual e intereses corridos
                 col1, col2, col3 = st.columns(3)
@@ -527,14 +516,17 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 capital_residual = 100.0 - capital_amortizado
                 
                 with col1:
-                    st.metric("Capital Residual", f"{capital_residual:.2f}", help="Capital no amortizado a la fecha de liquidación")
+                    st.markdown("**Capital Residual**")
+                    st.markdown(f"<h3 style='margin-top: 0; margin-bottom: 0;'>{capital_residual:.2f}</h3>", unsafe_allow_html=True)
                 
                 with col2:
-                    st.metric("Intereses Corridos", f"{accrued_interest:.4f}", help=f"Intereses acumulados desde el último cupón (base: {base_calculo_bono})")
+                    st.markdown("**Intereses Corridos**")
+                    st.markdown(f"<h3 style='margin-top: 0; margin-bottom: 0;'>{accrued_interest:.4f}</h3>", unsafe_allow_html=True)
                 
                 with col3:
                     clean_price = bond_price - accrued_interest
-                    st.metric("Precio Limpio", f"{clean_price:.2f}", help="Precio dirty menos intereses corridos")
+                    st.markdown("**Precio Limpio**")
+                    st.markdown(f"<h3 style='margin-top: 0; margin-bottom: 0;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
                 
                 # Tabla de flujos detallada
                 st.subheader("Flujo de Fondos")
