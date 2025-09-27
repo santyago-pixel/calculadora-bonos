@@ -490,8 +490,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 else:
                     periodicidad_titulo = f"Cada {12//periodicidad} meses"
                 
-                # Primera fila - Capital residual, intereses corridos y precio limpio
-                col1, col2, col3 = st.columns(3)
+                # Primera fila - Capital residual, intereses corridos, precio limpio y cupón vigente
+                col1, col2, col3, col4 = st.columns(4)
                 
                 # Calcular capital residual para mostrar
                 capital_amortizado = 0.0
@@ -515,15 +515,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Precio Limpio**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
                 
-                # Segunda fila - TIRs y Cupón Vigente usando markdown para controlar tamaño
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.markdown(f"**TIR {periodicidad_titulo}**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
-                with col2:
-                    st.markdown("**TIR Efectiva**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
-                with col3:
+                with col4:
                     # Obtener la tasa de cupón vigente usada para calcular intereses corridos
                     cupon_vigente = 0.0
                     settlement_ts = pd.Timestamp(settlement_date)
@@ -535,8 +527,21 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Cupón Vigente**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
                 
+                # Segunda fila - TIRs usando markdown para controlar tamaño
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.markdown(f"**TIR {periodicidad_titulo}**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
+                with col2:
+                    st.markdown("**TIR Efectiva**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
+                with col3:
+                    st.markdown("")  # Columna vacía
+                with col4:
+                    st.markdown("")  # Columna vacía
+                
                 # Tercera fila - Duraciones y Valor Técnico
-                col1, col2, col3 = st.columns(3)
+                col1, col2, col3, col4 = st.columns(4)
                 with col1:
                     st.markdown("**Duración Macaulay**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
@@ -548,6 +553,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     valor_tecnico = capital_residual + accrued_interest
                     st.markdown("**Valor Técnico**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{valor_tecnico:.2f}</h3>", unsafe_allow_html=True)
+                with col4:
+                    st.markdown("")  # Columna vacía
                 
                 # Tabla de flujos detallada
                 st.subheader("Flujo de Fondos")
