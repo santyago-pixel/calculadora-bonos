@@ -530,14 +530,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Cupón Vigente**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{cupon_vigente:.2f}%</h3>", unsafe_allow_html=True)
                 
-                # Tercera fila - Duraciones
-                col3, col4 = st.columns(2)
-                with col3:
+                # Tercera fila - Duraciones y Valor Técnico
+                col1, col2, col3 = st.columns(3)
+                with col1:
                     st.markdown("**Duración Macaulay**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
-                with col4:
+                with col2:
                     st.markdown("**Duración Modificada**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
+                with col3:
+                    # Calcular valor técnico = capital residual + intereses corridos
+                    valor_tecnico = capital_residual + accrued_interest
+                    st.markdown("**Valor Técnico**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{valor_tecnico:.2f}</h3>", unsafe_allow_html=True)
                 
                 # Tabla de flujos detallada
                 st.subheader("Flujo de Fondos")
