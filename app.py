@@ -647,7 +647,14 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     else:
                         periodicidad_texto = f"{periodicidad} meses"
                     
-                    st.info(f"**Base de cálculo de días:** {base_calculo_bono} | **Periodicidad:** {periodicidad_texto}")
+                    # Información de base de cálculo y periodicidad en formato de métricas
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.markdown("**Base de Cálculo**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{base_calculo_bono}</h4>", unsafe_allow_html=True)
+                    with col2:
+                        st.markdown("**Periodicidad**")
+                        st.markdown(f"<h4 style='margin-top: -10px; margin-bottom: 0; line-height: 1.1; font-size: 14px;'>{periodicidad_texto}</h4>", unsafe_allow_html=True)
                     
                     # Convertir periodicidad a texto para el título
                     if periodicidad == 1:
