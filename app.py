@@ -454,7 +454,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 st.subheader("Resultados del Análisis")
                 
                 # Información de la base de cálculo y periodicidad
-                st.info(f"**Base de cálculo utilizada:** {day_count_basis} | **Base del bono:** {base_calculo_bono} | **Periodicidad:** {periodicidad} meses")
+                # Convertir periodicidad a texto descriptivo
+                if periodicidad == 1:
+                    periodicidad_texto = "anual"
+                elif periodicidad == 2:
+                    periodicidad_texto = "semestral"
+                elif periodicidad == 4:
+                    periodicidad_texto = "trimestral"
+                elif periodicidad == 12:
+                    periodicidad_texto = "mensual"
+                else:
+                    periodicidad_texto = f"{periodicidad} meses"
+                
+                st.info(f"**Base de cálculo de días:** {base_calculo_bono} | **Periodicidad:** {periodicidad_texto}")
                 
                 col1, col2 = st.columns(2)
                 col3, col4 = st.columns(2)
