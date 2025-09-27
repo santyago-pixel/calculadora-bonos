@@ -193,7 +193,9 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono):
     current_coupon_rate = 0.0
     
     for _, row in cupon_flows.iterrows():
-        if row['fecha'] <= settlement_date:
+        # Convertir settlement_date a Timestamp para comparación
+        settlement_ts = pd.Timestamp(settlement_date)
+        if row['fecha'] <= settlement_ts:
             last_coupon_date = row['fecha']
             current_coupon_rate = row['tasa_cupon']
         else:
@@ -203,18 +205,22 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono):
         return 0.0
     
     # Calcular días según la base de cálculo del bono
+    # Convertir ambos a Timestamp para el cálculo
+    settlement_ts = pd.Timestamp(settlement_date)
+    last_coupon_ts = pd.Timestamp(last_coupon_date)
+    
     if base_calculo_bono == "30/360":
         # Simplificado: usar días reales / 360
-        days = (settlement_date - last_coupon_date).days
+        days = (settlement_ts - last_coupon_ts).days
         accrued_interest = current_coupon_rate * (days / 360.0)
     elif base_calculo_bono == "ACT/360":
-        days = (settlement_date - last_coupon_date).days
+        days = (settlement_ts - last_coupon_ts).days
         accrued_interest = current_coupon_rate * (days / 360.0)
     elif base_calculo_bono == "ACT/365":
-        days = (settlement_date - last_coupon_date).days
+        days = (settlement_ts - last_coupon_ts).days
         accrued_interest = current_coupon_rate * (days / 365.0)
     else:  # Default ACT/365
-        days = (settlement_date - last_coupon_date).days
+        days = (settlement_ts - last_coupon_ts).days
         accrued_interest = current_coupon_rate * (days / 365.0)
     
     return accrued_interest
