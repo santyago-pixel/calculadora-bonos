@@ -176,6 +176,58 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='ACT/36
     
     return macaulay_duration, modified_duration
 
+def calculate_average_life(bono_flows, settlement_date, day_count_basis):
+    """Calcula la vida media del bono considerando los repagos de capital"""
+    
+    # Filtrar flujos futuros desde la fecha de liquidación
+    settlement_ts = pd.Timestamp(settlement_date)
+    future_flows = bono_flows[bono_flows['fecha'] > settlement_ts].copy()
+    
+    if len(future_flows) == 0:
+        return 0.0
+    
+    # Ordenar por fecha
+    future_flows = future_flows.sort_values('fecha')
+    
+    # Calcular días desde liquidación para cada flujo
+    days_from_settlement = []
+    capital_payments = []
+    
+    for _, row in future_flows.iterrows():
+        flow_date = pd.Timestamp(row['fecha'])
+        days = (flow_date - settlement_ts).days
+        
+        # Solo considerar flujos con pago de capital
+        if row['pago_capital_porcentaje'] > 0:
+            days_from_settlement.append(days)
+            capital_payments.append(row['pago_capital_porcentaje'])
+    
+    if len(capital_payments) == 0:
+        return 0.0
+    
+    # Calcular vida media ponderada por capital
+    total_capital = sum(capital_payments)
+    if total_capital == 0:
+        return 0.0
+    
+    # Convertir días a años según la base de cálculo
+    if day_count_basis == "ACT/365":
+        divisor = 365.0
+    elif day_count_basis == "ACT/360":
+        divisor = 360.0
+    elif day_count_basis == "30/360":
+        divisor = 360.0
+    else:
+        divisor = 365.0
+    
+    weighted_years = 0.0
+    for i, days in enumerate(days_from_settlement):
+        years = days / divisor
+        weight = capital_payments[i] / total_capital
+        weighted_years += years * weight
+    
+    return weighted_years
+
 def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad):
     """Calcula intereses corridos hasta la fecha de liquidación sobre el capital residual no amortizado"""
     
@@ -455,6 +507,9 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
                 
+                # Calcular vida media
+                average_life = calculate_average_life(bono_flows, settlement_date, day_count_basis)
+                
                 # Calcular intereses corridos
                 base_calculo_bono = bono_flows['base_calculo'].iloc[0] if 'base_calculo' in bono_flows.columns else "ACT/365"
                 periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
@@ -542,7 +597,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Duración Macaulay**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
                 
-                # Tercera fila - Valor Técnico
+                # Tercera fila - Valor Técnico y Vida Media
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
                     # Calcular valor técnico = capital residual + intereses corridos
@@ -550,7 +605,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Valor Técnico**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{valor_tecnico:.2f}</h3>", unsafe_allow_html=True)
                 with col2:
-                    st.markdown("")  # Columna vacía
+                    st.markdown("**Vida Media**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
                 with col3:
                     st.markdown("")  # Columna vacía
                 with col4:
