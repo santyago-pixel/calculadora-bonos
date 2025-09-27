@@ -577,8 +577,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     
     # SECCIÓN DERECHA: Resultados
     with col_right:
-        st.subheader("Resultados")
-        st.write("Los resultados aparecerán aquí después de hacer clic en 'Calcular'")
+        # El título "Resultados" se mostrará solo cuando se haga clic en calcular
     
     # Lógica de cálculo (fuera de las columnas)
     if calcular:
@@ -625,6 +624,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Mostrar resultados en la columna derecha
                 with col_right:
+                    st.subheader("Resultados")
+                    
                     # Información de la base de cálculo y periodicidad
                     if periodicidad == 1:
                         periodicidad_texto = "anual"
