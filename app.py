@@ -528,7 +528,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                             cupon_vigente = row['tasa_cupon']
                     
                     st.markdown("**Cupón Vigente**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{cupon_vigente:.2f}%</h3>", unsafe_allow_html=True)
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
                 
                 # Tercera fila - Duraciones y Valor Técnico
                 col1, col2, col3 = st.columns(3)
