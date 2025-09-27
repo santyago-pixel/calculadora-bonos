@@ -10,7 +10,7 @@ import io
 st.set_page_config(
     page_title="Calculadora de Bonos",
     page_icon="📊",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed"
 )
 
@@ -504,73 +504,84 @@ except Exception as e:
     tipos_bonos_disponibles = ["Todos"]
 
 
-# Mostrar selector de bonos
+# Layout de dos secciones independientes
 if flows_df is not None and 'nombre_bono' in flows_df.columns:
-    # Selector de tipo de bono
-    st.subheader("Tipo de Bono")
-    tipo_selected = st.selectbox(
-        "Selecciona el tipo de bono:",
-        options=["Todos"] + tipos_bonos_disponibles
-    )
+    # Crear dos columnas principales
+    col_left, col_right = st.columns(2)
     
-    st.subheader("Elija un Bono")
-    
-    # Filtrar bonos por tipo seleccionado
-    if tipo_selected == "Todos":
-        flows_filtered = flows_df
-    else:
-        flows_filtered = flows_df[flows_df['tipo_bono'] == tipo_selected]
-    
-    # Agrupar por nombre de bono (solo los filtrados)
-    unique_bonos = flows_filtered['nombre_bono'].unique()
-    
-    if len(unique_bonos) == 0:
-        st.warning(f"⚠️ No se encontraron bonos del tipo '{tipo_selected}'")
-        st.stop()
-    
-    # Selector de bono
-    bono_selected = st.selectbox(
-        "Selecciona un bono:",
-        options=unique_bonos
-    )
-    
-    # Filtrar flujos del bono seleccionado
-    bono_flows = flows_filtered[flows_filtered['nombre_bono'] == bono_selected].copy()
-    
-    # Convertir fechas a datetime y ordenar
-    bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
-    bono_flows = bono_flows.sort_values('fecha')
-    
-    
-    
-    # Inputs para cálculo
-    st.subheader("Datos para el Cálculo")
-    col1, col2 = st.columns(2)
-    
-    with col1:
+    # SECCIÓN IZQUIERDA: Menús desplegables y botón de calcular
+    with col_left:
+        st.subheader("Configuración")
+        
+        # Selector de tipo de bono
+        st.write("**Tipo de Bono**")
+        tipo_selected = st.selectbox(
+            "Selecciona el tipo de bono:",
+            options=["Todos"] + tipos_bonos_disponibles,
+            label_visibility="collapsed"
+        )
+        
+        # Filtrar bonos por tipo seleccionado
+        if tipo_selected == "Todos":
+            flows_filtered = flows_df
+        else:
+            flows_filtered = flows_df[flows_df['tipo_bono'] == tipo_selected]
+        
+        # Agrupar por nombre de bono (solo los filtrados)
+        unique_bonos = flows_filtered['nombre_bono'].unique()
+        
+        if len(unique_bonos) == 0:
+            st.warning(f"⚠️ No se encontraron bonos del tipo '{tipo_selected}'")
+            st.stop()
+        
+        # Selector de bono
+        st.write("**Elija un Bono**")
+        bono_selected = st.selectbox(
+            "Selecciona un bono:",
+            options=unique_bonos,
+            label_visibility="collapsed"
+        )
+        
+        # Filtrar flujos del bono seleccionado
+        bono_flows = flows_filtered[flows_filtered['nombre_bono'] == bono_selected].copy()
+        
+        # Convertir fechas a datetime y ordenar
+        bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
+        bono_flows = bono_flows.sort_values('fecha')
+        
+        # Inputs para cálculo
+        st.write("**Datos para el Cálculo**")
+        
         settlement_date = st.date_input(
             "Fecha de liquidación:",
-            value=datetime(2025, 9, 16),  # Cambiado a 16 de septiembre
+            value=datetime(2025, 9, 16),
             min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
             max_value=pd.to_datetime(bono_flows['fecha'].max()).date(),
             format="DD/MM/YYYY"
         )
-    
-    with col2:
+        
         bond_price = st.number_input(
-            "Precio del bono (base 100):",
+            "Precio Dirty (base 100):",
             min_value=0.0,
             max_value=200.0,
             value=100.0,
             step=0.01,
             format="%.2f"
         )
+        
+        # Base de cálculo fija en ACT/365
+        day_count_basis = "ACT/365"
+        
+        # Botón de calcular
+        calcular = st.button("🔄 Calcular", type="primary")
     
-    # Base de cálculo fija en ACT/365
-    day_count_basis = "ACT/365"
+    # SECCIÓN DERECHA: Mantener en blanco por ahora
+    with col_right:
+        st.subheader("Resultados")
+        st.write("Esta sección estará disponible próximamente...")
     
-    # Calcular
-    if st.button("🔄 Calcular", type="primary"):
+    # Lógica de cálculo (mantener fuera de las columnas para que funcione correctamente)
+    if calcular:
         try:
             # Procesar flujos
             cash_flows = process_irregular_flows(bono_flows, settlement_date, bond_price, day_count_basis)
