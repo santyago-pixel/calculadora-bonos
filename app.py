@@ -168,7 +168,8 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
     total_pv = 0
     
     # Debug: Mostrar cálculos detallados
-    print(f"Debug duración - YTM: {ytm:.6f}, Divisor: {divisor}")
+    debug_info = []
+    debug_info.append(f"Debug duración - YTM: {ytm:.6f}, Divisor: {divisor}")
     
     for cf in cash_flows:
         days = cf['Días']
@@ -184,16 +185,17 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
             weighted_pv += years * pv  # Usar años para la duración
             total_pv += pv
         
-        print(f"  Días: {days}, Períodos: {periods:.4f}, Años: {years:.4f}, Flujo: {cf['Flujo_Total']:.2f}, PV: {pv:.4f}")
+        debug_info.append(f"  Días: {days}, Períodos: {periods:.4f}, Años: {years:.4f}, Flujo: {cf['Flujo_Total']:.2f}, PV: {pv:.4f}")
     
-    print(f"Total PV: {total_pv:.4f}, Weighted PV: {weighted_pv:.4f}")
+    debug_info.append(f"Total PV: {total_pv:.4f}, Weighted PV: {weighted_pv:.4f}")
     
     macaulay_duration = weighted_pv / total_pv if total_pv > 0 else 0
     modified_duration = macaulay_duration / (1 + ytm) if (1 + ytm) > 0 else 0
     
-    print(f"Macaulay: {macaulay_duration:.4f}, Modified: {modified_duration:.4f}")
+    debug_info.append(f"Macaulay: {macaulay_duration:.4f}, Modified: {modified_duration:.4f}")
     
-    return macaulay_duration, modified_duration
+    # Retornar también la información de debug
+    return macaulay_duration, modified_duration, debug_info
 
 # Interfaz principal
 st.header("📁 Cargar Bonos con Flujos Irregulares")
@@ -425,7 +427,12 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 st.write(f"Divisor para duración: 365 (años)")
                 
                 # Calcular duraciones
-                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
+                macaulay_duration, modified_duration, duration_debug = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
+                
+                # Mostrar debug de duración
+                st.write("**Debug detallado de duración:**")
+                for debug_line in duration_debug:
+                    st.write(debug_line)
                 
                 # Mostrar resultados
                 st.subheader("📈 Resultados")
