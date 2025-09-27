@@ -76,13 +76,14 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
 
 # Función para calcular TIR
 def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
-    """Calcula la TIR usando Newton-Raphson para flujos irregulares"""
+    """Calcula la TIR usando Newton-Raphson para flujos irregulares (equivalente a TIR.NO.PER de Excel)"""
     
     def pv_function(yield_rate):
         pv = 0
         for cf in cash_flows:
             days = cf['Días']
-            periods = days / 365  # Ajustar según la base
+            # Usar días exactos dividido por 365 (como TIR.NO.PER de Excel)
+            periods = days / 365.0
             pv += cf['Flujo_Total'] / ((1 + yield_rate) ** periods)
         return pv
     
@@ -90,7 +91,7 @@ def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
         derivative = 0
         for cf in cash_flows:
             days = cf['Días']
-            periods = days / 365
+            periods = days / 365.0
             derivative -= cf['Flujo_Total'] * periods / ((1 + yield_rate) ** (periods + 1))
         return derivative
     
@@ -359,7 +360,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Debug: Mostrar información de TIR
                 st.write(f"TIR calculada: {ytm:.6f} ({ytm*100:.4f}%)")
-                st.write(f"TIR efectiva: {((1 + ytm) ** 2 - 1)*100:.4f}%")
+                st.write(f"TIR efectiva (TIR.NO.PER): {ytm*100:.4f}%")
                 
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, dirty_price)
@@ -373,7 +374,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.metric("TIR Anual", f"{ytm:.4%}")
                 
                 with col2:
-                    st.metric("TIR Efectiva", f"{((1 + ytm) ** 2 - 1):.4%}")
+                    st.metric("TIR Efectiva", f"{ytm:.4%}")
                 
                 with col3:
                     st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años")
