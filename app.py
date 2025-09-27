@@ -41,7 +41,7 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
     """Procesa flujos irregulares incluyendo el precio dirty como flujo inicial"""
     processed_flows = []
     
-    # Agregar flujo inicial negativo (precio dirty pagado)
+    # Agregar flujo inicial negativo (precio dirty pagado) en la fecha de liquidación
     processed_flows.append({
         'Fecha': settlement_date,
         'Pago_Capital': 0,
@@ -179,12 +179,27 @@ else:
 if uploaded_file is not None:
     try:
         flows_df = pd.read_csv(uploaded_file)
-        st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos")
+        
+        # Verificar que tenga las columnas necesarias
+        required_columns = ['nombre_bono', 'fecha', 'pago_capital_porcentaje', 'cupon_porcentaje']
+        missing_columns = [col for col in required_columns if col not in flows_df.columns]
+        
+        if missing_columns:
+            st.error(f"El archivo CSV no tiene las columnas necesarias. Faltan: {missing_columns}")
+            st.write("**Columnas requeridas:**")
+            st.write("- nombre_bono")
+            st.write("- fecha")
+            st.write("- pago_capital_porcentaje")
+            st.write("- cupon_porcentaje")
+            st.write("**Columnas encontradas:**")
+            st.write(list(flows_df.columns))
+        else:
+            st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos")
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
 
 # Mostrar flujos cargados
-if flows_df is not None:
+if flows_df is not None and 'nombre_bono' in flows_df.columns:
     st.subheader("📋 Flujos Cargados")
     
     # Agrupar por nombre de bono
@@ -234,7 +249,7 @@ if flows_df is not None:
     with col1:
         settlement_date = st.date_input(
             "Fecha de liquidación:",
-            value=datetime(2025, 9, 10),
+            value=datetime(2025, 9, 16),  # Cambiado a 16 de septiembre
             min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
             max_value=pd.to_datetime(bono_flows['fecha'].max()).date()
         )
