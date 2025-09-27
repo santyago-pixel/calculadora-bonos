@@ -228,6 +228,32 @@ def calculate_average_life(bono_flows, settlement_date, day_count_basis):
     
     return weighted_years
 
+def calculate_parity(clean_price, technical_value):
+    """Calcula la paridad como precio limpio dividido por valor técnico"""
+    if technical_value == 0:
+        return 0.0
+    return clean_price / technical_value
+
+def find_next_coupon_date(bono_flows, settlement_date):
+    """Encuentra la próxima fecha de pago de cupón más cercana a la fecha de liquidación"""
+    
+    # Filtrar flujos futuros desde la fecha de liquidación (incluyendo la fecha de liquidación)
+    settlement_ts = pd.Timestamp(settlement_date)
+    future_flows = bono_flows[bono_flows['fecha'] >= settlement_ts].copy()
+    
+    if len(future_flows) == 0:
+        return None
+    
+    # Ordenar por fecha
+    future_flows = future_flows.sort_values('fecha')
+    
+    # Buscar el primer flujo con pago de cupón
+    for _, row in future_flows.iterrows():
+        if row['pago_cupon_porcentaje'] > 0:
+            return row['fecha']
+    
+    return None
+
 def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad):
     """Calcula intereses corridos hasta la fecha de liquidación sobre el capital residual no amortizado"""
     
@@ -515,6 +541,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
                 accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad)
                 
+                # Calcular paridad y próximo cupón
+                clean_price = bond_price - accrued_interest
+                capital_amortizado = 0.0
+                settlement_ts = pd.Timestamp(settlement_date)
+                for _, row in bono_flows.iterrows():
+                    row_date = pd.Timestamp(row['fecha'])
+                    if row_date < settlement_ts:
+                        capital_amortizado += row['pago_capital_porcentaje']
+                capital_residual = 100.0 - capital_amortizado
+                technical_value = capital_residual + accrued_interest
+                parity = calculate_parity(clean_price, technical_value)
+                next_coupon_date = find_next_coupon_date(bono_flows, settlement_date)
+                
                 # Mostrar resultados
                 st.subheader("Resultados")
                 
@@ -548,15 +587,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Primera fila - Precio Limpio, Intereses Corridos, Capital Residual, Cupón Vigente
                 col1, col2, col3, col4 = st.columns(4)
                 
-                # Calcular capital residual para mostrar
-                capital_amortizado = 0.0
-                settlement_ts = pd.Timestamp(settlement_date)
-                for _, row in bono_flows.iterrows():
-                    row_date = pd.Timestamp(row['fecha'])
-                    if row_date < settlement_ts:
-                        capital_amortizado += row['pago_capital_porcentaje']
-                capital_residual = 100.0 - capital_amortizado
-                
                 # Obtener la tasa de cupón vigente usada para calcular intereses corridos
                 cupon_vigente = 0.0
                 settlement_ts = pd.Timestamp(settlement_date)
@@ -566,7 +596,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         cupon_vigente = row['tasa_cupon']
                 
                 with col1:
-                    clean_price = bond_price - accrued_interest
                     st.markdown("**Precio Limpio**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
                 
@@ -597,20 +626,24 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown("**Duración Macaulay**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
                 
-                # Tercera fila - Valor Técnico y Vida Media
+                # Tercera fila - Valor Técnico, Vida Media, Paridad, Próximo Cupón
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
-                    # Calcular valor técnico = capital residual + intereses corridos
-                    valor_tecnico = capital_residual + accrued_interest
                     st.markdown("**Valor Técnico**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{valor_tecnico:.2f}</h3>", unsafe_allow_html=True)
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{technical_value:.2f}</h3>", unsafe_allow_html=True)
                 with col2:
                     st.markdown("**Vida Media**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
                 with col3:
-                    st.markdown("")  # Columna vacía
+                    st.markdown("**Paridad**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{parity:.4f}</h3>", unsafe_allow_html=True)
                 with col4:
-                    st.markdown("")  # Columna vacía
+                    st.markdown("**Próximo Cupón**")
+                    if next_coupon_date:
+                        next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{next_coupon_str}</h3>", unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>N/A</h3>", unsafe_allow_html=True)
                 
                 # Tabla de flujos detallada
                 st.subheader("Flujo de Fondos")
