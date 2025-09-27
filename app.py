@@ -462,15 +462,36 @@ try:
         st.error("❌ No se encontraron flujos válidos en el archivo")
         flows_df = None
     else:
-        # Leer tipos de bonos desde las celdas J6:J8
+        # Leer tipos de bonos desde las celdas J6:J8 del archivo Excel original
         tipos_bonos_disponibles = []
         try:
-            # Leer celdas J6, J7, J8 (fila 5, 6, 7 en índice 0-based, columna J = índice 9)
-            for i in range(5, 8):  # filas 6, 7, 8 en Excel
-                if i < len(flows_df) and len(flows_df.columns) > 9:
-                    tipo = str(flows_df.iloc[i, 9]).strip()
-                    if tipo and tipo.lower() not in ['nan', 'none', '']:
-                        tipos_bonos_disponibles.append(tipo)
+            # Leer directamente del archivo Excel las celdas J6, J7, J8
+            # Estrategia 1: openpyxl (más compatible con archivos modernos)
+            try:
+                import openpyxl
+                wb = openpyxl.load_workbook('bonos_flujos.xlsx')
+                ws = wb.active
+                
+                # Leer celdas J6, J7, J8 (fila 6, 7, 8, columna J = 10)
+                for row_num in [6, 7, 8]:
+                    cell_value = ws.cell(row=row_num, column=10).value
+                    if cell_value and str(cell_value).strip() and str(cell_value).strip().lower() not in ['nan', 'none', '']:
+                        tipos_bonos_disponibles.append(str(cell_value).strip())
+                
+                wb.close()
+            except:
+                # Estrategia 2: pandas con rangos específicos
+                try:
+                    # Leer solo las celdas J6:J8 usando pandas
+                    tipos_df = pd.read_excel('bonos_flujos.xlsx', header=None, 
+                                           usecols=[9], skiprows=5, nrows=3, engine='openpyxl')
+                    
+                    for _, row in tipos_df.iterrows():
+                        tipo = str(row.iloc[0]).strip()
+                        if tipo and tipo.lower() not in ['nan', 'none', '']:
+                            tipos_bonos_disponibles.append(tipo)
+                except:
+                    pass
             
             if not tipos_bonos_disponibles:
                 tipos_bonos_disponibles = ["Todos"]  # Valor por defecto
