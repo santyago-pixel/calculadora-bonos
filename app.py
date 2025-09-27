@@ -222,12 +222,19 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, p
         days_in_period = 365.0 / periodicidad
     
     # Calcular intereses corridos en base a 100 nominales
-    # Fórmula: (Tasa anual / 100) * (días transcurridos / días del período) * 100
-    accrued_interest = (current_coupon_rate / 100.0) * (days / days_in_period) * 100.0
+    # Fórmula correcta: (Tasa cupón × 100) / 365 × Días transcurridos
+    if base_calculo_bono == "ACT/365":
+        accrued_interest = (current_coupon_rate * 100.0) / 365.0 * days
+    elif base_calculo_bono == "ACT/360":
+        accrued_interest = (current_coupon_rate * 100.0) / 360.0 * days
+    elif base_calculo_bono == "30/360":
+        accrued_interest = (current_coupon_rate * 100.0) / 360.0 * days
+    else:  # Default ACT/365
+        accrued_interest = (current_coupon_rate * 100.0) / 365.0 * days
     
     # Debug info (temporal)
     print(f"DEBUG - Último cupón: {last_coupon_date}, Settlement: {settlement_date}")
-    print(f"DEBUG - Días transcurridos: {days}, Días del período: {days_in_period}")
+    print(f"DEBUG - Días transcurridos: {days}, Base: {base_calculo_bono}")
     print(f"DEBUG - Tasa cupón: {current_coupon_rate}%, Intereses corridos: {accrued_interest}")
     
     return accrued_interest
