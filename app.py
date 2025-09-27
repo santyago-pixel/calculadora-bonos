@@ -176,7 +176,6 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
     return macaulay_duration, modified_duration
 
 # Interfaz principal
-st.header("📊 Calculadora de Bonos")
 
 # Cargar automáticamente el archivo por defecto
 try:
@@ -213,10 +212,7 @@ try:
                     continue
     
     flows_df = pd.DataFrame(processed_data)
-    if len(flows_df) > 0:
-        unique_bonos = flows_df['nombre_bono'].unique()
-        st.success(f"✅ Datos cargados: {len(flows_df)} flujos para {len(unique_bonos)} bonos")
-    else:
+    if len(flows_df) == 0:
         st.error("❌ No se encontraron flujos válidos en el archivo")
         flows_df = None
         
