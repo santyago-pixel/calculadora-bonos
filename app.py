@@ -155,15 +155,45 @@ def calculate_duration_irregular(cash_flows, ytm, price):
 # Interfaz principal
 st.header("📁 Cargar Bonos con Flujos Irregulares")
 
-# Opción 1: Cargar archivo Excel
+# Opción 1: Cargar archivo Excel personalizado
 uploaded_file = st.file_uploader(
     "Cargar archivo Excel con flujos irregulares",
     type=['xlsx', 'xls'],
-    help="El archivo debe tener columnas: nombre_bono, fecha, pago_capital_porcentaje, cupon_porcentaje"
+    help="Estructura: A1=nombre bono, Col A=fechas, Col B=cupones, Col C=capital, Col D=total"
 )
 
-# Opción 2: Bonos de ejemplo
-if st.checkbox("Usar bonos de ejemplo"):
+# Opción 2: Usar archivo por defecto
+if st.checkbox("Usar archivo por defecto (bonos_flujos.xlsx)"):
+    try:
+        # Leer el archivo por defecto
+        flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
+        
+        # Extraer nombre del bono de la celda A1
+        bono_name = str(flows_df.iloc[0, 0]) if not pd.isna(flows_df.iloc[0, 0]) else "Bono por defecto"
+        
+        # Procesar datos (asumiendo que los datos empiezan desde la fila 2)
+        data_rows = flows_df.iloc[1:].dropna(subset=[0])  # Filas con datos, excluyendo A1
+        
+        processed_data = []
+        for _, row in data_rows.iterrows():
+            if len(row) >= 4 and not pd.isna(row[0]):  # Verificar que hay al menos 4 columnas
+                processed_data.append({
+                    'nombre_bono': bono_name,
+                    'fecha': row[0],  # Columna A
+                    'cupon_porcentaje': row[1] if not pd.isna(row[1]) else 0,  # Columna B
+                    'pago_capital_porcentaje': row[2] if not pd.isna(row[2]) else 0,  # Columna C
+                    'flujo_total': row[3] if not pd.isna(row[3]) else 0  # Columna D
+                })
+        
+        flows_df = pd.DataFrame(processed_data)
+        st.success(f"Archivo por defecto cargado: {len(flows_df)} flujos para '{bono_name}'")
+        
+    except Exception as e:
+        st.error(f"Error al cargar el archivo por defecto: {e}")
+        flows_df = None
+
+# Opción 3: Bonos de ejemplo
+elif st.checkbox("Usar bonos de ejemplo"):
     sample_data = {
         'nombre_bono': ['Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2'],
         'fecha': ['2025-03-15', '2025-09-15', '2026-03-15', '2026-09-15', '2027-03-15', '2027-09-15', '2028-03-15', '2028-09-15', '2029-03-15', '2029-09-15', '2025-06-01', '2025-12-01', '2026-06-01', '2026-12-01', '2027-06-01', '2027-12-01', '2028-06-01', '2028-12-01'],
@@ -178,23 +208,29 @@ else:
 # Procesar archivo cargado
 if uploaded_file is not None:
     try:
-        flows_df = pd.read_excel(uploaded_file)
+        # Leer archivo Excel sin header
+        raw_df = pd.read_excel(uploaded_file, header=None)
         
-        # Verificar que tenga las columnas necesarias
-        required_columns = ['nombre_bono', 'fecha', 'pago_capital_porcentaje', 'cupon_porcentaje']
-        missing_columns = [col for col in required_columns if col not in flows_df.columns]
+        # Extraer nombre del bono de la celda A1
+        bono_name = str(raw_df.iloc[0, 0]) if not pd.isna(raw_df.iloc[0, 0]) else "Bono cargado"
         
-        if missing_columns:
-            st.error(f"El archivo CSV no tiene las columnas necesarias. Faltan: {missing_columns}")
-            st.write("**Columnas requeridas:**")
-            st.write("- nombre_bono")
-            st.write("- fecha")
-            st.write("- pago_capital_porcentaje")
-            st.write("- cupon_porcentaje")
-            st.write("**Columnas encontradas:**")
-            st.write(list(flows_df.columns))
-        else:
-            st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos")
+        # Procesar datos (asumiendo que los datos empiezan desde la fila 2)
+        data_rows = raw_df.iloc[1:].dropna(subset=[0])  # Filas con datos, excluyendo A1
+        
+        processed_data = []
+        for _, row in data_rows.iterrows():
+            if len(row) >= 4 and not pd.isna(row[0]):  # Verificar que hay al menos 4 columnas
+                processed_data.append({
+                    'nombre_bono': bono_name,
+                    'fecha': row[0],  # Columna A
+                    'cupon_porcentaje': row[1] if not pd.isna(row[1]) else 0,  # Columna B
+                    'pago_capital_porcentaje': row[2] if not pd.isna(row[2]) else 0,  # Columna C
+                    'flujo_total': row[3] if not pd.isna(row[3]) else 0  # Columna D
+                })
+        
+        flows_df = pd.DataFrame(processed_data)
+        st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos para '{bono_name}'")
+        
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
 
