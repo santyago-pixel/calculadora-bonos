@@ -177,7 +177,7 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='ACT/36
     return macaulay_duration, modified_duration
 
 def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad):
-    """Calcula intereses corridos hasta la fecha de liquidación en base a 100 nominales"""
+    """Calcula intereses corridos hasta la fecha de liquidación sobre el capital residual no amortizado"""
     
     # Filtrar solo flujos de cupón (donde hay tasa de cupón)
     cupon_flows = bono_flows[bono_flows['tasa_cupon'] > 0].copy()
@@ -207,33 +207,34 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, p
     if last_coupon_date is None:
         return 0.0
     
+    # Calcular capital residual no amortizado
+    # Capital residual = 100 - sumatoria de todos los flujos de capital anteriores a la fecha de liquidación
+    capital_amortizado = 0.0
+    for _, row in bono_flows.iterrows():
+        row_date = pd.Timestamp(row['fecha'])
+        if row_date < settlement_ts:
+            capital_amortizado += row['pago_capital_porcentaje']
+    
+    capital_residual = 100.0 - capital_amortizado
+    
     # Calcular días según la base de cálculo del bono
     last_coupon_ts = pd.Timestamp(last_coupon_date)
     days = (settlement_ts - last_coupon_ts).days
     
-    # Calcular días del período según la base de cálculo
-    if base_calculo_bono == "30/360":
-        days_in_period = 360.0 / periodicidad
-    elif base_calculo_bono == "ACT/360":
-        days_in_period = 360.0 / periodicidad
-    elif base_calculo_bono == "ACT/365":
-        days_in_period = 365.0 / periodicidad
-    else:  # Default ACT/365
-        days_in_period = 365.0 / periodicidad
-    
-    # Calcular intereses corridos en base a 100 nominales
-    # Fórmula correcta: (Tasa cupón × 100) / 365 × Días transcurridos
+    # Calcular intereses corridos sobre el capital residual
+    # Fórmula: (Tasa cupón × Capital residual) / 365 × Días transcurridos
     if base_calculo_bono == "ACT/365":
-        accrued_interest = (current_coupon_rate * 100.0) / 365.0 * days
+        accrued_interest = (current_coupon_rate * capital_residual) / 365.0 * days
     elif base_calculo_bono == "ACT/360":
-        accrued_interest = (current_coupon_rate * 100.0) / 360.0 * days
+        accrued_interest = (current_coupon_rate * capital_residual) / 360.0 * days
     elif base_calculo_bono == "30/360":
-        accrued_interest = (current_coupon_rate * 100.0) / 360.0 * days
+        accrued_interest = (current_coupon_rate * capital_residual) / 360.0 * days
     else:  # Default ACT/365
-        accrued_interest = (current_coupon_rate * 100.0) / 365.0 * days
+        accrued_interest = (current_coupon_rate * capital_residual) / 365.0 * days
     
     # Debug info (temporal)
     print(f"DEBUG - Último cupón: {last_coupon_date}, Settlement: {settlement_date}")
+    print(f"DEBUG - Capital amortizado: {capital_amortizado}, Capital residual: {capital_residual}")
     print(f"DEBUG - Días transcurridos: {days}, Base: {base_calculo_bono}")
     print(f"DEBUG - Tasa cupón: {current_coupon_rate}%, Intereses corridos: {accrued_interest}")
     
