@@ -8,12 +8,12 @@ import io
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Calculadora de Bonos con Flujos Irregulares",
+    page_title="Calculadora de Bonos",
     page_icon="📊",
     layout="wide"
 )
 
-st.title("📊 Calculadora de Bonos con Flujos Irregulares")
+st.title("📊 Calculadora de Bonos")
 st.markdown("---")
 
 # Función para calcular días usando diferentes bases
