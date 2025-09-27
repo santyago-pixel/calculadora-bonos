@@ -444,7 +444,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Calcular TIR según periodicidad (anualizada)
                 periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
-                ytm_anualizada = ytm * periodicidad
+                # Fórmula: periodicidad * ((1 + TIR efectiva)^(1/periodicidad) - 1)
+                ytm_anualizada = periodicidad * ((1 + ytm) ** (1.0 / periodicidad) - 1)
                 
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
