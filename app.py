@@ -180,14 +180,38 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
 
 # Cargar automáticamente el archivo por defecto
 try:
-    # Leer el archivo por defecto con diferentes opciones de encoding
+    # Leer el archivo por defecto con múltiples estrategias para compatibilidad
+    flows_df = None
+    
+    # Estrategia 1: openpyxl (más compatible con archivos modernos)
     try:
         flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl')
     except:
+        pass
+    
+    # Estrategia 2: xlrd (para archivos más antiguos)
+    if flows_df is None:
         try:
             flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='xlrd')
         except:
+            pass
+    
+    # Estrategia 3: pandas por defecto
+    if flows_df is None:
+        try:
             flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
+        except:
+            pass
+    
+    # Estrategia 4: con diferentes parámetros
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', na_values=[''])
+        except:
+            pass
+    
+    if flows_df is None:
+        raise Exception("No se pudo cargar el archivo con ninguna estrategia")
     
     # Procesar datos - manejar múltiples bonos
     processed_data = []
