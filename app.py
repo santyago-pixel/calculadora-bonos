@@ -490,7 +490,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 else:
                     periodicidad_titulo = f"Cada {12//periodicidad} meses"
                 
-                # Primera fila - Capital residual, intereses corridos, precio limpio y cupón vigente
+                # Primera fila - Precio Limpio, Intereses Corridos, Capital Residual, Cupón Vigente
                 col1, col2, col3, col4 = st.columns(4)
                 
                 # Calcular capital residual para mostrar
@@ -502,57 +502,57 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         capital_amortizado += row['pago_capital_porcentaje']
                 capital_residual = 100.0 - capital_amortizado
                 
+                # Obtener la tasa de cupón vigente usada para calcular intereses corridos
+                cupon_vigente = 0.0
+                settlement_ts = pd.Timestamp(settlement_date)
+                for _, row in bono_flows.iterrows():
+                    row_date = pd.Timestamp(row['fecha'])
+                    if row_date < settlement_ts and row['tasa_cupon'] > 0:
+                        cupon_vigente = row['tasa_cupon']
+                
                 with col1:
-                    st.markdown("**Capital Residual**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{capital_residual:.2f}</h3>", unsafe_allow_html=True)
+                    clean_price = bond_price - accrued_interest
+                    st.markdown("**Precio Limpio**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
                 
                 with col2:
                     st.markdown("**Intereses Corridos**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{accrued_interest:.4f}</h3>", unsafe_allow_html=True)
                 
                 with col3:
-                    clean_price = bond_price - accrued_interest
-                    st.markdown("**Precio Limpio**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
+                    st.markdown("**Capital Residual**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{capital_residual:.2f}</h3>", unsafe_allow_html=True)
                 
                 with col4:
-                    # Obtener la tasa de cupón vigente usada para calcular intereses corridos
-                    cupon_vigente = 0.0
-                    settlement_ts = pd.Timestamp(settlement_date)
-                    for _, row in bono_flows.iterrows():
-                        row_date = pd.Timestamp(row['fecha'])
-                        if row_date < settlement_ts and row['tasa_cupon'] > 0:
-                            cupon_vigente = row['tasa_cupon']
-                    
                     st.markdown("**Cupón Vigente**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
                 
-                # Segunda fila - TIRs usando markdown para controlar tamaño
+                # Segunda fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
-                    st.markdown(f"**TIR {periodicidad_titulo}**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
-                with col2:
                     st.markdown("**TIR Efectiva**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
-                with col3:
-                    st.markdown("")  # Columna vacía
-                with col4:
-                    st.markdown("")  # Columna vacía
-                
-                # Tercera fila - Duraciones y Valor Técnico
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.markdown("**Duración Macaulay**")
-                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
                 with col2:
+                    st.markdown(f"**TIR {periodicidad_titulo}**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
+                with col3:
                     st.markdown("**Duración Modificada**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
-                with col3:
+                with col4:
+                    st.markdown("**Duración Macaulay**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
+                
+                # Tercera fila - Valor Técnico
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
                     # Calcular valor técnico = capital residual + intereses corridos
                     valor_tecnico = capital_residual + accrued_interest
                     st.markdown("**Valor Técnico**")
                     st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{valor_tecnico:.2f}</h3>", unsafe_allow_html=True)
+                with col2:
+                    st.markdown("")  # Columna vacía
+                with col3:
+                    st.markdown("")  # Columna vacía
                 with col4:
                     st.markdown("")  # Columna vacía
                 
