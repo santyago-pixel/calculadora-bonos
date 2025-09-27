@@ -155,10 +155,10 @@ def calculate_duration_irregular(cash_flows, ytm, price):
 # Interfaz principal
 st.header("📁 Cargar Bonos con Flujos Irregulares")
 
-# Opción 1: Cargar archivo CSV
+# Opción 1: Cargar archivo Excel
 uploaded_file = st.file_uploader(
-    "Cargar archivo CSV con flujos irregulares",
-    type=['csv'],
+    "Cargar archivo Excel con flujos irregulares",
+    type=['xlsx', 'xls'],
     help="El archivo debe tener columnas: nombre_bono, fecha, pago_capital_porcentaje, cupon_porcentaje"
 )
 
@@ -178,7 +178,7 @@ else:
 # Procesar archivo cargado
 if uploaded_file is not None:
     try:
-        flows_df = pd.read_csv(uploaded_file)
+        flows_df = pd.read_excel(uploaded_file)
         
         # Verificar que tenga las columnas necesarias
         required_columns = ['nombre_bono', 'fecha', 'pago_capital_porcentaje', 'cupon_porcentaje']
@@ -348,7 +348,7 @@ st.markdown("---")
 st.subheader("📋 Formato del Archivo CSV")
 
 st.markdown("""
-El archivo CSV debe tener las siguientes columnas:
+El archivo Excel debe tener las siguientes columnas:
 
 | Columna | Descripción | Ejemplo |
 |---------|-------------|---------|
@@ -357,30 +357,32 @@ El archivo CSV debe tener las siguientes columnas:
 | `pago_capital_porcentaje` | Pago de capital (% del valor nominal) | 10.0 |
 | `cupon_porcentaje` | Cupón (% del valor nominal) | 4.5 |
 
-**Ejemplo de archivo CSV:**
-```csv
-nombre_bono,fecha,pago_capital_porcentaje,cupon_porcentaje
-Bono Irregular 1,2025-03-15,0,4.5
-Bono Irregular 1,2025-09-15,0,4.5
-Bono Irregular 1,2026-03-15,10,4.5
-Bono Irregular 1,2026-09-15,0,4.5
-Bono Irregular 1,2027-03-15,20,4.5
-Bono Irregular 1,2027-09-15,0,4.5
-Bono Irregular 1,2028-03-15,30,4.5
-Bono Irregular 1,2028-09-15,0,4.5
-Bono Irregular 1,2029-03-15,40,4.5
-Bono Irregular 1,2029-09-15,0,4.5
+**Ejemplo de archivo Excel:**
+```
+| nombre_bono | fecha | pago_capital_porcentaje | cupon_porcentaje |
+|-------------|-------|------------------------|------------------|
+| Bono Irregular 1 | 2025-03-15 | 0 | 4.5 |
+| Bono Irregular 1 | 2025-09-15 | 0 | 4.5 |
+| Bono Irregular 1 | 2026-03-15 | 10 | 4.5 |
+| Bono Irregular 1 | 2026-09-15 | 0 | 4.5 |
+| Bono Irregular 1 | 2027-03-15 | 20 | 4.5 |
+| Bono Irregular 1 | 2027-09-15 | 0 | 4.5 |
+| Bono Irregular 1 | 2028-03-15 | 30 | 4.5 |
+| Bono Irregular 1 | 2028-09-15 | 0 | 4.5 |
+| Bono Irregular 1 | 2029-03-15 | 40 | 4.5 |
+| Bono Irregular 1 | 2029-09-15 | 0 | 4.5 |
 ```
 
 **Notas:**
 - Los porcentajes se expresan sobre el valor nominal (ej: 10% = 10.0)
-- Las fechas deben estar en formato YYYY-MM-DD
+- Las fechas pueden estar en formato de fecha de Excel o texto
 - Puedes tener múltiples bonos en el mismo archivo
 - Los flujos se ordenan automáticamente por fecha
+- **Ventajas de Excel**: Más fácil de editar, formato de fechas automático, mejor visualización
 """)
 
 # Botón para descargar plantilla
-if st.button("📥 Descargar Plantilla CSV"):
+if st.button("📥 Descargar Plantilla Excel"):
     sample_data = {
         'nombre_bono': ['Bono Ejemplo', 'Bono Ejemplo', 'Bono Ejemplo', 'Bono Ejemplo', 'Bono Ejemplo'],
         'fecha': ['2025-03-15', '2025-09-15', '2026-03-15', '2026-09-15', '2027-03-15'],
@@ -389,11 +391,17 @@ if st.button("📥 Descargar Plantilla CSV"):
     }
     
     df_template = pd.DataFrame(sample_data)
-    csv = df_template.to_csv(index=False)
+    
+    # Crear archivo Excel en memoria
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df_template.to_excel(writer, index=False, sheet_name='Bonos')
+    
+    excel_data = output.getvalue()
     
     st.download_button(
-        label="Descargar plantilla CSV",
-        data=csv,
-        file_name="plantilla_bonos_irregulares.csv",
-        mime="text/csv"
+        label="Descargar plantilla Excel",
+        data=excel_data,
+        file_name="plantilla_bonos_irregulares.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
