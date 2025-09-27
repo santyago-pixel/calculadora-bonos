@@ -10,10 +10,11 @@ import io
 st.set_page_config(
     page_title="Calculadora de Bonos",
     page_icon="📊",
-    layout="wide"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
-st.title("📊 Calculadora de Bonos")
+st.title("Calculadora de Bonos")
 st.markdown("---")
 
 # Función para calcular días usando diferentes bases
@@ -223,7 +224,7 @@ except Exception as e:
 
 # Mostrar selector de bonos
 if flows_df is not None and 'nombre_bono' in flows_df.columns:
-    st.subheader("🎯 Elija un Bono")
+    st.subheader("Elija un Bono")
     
     # Agrupar por nombre de bono
     unique_bonos = flows_df['nombre_bono'].unique()
@@ -244,7 +245,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     
     
     # Inputs para cálculo
-    st.subheader("📝 Datos para Cálculo")
+    st.subheader("Datos para Cálculo")
     col1, col2 = st.columns(2)
     
     with col1:
@@ -291,12 +292,13 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
                 
                 # Mostrar resultados
-                st.subheader("📈 Resultados del Análisis")
+                st.subheader("Resultados del Análisis")
                 
                 # Información de la base de cálculo
                 st.info(f"**Base de cálculo utilizada:** {day_count_basis}")
                 
-                col1, col2, col3, col4 = st.columns(4)
+                col1, col2 = st.columns(2)
+                col3, col4 = st.columns(2)
                 
                 with col1:
                     st.metric("TIR Anual", f"{ytm:.4%}", help="Tasa Interna de Retorno anual")
@@ -311,7 +313,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.metric("Duración Modificada", f"{modified_duration:.2f} años", help="Sensibilidad del precio a cambios en la tasa de interés")
                 
                 # Tabla de flujos detallada
-                st.subheader("💰 Flujos de Caja Detallados")
+                st.subheader("Flujos de Caja Detallados")
                 df_cash_flows = pd.DataFrame(cash_flows)
                 df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
                 df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].round(2)
