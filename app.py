@@ -442,9 +442,9 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Calcular TIR
                 ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
                 
-                # Calcular TIR según periodicidad
+                # Calcular TIR según periodicidad (anualizada)
                 periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
-                ytm_periodica = ytm / periodicidad
+                ytm_anualizada = ytm * periodicidad
                 
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
@@ -479,16 +479,16 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 if periodicidad == 1:
                     periodicidad_titulo = "Anual"
                 elif periodicidad == 2:
-                    periodicidad_titulo = "Semestral"
+                    periodicidad_titulo = "Semianual Anualizada"
                 elif periodicidad == 4:
-                    periodicidad_titulo = "Trimestral"
+                    periodicidad_titulo = "Trimestral Anualizada"
                 elif periodicidad == 12:
-                    periodicidad_titulo = "Mensual"
+                    periodicidad_titulo = "Mensual Anualizada"
                 else:
-                    periodicidad_titulo = f"Cada {12//periodicidad} meses"
+                    periodicidad_titulo = f"Cada {12//periodicidad} meses Anualizada"
                 
                 with col1:
-                    st.metric(f"TIR {periodicidad_titulo}", f"{ytm_periodica:.4%}", help=f"Tasa Interna de Retorno {periodicidad_titulo.lower()}")
+                    st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}", help=f"Tasa Interna de Retorno {periodicidad_titulo.lower()}")
                 
                 with col2:
                     st.metric("TIR Efectiva", f"{ytm:.4%}", help="TIR efectiva anual (equivalente a TIR.NO.PER de Excel)")
