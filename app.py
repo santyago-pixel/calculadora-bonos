@@ -530,6 +530,26 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Tabla de flujos detallada
                 st.subheader("Flujo de Fondos")
+                
+                # CSS para alinear columnas numéricas a la derecha
+                st.markdown("""
+                <style>
+                .stDataFrame table {
+                    text-align: right !important;
+                }
+                .stDataFrame table th:nth-child(2),
+                .stDataFrame table th:nth-child(3),
+                .stDataFrame table th:nth-child(4) {
+                    text-align: right !important;
+                }
+                .stDataFrame table td:nth-child(2),
+                .stDataFrame table td:nth-child(3),
+                .stDataFrame table td:nth-child(4) {
+                    text-align: right !important;
+                }
+                </style>
+                """, unsafe_allow_html=True)
+                
                 df_cash_flows = pd.DataFrame(cash_flows)
                 df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
                 df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].round(2)
