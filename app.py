@@ -167,6 +167,9 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
     weighted_pv = 0
     total_pv = 0
     
+    # Debug: Mostrar cálculos detallados
+    print(f"Debug duración - YTM: {ytm:.6f}, Divisor: {divisor}")
+    
     for cf in cash_flows:
         days = cf['Días']
         # Calcular períodos para descuento (usando la base de cálculo)
@@ -175,11 +178,20 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
         years = days / 365.0
         
         pv = cf['Flujo_Total'] / ((1 + ytm) ** periods)
-        weighted_pv += years * pv  # Usar años para la duración
-        total_pv += pv
+        
+        # Solo incluir flujos positivos en el cálculo de duración
+        if cf['Flujo_Total'] > 0:
+            weighted_pv += years * pv  # Usar años para la duración
+            total_pv += pv
+        
+        print(f"  Días: {days}, Períodos: {periods:.4f}, Años: {years:.4f}, Flujo: {cf['Flujo_Total']:.2f}, PV: {pv:.4f}")
+    
+    print(f"Total PV: {total_pv:.4f}, Weighted PV: {weighted_pv:.4f}")
     
     macaulay_duration = weighted_pv / total_pv if total_pv > 0 else 0
     modified_duration = macaulay_duration / (1 + ytm) if (1 + ytm) > 0 else 0
+    
+    print(f"Macaulay: {macaulay_duration:.4f}, Modified: {modified_duration:.4f}")
     
     return macaulay_duration, modified_duration
 
