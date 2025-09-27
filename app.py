@@ -471,14 +471,25 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 with col4:
                     st.metric("Duración Modificada", f"{modified_duration:.2f} años", help="Sensibilidad del precio a cambios en la tasa de interés")
                 
-                # Mostrar intereses corridos
-                st.subheader("Intereses Corridos")
-                col1, col2 = st.columns(2)
+                # Mostrar capital residual e intereses corridos
+                col1, col2, col3 = st.columns(3)
+                
+                # Calcular capital residual para mostrar
+                capital_amortizado = 0.0
+                settlement_ts = pd.Timestamp(settlement_date)
+                for _, row in bono_flows.iterrows():
+                    row_date = pd.Timestamp(row['fecha'])
+                    if row_date < settlement_ts:
+                        capital_amortizado += row['pago_capital_porcentaje']
+                capital_residual = 100.0 - capital_amortizado
                 
                 with col1:
-                    st.metric("Intereses Corridos", f"{accrued_interest:.4f}", help=f"Intereses acumulados desde el último cupón (base: {base_calculo_bono}, periodicidad: {periodicidad} meses)")
+                    st.metric("Capital Residual", f"{capital_residual:.2f}", help="Capital no amortizado a la fecha de liquidación")
                 
                 with col2:
+                    st.metric("Intereses Corridos", f"{accrued_interest:.4f}", help=f"Intereses acumulados desde el último cupón (base: {base_calculo_bono})")
+                
+                with col3:
                     clean_price = bond_price - accrued_interest
                     st.metric("Precio Limpio", f"{clean_price:.2f}", help="Precio dirty menos intereses corridos")
                 
