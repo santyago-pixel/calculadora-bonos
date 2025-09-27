@@ -577,7 +577,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     
     # SECCIÓN DERECHA: Resultados
     with col_right:
-        # El título "Resultados" se mostrará solo cuando se haga clic en calcular
+        pass  # El contenido se mostrará solo cuando se haga clic en calcular
     
     # Lógica de cálculo (fuera de las columnas)
     if calcular:
