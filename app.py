@@ -210,6 +210,23 @@ try:
         except:
             pass
     
+    # Estrategia 5: ignorar validaciones y formato
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', 
+                                   na_values=['', ' ', 'N/A', 'n/a'], 
+                                   keep_default_na=False)
+        except:
+            pass
+    
+    # Estrategia 6: leer como texto puro
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', 
+                                   dtype=str, na_values=[''])
+        except:
+            pass
+    
     if flows_df is None:
         raise Exception("No se pudo cargar el archivo con ninguna estrategia")
     
@@ -219,7 +236,12 @@ try:
     
     for _, row in flows_df.iterrows():
         if len(row) >= 4 and not pd.isna(row[0]):
+            # Convertir a string y limpiar
             cell_value = str(row[0]).strip()
+            
+            # Saltar filas vacías o con solo espacios
+            if not cell_value or cell_value.lower() in ['nan', 'none', '']:
+                continue
             
             # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
             if cell_value.lower().startswith('bono'):
@@ -229,14 +251,35 @@ try:
             # Si tenemos un nombre de bono y es una fecha válida, procesar
             if current_bono_name:
                 try:
-                    fecha_valida = pd.to_datetime(row[0])
+                    # Intentar convertir fecha con múltiples formatos
+                    fecha_valida = pd.to_datetime(row[0], errors='coerce')
                     if not pd.isna(fecha_valida):
+                        # Procesar valores numéricos de forma más robusta
+                        cupon = 0.0
+                        capital = 0.0
+                        flujo_total = 0.0
+                        
+                        try:
+                            cupon = float(str(row[1]).replace(',', '.')) if not pd.isna(row[1]) and str(row[1]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            cupon = 0.0
+                            
+                        try:
+                            capital = float(str(row[2]).replace(',', '.')) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            capital = 0.0
+                            
+                        try:
+                            flujo_total = float(str(row[3]).replace(',', '.')) if not pd.isna(row[3]) and str(row[3]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            flujo_total = cupon + capital
+                        
                         processed_data.append({
                             'nombre_bono': current_bono_name,
-                            'fecha': fecha_valida,  # Columna A (convertida a datetime)
-                            'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
-                            'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
-                            'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
+                            'fecha': fecha_valida,
+                            'cupon_porcentaje': cupon,
+                            'pago_capital_porcentaje': capital,
+                            'flujo_total': flujo_total
                         })
                 except:
                     # Si la fecha no es válida, saltar esta fila
