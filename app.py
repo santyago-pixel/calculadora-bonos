@@ -176,130 +176,58 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
     return macaulay_duration, modified_duration
 
 # Interfaz principal
-st.header("📁 Cargar Bonos con Flujos Irregulares")
+st.header("📊 Calculadora de Bonos")
 
-# Opción 1: Cargar archivo Excel personalizado
-uploaded_file = st.file_uploader(
-    "Cargar archivo Excel con flujos irregulares",
-    type=['xlsx', 'xls'],
-    help="Estructura: A1=nombre bono, Col A=fechas, Col B=cupones, Col C=capital, Col D=total"
-)
-
-# Opción 2: Usar archivo por defecto
-if st.checkbox("Usar archivo por defecto (bonos_flujos.xlsx)"):
-    try:
-        # Leer el archivo por defecto
-        flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
-        
-        # Extraer nombre del bono de la celda A1
-        bono_name = str(flows_df.iloc[0, 0]) if not pd.isna(flows_df.iloc[0, 0]) else "Bono por defecto"
-        
-        # Procesar datos - manejar múltiples bonos
-        processed_data = []
-        current_bono_name = None
-        
-        for _, row in flows_df.iterrows():
-            if len(row) >= 4 and not pd.isna(row[0]):
-                cell_value = str(row[0]).strip()
-                
-                # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
-                if cell_value.lower().startswith('bono'):
-                    current_bono_name = cell_value
+# Cargar automáticamente el archivo por defecto
+try:
+    # Leer el archivo por defecto
+    flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
+    
+    # Procesar datos - manejar múltiples bonos
+    processed_data = []
+    current_bono_name = None
+    
+    for _, row in flows_df.iterrows():
+        if len(row) >= 4 and not pd.isna(row[0]):
+            cell_value = str(row[0]).strip()
+            
+            # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
+            if cell_value.lower().startswith('bono'):
+                current_bono_name = cell_value
+                continue
+            
+            # Si tenemos un nombre de bono y es una fecha válida, procesar
+            if current_bono_name:
+                try:
+                    fecha_valida = pd.to_datetime(row[0])
+                    if not pd.isna(fecha_valida):
+                        processed_data.append({
+                            'nombre_bono': current_bono_name,
+                            'fecha': fecha_valida,  # Columna A (convertida a datetime)
+                            'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
+                            'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
+                            'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
+                        })
+                except:
+                    # Si la fecha no es válida, saltar esta fila
                     continue
-                
-                # Si tenemos un nombre de bono y es una fecha válida, procesar
-                if current_bono_name:
-                    try:
-                        fecha_valida = pd.to_datetime(row[0])
-                        if not pd.isna(fecha_valida):
-                            processed_data.append({
-                                'nombre_bono': current_bono_name,
-                                'fecha': fecha_valida,  # Columna A (convertida a datetime)
-                                'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
-                                'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
-                                'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
-                            })
-                    except:
-                        # Si la fecha no es válida, saltar esta fila
-                        continue
-        
-        flows_df = pd.DataFrame(processed_data)
-        if len(flows_df) > 0:
-            unique_bonos = flows_df['nombre_bono'].unique()
-            st.success(f"Archivo por defecto cargado: {len(flows_df)} flujos para {len(unique_bonos)} bonos")
-            st.write(f"Bonos encontrados: {', '.join(unique_bonos)}")
-        else:
-            st.warning("No se encontraron flujos válidos en el archivo")
-        
-    except Exception as e:
-        st.error(f"Error al cargar el archivo por defecto: {e}")
+    
+    flows_df = pd.DataFrame(processed_data)
+    if len(flows_df) > 0:
+        unique_bonos = flows_df['nombre_bono'].unique()
+        st.success(f"✅ Datos cargados: {len(flows_df)} flujos para {len(unique_bonos)} bonos")
+    else:
+        st.error("❌ No se encontraron flujos válidos en el archivo")
         flows_df = None
-
-# Opción 3: Bonos de ejemplo
-elif st.checkbox("Usar bonos de ejemplo"):
-    sample_data = {
-        'nombre_bono': ['Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 1', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2', 'Bono Irregular 2'],
-        'fecha': ['2025-03-15', '2025-09-15', '2026-03-15', '2026-09-15', '2027-03-15', '2027-09-15', '2028-03-15', '2028-09-15', '2029-03-15', '2029-09-15', '2025-06-01', '2025-12-01', '2026-06-01', '2026-12-01', '2027-06-01', '2027-12-01', '2028-06-01', '2028-12-01'],
-        'pago_capital_porcentaje': [0, 0, 10, 0, 20, 0, 30, 0, 40, 0, 0, 0, 0, 25, 0, 25, 0, 50],
-        'cupon_porcentaje': [4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0]
-    }
-    flows_df = pd.DataFrame(sample_data)
-    st.success("Cargados bonos de ejemplo")
-else:
+        
+except Exception as e:
+    st.error(f"❌ Error al cargar el archivo: {e}")
     flows_df = None
 
-# Procesar archivo cargado
-if uploaded_file is not None:
-    try:
-        # Leer archivo Excel sin header
-        raw_df = pd.read_excel(uploaded_file, header=None)
-        
-        # Extraer nombre del bono de la celda A1
-        bono_name = str(raw_df.iloc[0, 0]) if not pd.isna(raw_df.iloc[0, 0]) else "Bono cargado"
-        
-        # Procesar datos - manejar múltiples bonos
-        processed_data = []
-        current_bono_name = None
-        
-        for _, row in raw_df.iterrows():
-            if len(row) >= 4 and not pd.isna(row[0]):
-                cell_value = str(row[0]).strip()
-                
-                # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
-                if cell_value.lower().startswith('bono'):
-                    current_bono_name = cell_value
-                    continue
-                
-                # Si tenemos un nombre de bono y es una fecha válida, procesar
-                if current_bono_name:
-                    try:
-                        fecha_valida = pd.to_datetime(row[0])
-                        if not pd.isna(fecha_valida):
-                            processed_data.append({
-                                'nombre_bono': current_bono_name,
-                                'fecha': fecha_valida,  # Columna A (convertida a datetime)
-                                'cupon_porcentaje': float(row[1]) if not pd.isna(row[1]) else 0.0,  # Columna B
-                                'pago_capital_porcentaje': float(row[2]) if not pd.isna(row[2]) else 0.0,  # Columna C
-                                'flujo_total': float(row[3]) if not pd.isna(row[3]) else 0.0  # Columna D
-                            })
-                    except:
-                        # Si la fecha no es válida, saltar esta fila
-                        continue
-        
-        flows_df = pd.DataFrame(processed_data)
-        if len(flows_df) > 0:
-            unique_bonos = flows_df['nombre_bono'].unique()
-            st.success(f"Archivo cargado exitosamente: {len(flows_df)} flujos para {len(unique_bonos)} bonos")
-            st.write(f"Bonos encontrados: {', '.join(unique_bonos)}")
-        else:
-            st.warning("No se encontraron flujos válidos en el archivo")
-        
-    except Exception as e:
-        st.error(f"Error al cargar el archivo: {e}")
 
-# Mostrar flujos cargados
+# Mostrar selector de bonos
 if flows_df is not None and 'nombre_bono' in flows_df.columns:
-    st.subheader("📋 Flujos Cargados")
+    st.subheader("🎯 Elija un Bono")
     
     # Agrupar por nombre de bono
     unique_bonos = flows_df['nombre_bono'].unique()
@@ -411,87 +339,5 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     hide_index=True
                 )
                 
-                # Resumen de pagos
-                st.subheader("📊 Resumen de Pagos")
-                col1, col2, col3 = st.columns(3)
-                
-                # Calcular totales solo de flujos positivos (excluyendo el precio dirty)
-                positive_flows = df_cash_flows[df_cash_flows['Flujo Total'] > 0]
-                total_capital = positive_flows['Capital (%)'].sum()
-                total_coupons = positive_flows['Cupón (%)'].sum()
-                total_flows = positive_flows['Flujo Total'].sum()
-                
-                with col1:
-                    st.metric("Total Capital", f"{total_capital:.2f}%", help="Suma de todos los pagos de capital")
-                
-                with col2:
-                    st.metric("Total Cupones", f"{total_coupons:.2f}%", help="Suma de todos los pagos de cupón")
-                
-                with col3:
-                    st.metric("Total Flujos", f"{total_flows:.2f}%", help="Suma de todos los flujos futuros")
-                
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
-
-# Información sobre el formato del archivo CSV
-st.markdown("---")
-st.subheader("📋 Formato del Archivo CSV")
-
-st.markdown("""
-El archivo Excel debe tener las siguientes columnas:
-
-| Columna | Descripción | Ejemplo |
-|---------|-------------|---------|
-| `nombre_bono` | Nombre del bono | "Bono Irregular 1" |
-| `fecha` | Fecha del flujo | "2025-03-15" |
-| `pago_capital_porcentaje` | Pago de capital (% del valor nominal) | 10.0 |
-| `cupon_porcentaje` | Cupón (% del valor nominal) | 4.5 |
-
-**Ejemplo de archivo Excel:**
-```
-| nombre_bono | fecha | pago_capital_porcentaje | cupon_porcentaje |
-|-------------|-------|------------------------|------------------|
-| Bono Irregular 1 | 2025-03-15 | 0 | 4.5 |
-| Bono Irregular 1 | 2025-09-15 | 0 | 4.5 |
-| Bono Irregular 1 | 2026-03-15 | 10 | 4.5 |
-| Bono Irregular 1 | 2026-09-15 | 0 | 4.5 |
-| Bono Irregular 1 | 2027-03-15 | 20 | 4.5 |
-| Bono Irregular 1 | 2027-09-15 | 0 | 4.5 |
-| Bono Irregular 1 | 2028-03-15 | 30 | 4.5 |
-| Bono Irregular 1 | 2028-09-15 | 0 | 4.5 |
-| Bono Irregular 1 | 2029-03-15 | 40 | 4.5 |
-| Bono Irregular 1 | 2029-09-15 | 0 | 4.5 |
-```
-
-**Notas:**
-- Los porcentajes se expresan sobre el valor nominal (ej: 10% = 10.0)
-- Las fechas pueden estar en formato de fecha de Excel o texto
-- Puedes tener múltiples bonos en el mismo archivo
-- Los flujos se ordenan automáticamente por fecha
-- **Ventajas de Excel**: Más fácil de editar, formato de fechas automático, mejor visualización
-""")
-
-# Botón para descargar plantilla
-if st.button("📥 Descargar Plantilla Excel"):
-    sample_data = {
-        'nombre_bono': ['Bono Ejemplo', 'Bono Ejemplo', 'Bono Ejemplo', 'Bono Ejemplo', 'Bono Ejemplo'],
-        'fecha': ['2025-03-15', '2025-09-15', '2026-03-15', '2026-09-15', '2027-03-15'],
-        'pago_capital_porcentaje': [0, 0, 25, 0, 75],
-        'cupon_porcentaje': [5.0, 5.0, 5.0, 5.0, 5.0]
-    }
-    
-    df_template = pd.DataFrame(sample_data)
-    
-    # Crear archivo Excel en memoria
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df_template.to_excel(writer, index=False, sheet_name='Bonos')
-    
-    excel_data = output.getvalue()
-    
-    st.download_button(
-        label="Descargar plantilla Excel",
-        data=excel_data,
-        file_name="plantilla_bonos_irregulares.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
