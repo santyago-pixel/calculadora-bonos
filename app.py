@@ -531,35 +531,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Tabla de flujos detallada
                 st.subheader("Flujo de Fondos")
                 
-                # CSS para alinear columnas numéricas a la derecha
-                st.markdown("""
-                <style>
-                .stDataFrame table {
-                    text-align: right !important;
-                }
-                .stDataFrame table th:nth-child(2),
-                .stDataFrame table th:nth-child(3),
-                .stDataFrame table th:nth-child(4) {
-                    text-align: right !important;
-                }
-                .stDataFrame table td:nth-child(2),
-                .stDataFrame table td:nth-child(3),
-                .stDataFrame table td:nth-child(4) {
-                    text-align: right !important;
-                }
-                </style>
-                """, unsafe_allow_html=True)
-                
                 df_cash_flows = pd.DataFrame(cash_flows)
                 df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
-                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].round(2)
-                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].round(2)
-                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].round(2)
                 
-                # Reemplazar valores cero con string vacío para que aparezcan en blanco
-                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].replace(0, '')
-                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].replace(0, '')
-                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].replace(0, '')
+                # Formatear valores numéricos y manejar ceros
+                def format_value(value):
+                    if value == 0 or pd.isna(value):
+                        return ""
+                    else:
+                        return f"{value:.2f}"
+                
+                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].apply(format_value)
+                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].apply(format_value)
+                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].apply(format_value)
                 
                 # Renombrar columnas para mejor presentación
                 df_cash_flows = df_cash_flows.rename(columns={
@@ -572,33 +556,26 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Eliminar la columna de días
                 df_cash_flows = df_cash_flows.drop('Días', axis=1)
                 
-                # Mostrar tabla con mejor formato y alineación
-                st.dataframe(
-                    df_cash_flows, 
-                    use_container_width=True,
-                    hide_index=True,
-                    column_config={
-                        "Fecha de Pago": st.column_config.TextColumn(
-                            "Fecha de Pago",
-                            help="Fecha del pago"
-                        ),
-                        "Capital": st.column_config.TextColumn(
-                            "Capital",
-                            help="Pago de capital",
-                            width="medium"
-                        ),
-                        "Cupón": st.column_config.TextColumn(
-                            "Cupón", 
-                            help="Pago de cupón",
-                            width="medium"
-                        ),
-                        "Flujo Total": st.column_config.TextColumn(
-                            "Flujo Total",
-                            help="Flujo total de caja",
-                            width="medium"
-                        )
-                    }
-                )
+                # Crear tabla HTML personalizada para control total
+                html_table = "<table style='width: 100%; border-collapse: collapse;'>"
+                html_table += "<thead><tr>"
+                html_table += "<th style='text-align: left; padding: 8px; border-bottom: 1px solid #ddd;'>Fecha de Pago</th>"
+                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Capital</th>"
+                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Cupón</th>"
+                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Flujo Total</th>"
+                html_table += "</tr></thead><tbody>"
+                
+                for _, row in df_cash_flows.iterrows():
+                    html_table += "<tr>"
+                    html_table += f"<td style='text-align: left; padding: 8px; border-bottom: 1px solid #eee;'>{row['Fecha de Pago']}</td>"
+                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Capital']}</td>"
+                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Cupón']}</td>"
+                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Flujo Total']}</td>"
+                    html_table += "</tr>"
+                
+                html_table += "</tbody></table>"
+                
+                st.markdown(html_table, unsafe_allow_html=True)
                 
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
