@@ -152,40 +152,29 @@ def calculate_ytm_irregular(cash_flows, day_count_basis='30/360', max_iterations
 def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360'):
     """Calcula duración Macaulay y modificada para flujos irregulares en años"""
     
-    # Determinar el divisor según la base de cálculo
-    if day_count_basis == "30/360":
-        divisor = 360.0
-    elif day_count_basis == "ACT/360":
-        divisor = 360.0
-    elif day_count_basis == "ACT/365":
-        divisor = 365.0
-    elif day_count_basis == "ACT/ACT":
-        divisor = 365.0
-    else:
-        divisor = 360.0  # Default
-    
+    # Para duración, siempre usar años (365 días) para el descuento
+    # La TIR ya está en términos anuales
     weighted_pv = 0
     total_pv = 0
     
     # Debug: Mostrar cálculos detallados
     debug_info = []
-    debug_info.append(f"Debug duración - YTM: {ytm:.6f}, Divisor: {divisor}")
+    debug_info.append(f"Debug duración - YTM: {ytm:.6f} (anual)")
     
     for cf in cash_flows:
         days = cf['Días']
-        # Calcular períodos para descuento (usando la base de cálculo)
-        periods = days / divisor
         # Calcular años para duración (siempre usando 365 días por año)
         years = days / 365.0
         
-        pv = cf['Flujo_Total'] / ((1 + ytm) ** periods)
+        # Usar la TIR anual directamente para descontar
+        pv = cf['Flujo_Total'] / ((1 + ytm) ** years)
         
         # Solo incluir flujos positivos en el cálculo de duración
         if cf['Flujo_Total'] > 0:
             weighted_pv += years * pv  # Usar años para la duración
             total_pv += pv
         
-        debug_info.append(f"  Días: {days}, Períodos: {periods:.4f}, Años: {years:.4f}, Flujo: {cf['Flujo_Total']:.2f}, PV: {pv:.4f}")
+        debug_info.append(f"  Días: {days}, Años: {years:.4f}, Flujo: {cf['Flujo_Total']:.2f}, PV: {pv:.4f}")
     
     debug_info.append(f"Total PV: {total_pv:.4f}, Weighted PV: {weighted_pv:.4f}")
     
