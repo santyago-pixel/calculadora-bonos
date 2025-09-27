@@ -157,10 +157,6 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
     weighted_pv = 0
     total_pv = 0
     
-    # Debug: Mostrar cálculos detallados
-    debug_info = []
-    debug_info.append(f"Debug duración - YTM: {ytm:.6f} (anual)")
-    
     for cf in cash_flows:
         days = cf['Días']
         # Calcular años para duración (siempre usando 365 días por año)
@@ -173,18 +169,11 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
         if cf['Flujo_Total'] > 0:
             weighted_pv += years * pv  # Usar años para la duración
             total_pv += pv
-        
-        debug_info.append(f"  Días: {days}, Años: {years:.4f}, Flujo: {cf['Flujo_Total']:.2f}, PV: {pv:.4f}")
-    
-    debug_info.append(f"Total PV: {total_pv:.4f}, Weighted PV: {weighted_pv:.4f}")
     
     macaulay_duration = weighted_pv / total_pv if total_pv > 0 else 0
     modified_duration = macaulay_duration / (1 + ytm) if (1 + ytm) > 0 else 0
     
-    debug_info.append(f"Macaulay: {macaulay_duration:.4f}, Modified: {modified_duration:.4f}")
-    
-    # Retornar también la información de debug
-    return macaulay_duration, modified_duration, debug_info
+    return macaulay_duration, modified_duration
 
 # Interfaz principal
 st.header("📁 Cargar Bonos con Flujos Irregulares")
@@ -399,53 +388,28 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Calcular TIR
                 ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
                 
-                # Debug: Mostrar información de TIR
-                st.write(f"Base de cálculo: {day_count_basis}")
-                st.write(f"TIR calculada: {ytm:.6f} ({ytm*100:.4f}%)")
-                st.write(f"TIR efectiva (TIR.NO.PER): {ytm*100:.4f}%")
-                
-                # Debug: Mostrar flujos de caja para verificación
-                st.write("**Flujos de caja para verificación:**")
-                for cf in cash_flows:
-                    st.write(f"Fecha: {cf['Fecha']}, Días: {cf['Días']}, Flujo: {cf['Flujo_Total']:.2f}")
-                
-                # Debug: Mostrar información de duración
-                st.write("**Debug duración:**")
-                st.write(f"Base de cálculo para descuento: {day_count_basis}")
-                st.write(f"Divisor para descuento: {360 if day_count_basis in ['30/360', 'ACT/360'] else 365}")
-                st.write(f"Divisor para duración: 365 (años)")
-                
                 # Calcular duraciones
-                macaulay_duration, modified_duration, duration_debug = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
-                
-                # Mostrar debug de duración
-                st.write("**Debug detallado de duración:**")
-                for debug_line in duration_debug:
-                    st.write(debug_line)
+                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
                 
                 # Mostrar resultados
-                st.subheader("📈 Resultados")
+                st.subheader("📈 Resultados del Análisis")
+                
+                # Información de la base de cálculo
+                st.info(f"**Base de cálculo utilizada:** {day_count_basis}")
                 
                 col1, col2, col3, col4 = st.columns(4)
                 
                 with col1:
-                    st.metric("TIR Anual", f"{ytm:.4%}")
+                    st.metric("TIR Anual", f"{ytm:.4%}", help="Tasa Interna de Retorno anual")
                 
                 with col2:
-                    st.metric("TIR Efectiva", f"{ytm:.4%}")
+                    st.metric("TIR Efectiva", f"{ytm:.4%}", help="TIR efectiva (equivalente a TIR.NO.PER de Excel)")
                 
                 with col3:
-                    st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años")
+                    st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años", help="Tiempo promedio ponderado de los flujos de caja")
                 
                 with col4:
-                    st.metric("Duración Modificada", f"{modified_duration:.2f} años")
-                
-                # Debug: Mostrar información de flujos
-                st.subheader("🔍 Debug - Información de Flujos")
-                st.write(f"Número total de flujos: {len(cash_flows)}")
-                st.write(f"Primer flujo: {cash_flows[0]}")
-                if len(cash_flows) > 1:
-                    st.write(f"Segundo flujo: {cash_flows[1]}")
+                    st.metric("Duración Modificada", f"{modified_duration:.2f} años", help="Sensibilidad del precio a cambios en la tasa de interés")
                 
                 # Tabla de flujos detallada
                 st.subheader("💰 Flujos de Caja Detallados")
@@ -455,28 +419,41 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 df_cash_flows['Cupon'] = df_cash_flows['Cupon'].round(2)
                 df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].round(2)
                 df_cash_flows['Días'] = df_cash_flows['Días'].astype(int)
-                df_cash_flows['Períodos'] = (df_cash_flows['Días'] / 365).round(4)
-                df_cash_flows['VP'] = (df_cash_flows['Flujo_Total'] / ((1 + ytm) ** df_cash_flows['Períodos'])).round(2)
                 
-                df_cash_flows.columns = ['Fecha', 'Pago Capital', 'Cupón', 'Flujo Total', 'Días', 'Períodos (años)', 'Valor Presente']
-                st.dataframe(df_cash_flows, use_container_width=True, hide_index=True)
+                # Renombrar columnas para mejor presentación
+                df_cash_flows = df_cash_flows.rename(columns={
+                    'Fecha': 'Fecha de Pago',
+                    'Pago_Capital': 'Capital (%)',
+                    'Cupon': 'Cupón (%)',
+                    'Flujo_Total': 'Flujo Total',
+                    'Días': 'Días desde Liquidación'
+                })
+                
+                # Mostrar tabla con mejor formato
+                st.dataframe(
+                    df_cash_flows, 
+                    use_container_width=True,
+                    hide_index=True
+                )
                 
                 # Resumen de pagos
                 st.subheader("📊 Resumen de Pagos")
                 col1, col2, col3 = st.columns(3)
                 
-                total_capital = df_cash_flows['Pago Capital'].sum()
-                total_coupons = df_cash_flows['Cupón'].sum()
-                total_flows = df_cash_flows['Flujo Total'].sum()
+                # Calcular totales solo de flujos positivos (excluyendo el precio dirty)
+                positive_flows = df_cash_flows[df_cash_flows['Flujo Total'] > 0]
+                total_capital = positive_flows['Capital (%)'].sum()
+                total_coupons = positive_flows['Cupón (%)'].sum()
+                total_flows = positive_flows['Flujo Total'].sum()
                 
                 with col1:
-                    st.metric("Total Capital", f"${total_capital:,.2f}")
+                    st.metric("Total Capital", f"{total_capital:.2f}%", help="Suma de todos los pagos de capital")
                 
                 with col2:
-                    st.metric("Total Cupones", f"${total_coupons:,.2f}")
+                    st.metric("Total Cupones", f"{total_coupons:.2f}%", help="Suma de todos los pagos de cupón")
                 
                 with col3:
-                    st.metric("Total Flujos", f"${total_flows:,.2f}")
+                    st.metric("Total Flujos", f"{total_flows:.2f}%", help="Suma de todos los flujos futuros")
                 
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
