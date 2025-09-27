@@ -310,11 +310,7 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, p
     else:  # Default ACT/365
         accrued_interest = (current_coupon_rate * capital_residual) / 365.0 * days
     
-    # Debug info (temporal)
-    print(f"DEBUG - Último cupón: {last_coupon_date}, Settlement: {settlement_date}")
-    print(f"DEBUG - Capital amortizado: {capital_amortizado}, Capital residual: {capital_residual}")
-    print(f"DEBUG - Días transcurridos: {days}, Base: {base_calculo_bono}")
-    print(f"DEBUG - Tasa cupón: {current_coupon_rate}%, Intereses corridos: {accrued_interest}")
+    # Debug info removido para compatibilidad
     
     return accrued_interest
 
