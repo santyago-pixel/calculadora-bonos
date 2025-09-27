@@ -255,6 +255,8 @@ if flows_df is not None:
             
             if len(cash_flows) <= 1:
                 st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
+            elif len(cash_flows) == 1:
+                st.error("Solo hay el flujo inicial. No hay flujos futuros para calcular TIR")
             else:
                 # Calcular TIR
                 ytm = calculate_ytm_irregular(cash_flows)
@@ -278,6 +280,13 @@ if flows_df is not None:
                 
                 with col4:
                     st.metric("Duración Modificada", f"{modified_duration:.2f} años")
+                
+                # Debug: Mostrar información de flujos
+                st.subheader("🔍 Debug - Información de Flujos")
+                st.write(f"Número total de flujos: {len(cash_flows)}")
+                st.write(f"Primer flujo: {cash_flows[0]}")
+                if len(cash_flows) > 1:
+                    st.write(f"Segundo flujo: {cash_flows[1]}")
                 
                 # Tabla de flujos detallada
                 st.subheader("💰 Flujos de Caja Detallados")
