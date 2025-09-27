@@ -317,32 +317,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
     bono_flows = bono_flows.sort_values('fecha')
     
-    st.subheader(f"📊 Flujos del Bono: {bono_selected}")
-    st.dataframe(bono_flows, use_container_width=True)
     
-    # Parámetros adicionales
-    st.subheader("⚙️ Parámetros Adicionales")
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        base_calculo = st.selectbox(
-            "Base de cálculo:",
-            options=["30/360", "ACT/360", "ACT/ACT"],
-            index=0
-        )
-    
-    with col2:
-        dirty_price = st.number_input(
-            "Precio Dirty:",
-            min_value=0.0,
-            value=100.0,
-            step=0.01,
-            format="%.2f",
-            help="Precio limpio + interés corrido"
-        )
-    
-    with col3:
-        st.write("")  # Espacio en blanco para alineación
     
     # Inputs para cálculo
     st.subheader("📝 Datos para Cálculo")
