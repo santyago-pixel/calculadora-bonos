@@ -480,13 +480,13 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 if periodicidad == 1:
                     periodicidad_titulo = "Anual"
                 elif periodicidad == 2:
-                    periodicidad_titulo = "Semianual Anualizada"
+                    periodicidad_titulo = "Semianual"
                 elif periodicidad == 4:
-                    periodicidad_titulo = "Trimestral Anualizada"
+                    periodicidad_titulo = "Trimestral"
                 elif periodicidad == 12:
-                    periodicidad_titulo = "Mensual Anualizada"
+                    periodicidad_titulo = "Mensual"
                 else:
-                    periodicidad_titulo = f"Cada {12//periodicidad} meses Anualizada"
+                    periodicidad_titulo = f"Cada {12//periodicidad} meses"
                 
                 with col1:
                     st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}", help=f"Tasa Interna de Retorno {periodicidad_titulo.lower()}")
@@ -523,12 +523,17 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.metric("Precio Limpio", f"{clean_price:.2f}", help="Precio dirty menos intereses corridos")
                 
                 # Tabla de flujos detallada
-                st.subheader("Flujos de Caja Detallados")
+                st.subheader("Flujo de Fondos")
                 df_cash_flows = pd.DataFrame(cash_flows)
                 df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
                 df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].round(2)
                 df_cash_flows['Cupon'] = df_cash_flows['Cupon'].round(2)
                 df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].round(2)
+                
+                # Reemplazar valores cero con celdas en blanco
+                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].replace(0, '')
+                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].replace(0, '')
+                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].replace(0, '')
                 df_cash_flows['Días'] = df_cash_flows['Días'].astype(int)
                 
                 # Renombrar columnas para mejor presentación
