@@ -29,6 +29,8 @@ def days_calculation(start_date, end_date, base):
                (d2 - d1)
     elif base == "ACT/360":
         days = (end_date - start_date).days
+    elif base == "ACT/365":
+        days = (end_date - start_date).days
     elif base == "ACT/ACT":
         days = (end_date - start_date).days
     else:  # Default to 30/360
@@ -75,15 +77,26 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
     return processed_flows
 
 # Función para calcular TIR
-def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-8):
+def calculate_ytm_irregular(cash_flows, day_count_basis='30/360', max_iterations=100, tolerance=1e-8):
     """Calcula la TIR usando Newton-Raphson para flujos irregulares (equivalente a TIR.NO.PER de Excel)"""
+    
+    # Determinar el divisor según la base de cálculo
+    if day_count_basis == "30/360":
+        divisor = 360.0
+    elif day_count_basis == "ACT/360":
+        divisor = 360.0
+    elif day_count_basis == "ACT/365":
+        divisor = 365.0
+    elif day_count_basis == "ACT/ACT":
+        divisor = 365.0  # Para ACT/ACT usamos 365 como base estándar
+    else:
+        divisor = 360.0  # Default
     
     def pv_function(yield_rate):
         pv = 0
         for cf in cash_flows:
             days = cf['Días']
-            # Usar días exactos dividido por 365 (como TIR.NO.PER de Excel)
-            periods = days / 365.0
+            periods = days / divisor
             pv += cf['Flujo_Total'] / ((1 + yield_rate) ** periods)
         return pv
     
@@ -91,7 +104,7 @@ def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-8):
         derivative = 0
         for cf in cash_flows:
             days = cf['Días']
-            periods = days / 365.0
+            periods = days / divisor
             derivative -= cf['Flujo_Total'] * periods / ((1 + yield_rate) ** (periods + 1))
         return derivative
     
@@ -136,14 +149,27 @@ def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-8):
     return binary_search_ytm()
 
 # Función para calcular duración
-def calculate_duration_irregular(cash_flows, ytm, price):
+def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360'):
     """Calcula duración Macaulay y modificada para flujos irregulares"""
+    
+    # Determinar el divisor según la base de cálculo
+    if day_count_basis == "30/360":
+        divisor = 360.0
+    elif day_count_basis == "ACT/360":
+        divisor = 360.0
+    elif day_count_basis == "ACT/365":
+        divisor = 365.0
+    elif day_count_basis == "ACT/ACT":
+        divisor = 365.0
+    else:
+        divisor = 360.0  # Default
+    
     weighted_pv = 0
     total_pv = 0
     
     for cf in cash_flows:
         days = cf['Días']
-        periods = days / 365
+        periods = days / divisor
         pv = cf['Flujo_Total'] / ((1 + ytm) ** periods)
         weighted_pv += periods * pv
         total_pv += pv
@@ -344,11 +370,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             format="%.2f"
         )
     
+    # Selector de base de cálculo
+    day_count_basis = st.selectbox(
+        "Base de cálculo:",
+        options=["30/360", "ACT/360", "ACT/365", "ACT/ACT"],
+        index=0,
+        help="30/360: Base estándar, ACT/360: Días reales/360, ACT/365: Días reales/365, ACT/ACT: Días reales/365"
+    )
+    
     # Calcular
     if st.button("🔄 Calcular", type="primary"):
         try:
             # Procesar flujos
-            cash_flows = process_irregular_flows(bono_flows, settlement_date, dirty_price, base_calculo)
+            cash_flows = process_irregular_flows(bono_flows, settlement_date, bond_price, day_count_basis)
             
             if len(cash_flows) <= 1:
                 st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
@@ -356,9 +390,10 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 st.error("Solo hay el flujo inicial. No hay flujos futuros para calcular TIR")
             else:
                 # Calcular TIR
-                ytm = calculate_ytm_irregular(cash_flows)
+                ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
                 
                 # Debug: Mostrar información de TIR
+                st.write(f"Base de cálculo: {day_count_basis}")
                 st.write(f"TIR calculada: {ytm:.6f} ({ytm*100:.4f}%)")
                 st.write(f"TIR efectiva (TIR.NO.PER): {ytm*100:.4f}%")
                 
@@ -368,7 +403,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.write(f"Fecha: {cf['Fecha']}, Días: {cf['Días']}, Flujo: {cf['Flujo_Total']:.2f}")
                 
                 # Calcular duraciones
-                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, dirty_price)
+                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
                 
                 # Mostrar resultados
                 st.subheader("📈 Resultados")
