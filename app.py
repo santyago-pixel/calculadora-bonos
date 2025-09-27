@@ -404,7 +404,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     
     
     # Inputs para cálculo
-    st.subheader("Datos para Cálculo")
+    st.subheader("Datos para el Cálculo")
     col1, col2 = st.columns(2)
     
     with col1:
@@ -456,7 +456,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad)
                 
                 # Mostrar resultados
-                st.subheader("Resultados del Análisis")
+                st.subheader("Resultados")
                 
                 # Información de la base de cálculo y periodicidad
                 # Convertir periodicidad a texto descriptivo
@@ -473,9 +473,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 st.info(f"**Base de cálculo de días:** {base_calculo_bono} | **Periodicidad:** {periodicidad_texto}")
                 
-                col1, col2 = st.columns(2)
-                col3, col4 = st.columns(2)
-                
                 # Convertir periodicidad a texto para el título
                 if periodicidad == 1:
                     periodicidad_titulo = "Anual"
@@ -488,15 +485,17 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 else:
                     periodicidad_titulo = f"Cada {12//periodicidad} meses"
                 
+                # Primera fila - TIRs
+                col1, col2 = st.columns(2)
                 with col1:
                     st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}", help=f"Tasa Interna de Retorno {periodicidad_titulo.lower()}")
-                
                 with col2:
                     st.metric("TIR Efectiva", f"{ytm:.4%}", help="TIR efectiva anual (equivalente a TIR.NO.PER de Excel)")
                 
+                # Segunda fila - Duraciones
+                col3, col4 = st.columns(2)
                 with col3:
                     st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años", help="Tiempo promedio ponderado de los flujos de caja")
-                
                 with col4:
                     st.metric("Duración Modificada", f"{modified_duration:.2f} años", help="Sensibilidad del precio a cambios en la tasa de interés")
                 
@@ -534,22 +533,44 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].replace(0, '')
                 df_cash_flows['Cupon'] = df_cash_flows['Cupon'].replace(0, '')
                 df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].replace(0, '')
-                df_cash_flows['Días'] = df_cash_flows['Días'].astype(int)
                 
                 # Renombrar columnas para mejor presentación
                 df_cash_flows = df_cash_flows.rename(columns={
                     'Fecha': 'Fecha de Pago',
-                    'Pago_Capital': 'Capital (%)',
-                    'Cupon': 'Cupón (%)',
-                    'Flujo_Total': 'Flujo Total',
-                    'Días': 'Días desde Liquidación'
+                    'Pago_Capital': 'Capital',
+                    'Cupon': 'Cupón',
+                    'Flujo_Total': 'Flujo Total'
                 })
                 
-                # Mostrar tabla con mejor formato
+                # Eliminar la columna de días
+                df_cash_flows = df_cash_flows.drop('Días', axis=1)
+                
+                # Mostrar tabla con mejor formato y alineación
                 st.dataframe(
                     df_cash_flows, 
                     use_container_width=True,
-                    hide_index=True
+                    hide_index=True,
+                    column_config={
+                        "Fecha de Pago": st.column_config.TextColumn(
+                            "Fecha de Pago",
+                            help="Fecha del pago"
+                        ),
+                        "Capital": st.column_config.NumberColumn(
+                            "Capital",
+                            help="Pago de capital",
+                            format="%.2f"
+                        ),
+                        "Cupón": st.column_config.NumberColumn(
+                            "Cupón", 
+                            help="Pago de cupón",
+                            format="%.2f"
+                        ),
+                        "Flujo Total": st.column_config.NumberColumn(
+                            "Flujo Total",
+                            help="Flujo total de caja",
+                            format="%.2f"
+                        )
+                    }
                 )
                 
         except Exception as e:
