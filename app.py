@@ -75,7 +75,7 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
     return processed_flows
 
 # Función para calcular TIR
-def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
+def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-8):
     """Calcula la TIR usando Newton-Raphson para flujos irregulares (equivalente a TIR.NO.PER de Excel)"""
     
     def pv_function(yield_rate):
@@ -98,7 +98,7 @@ def calculate_ytm_irregular(cash_flows, max_iterations=100, tolerance=1e-6):
     # Usar búsqueda binaria como fallback si Newton-Raphson falla
     def binary_search_ytm():
         low, high = -0.99, 2.0  # Límites más conservadores para TIR
-        for _ in range(100):  # Más iteraciones para mayor precisión
+        for _ in range(200):  # Más iteraciones para mayor precisión
             mid = (low + high) / 2
             pv = pv_function(mid)
             if abs(pv) < tolerance:
@@ -361,6 +361,11 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Debug: Mostrar información de TIR
                 st.write(f"TIR calculada: {ytm:.6f} ({ytm*100:.4f}%)")
                 st.write(f"TIR efectiva (TIR.NO.PER): {ytm*100:.4f}%")
+                
+                # Debug: Mostrar flujos de caja para verificación
+                st.write("**Flujos de caja para verificación:**")
+                for cf in cash_flows:
+                    st.write(f"Fecha: {cf['Fecha']}, Días: {cf['Días']}, Flujo: {cf['Flujo_Total']:.2f}")
                 
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, dirty_price)
