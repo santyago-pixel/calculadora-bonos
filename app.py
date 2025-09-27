@@ -40,7 +40,7 @@ def days_calculation(start_date, end_date, base):
     return days
 
 # Función para procesar flujos irregulares
-def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo="30/360"):
+def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo="ACT/365"):
     """Procesa flujos irregulares incluyendo el precio dirty como flujo inicial"""
     processed_flows = []
     
@@ -78,7 +78,7 @@ def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo
     return processed_flows
 
 # Función para calcular TIR
-def calculate_ytm_irregular(cash_flows, day_count_basis='30/360', max_iterations=100, tolerance=1e-8):
+def calculate_ytm_irregular(cash_flows, day_count_basis='ACT/365', max_iterations=100, tolerance=1e-8):
     """Calcula la TIR usando Newton-Raphson para flujos irregulares (equivalente a TIR.NO.PER de Excel)"""
     
     # Determinar el divisor según la base de cálculo
@@ -150,7 +150,7 @@ def calculate_ytm_irregular(cash_flows, day_count_basis='30/360', max_iterations
     return binary_search_ytm()
 
 # Función para calcular duración
-def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360'):
+def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='ACT/365'):
     """Calcula duración Macaulay y modificada para flujos irregulares en años"""
     
     # Para duración, siempre usar años (365 días) para el descuento
@@ -175,6 +175,49 @@ def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='30/360
     modified_duration = macaulay_duration / (1 + ytm) if (1 + ytm) > 0 else 0
     
     return macaulay_duration, modified_duration
+
+def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono):
+    """Calcula intereses corridos hasta la fecha de liquidación"""
+    
+    # Filtrar solo flujos de cupón (donde hay tasa de cupón)
+    cupon_flows = bono_flows[bono_flows['tasa_cupon'] > 0].copy()
+    
+    if len(cupon_flows) == 0:
+        return 0.0
+    
+    # Ordenar por fecha
+    cupon_flows = cupon_flows.sort_values('fecha')
+    
+    # Encontrar el último pago de cupón anterior a la fecha de liquidación
+    last_coupon_date = None
+    current_coupon_rate = 0.0
+    
+    for _, row in cupon_flows.iterrows():
+        if row['fecha'] <= settlement_date:
+            last_coupon_date = row['fecha']
+            current_coupon_rate = row['tasa_cupon']
+        else:
+            break
+    
+    if last_coupon_date is None:
+        return 0.0
+    
+    # Calcular días según la base de cálculo del bono
+    if base_calculo_bono == "30/360":
+        # Simplificado: usar días reales / 360
+        days = (settlement_date - last_coupon_date).days
+        accrued_interest = current_coupon_rate * (days / 360.0)
+    elif base_calculo_bono == "ACT/360":
+        days = (settlement_date - last_coupon_date).days
+        accrued_interest = current_coupon_rate * (days / 360.0)
+    elif base_calculo_bono == "ACT/365":
+        days = (settlement_date - last_coupon_date).days
+        accrued_interest = current_coupon_rate * (days / 365.0)
+    else:  # Default ACT/365
+        days = (settlement_date - last_coupon_date).days
+        accrued_interest = current_coupon_rate * (days / 365.0)
+    
+    return accrued_interest
 
 # Interfaz principal
 
@@ -235,7 +278,7 @@ try:
     current_bono_name = None
     
     for _, row in flows_df.iterrows():
-        if len(row) >= 4 and not pd.isna(row[0]):
+        if len(row) >= 5 and not pd.isna(row[0]):
             # Convertir a string y limpiar
             cell_value = str(row[0]).strip()
             
@@ -246,6 +289,11 @@ try:
             # Verificar si es un nombre de bono (contiene "bono" y no es una fecha)
             if cell_value.lower().startswith('bono'):
                 current_bono_name = cell_value
+                # Extraer base de cálculo de la celda contigua (columna B)
+                try:
+                    base_calculo_bono = str(row[1]).strip() if not pd.isna(row[1]) else "ACT/365"
+                except:
+                    base_calculo_bono = "ACT/365"
                 continue
             
             # Si tenemos un nombre de bono y es una fecha válida, procesar
@@ -255,28 +303,37 @@ try:
                     fecha_valida = pd.to_datetime(row[0], errors='coerce')
                     if not pd.isna(fecha_valida):
                         # Procesar valores numéricos de forma más robusta
+                        # Nueva estructura: A=fecha, B=tasa_cupon, C=cupon, D=capital, E=total
+                        tasa_cupon = 0.0
                         cupon = 0.0
                         capital = 0.0
                         flujo_total = 0.0
                         
                         try:
-                            cupon = float(str(row[1]).replace(',', '.')) if not pd.isna(row[1]) and str(row[1]).strip() not in ['', 'nan'] else 0.0
+                            tasa_cupon = float(str(row[1]).replace(',', '.')) if not pd.isna(row[1]) and str(row[1]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            tasa_cupon = 0.0
+                            
+                        try:
+                            cupon = float(str(row[2]).replace(',', '.')) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 0.0
                         except:
                             cupon = 0.0
                             
                         try:
-                            capital = float(str(row[2]).replace(',', '.')) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 0.0
+                            capital = float(str(row[3]).replace(',', '.')) if not pd.isna(row[3]) and str(row[3]).strip() not in ['', 'nan'] else 0.0
                         except:
                             capital = 0.0
                             
                         try:
-                            flujo_total = float(str(row[3]).replace(',', '.')) if not pd.isna(row[3]) and str(row[3]).strip() not in ['', 'nan'] else 0.0
+                            flujo_total = float(str(row[4]).replace(',', '.')) if not pd.isna(row[4]) and str(row[4]).strip() not in ['', 'nan'] else 0.0
                         except:
                             flujo_total = cupon + capital
                         
                         processed_data.append({
                             'nombre_bono': current_bono_name,
+                            'base_calculo': base_calculo_bono,
                             'fecha': fecha_valida,
+                            'tasa_cupon': tasa_cupon,
                             'cupon_porcentaje': cupon,
                             'pago_capital_porcentaje': capital,
                             'flujo_total': flujo_total
@@ -340,13 +397,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             format="%.2f"
         )
     
-    # Selector de base de cálculo
-    day_count_basis = st.selectbox(
-        "Base de cálculo:",
-        options=["30/360", "ACT/360", "ACT/365", "ACT/ACT"],
-        index=0,
-        help="30/360: Base estándar, ACT/360: Días reales/360, ACT/365: Días reales/365, ACT/ACT: Días reales/365"
-    )
+    # Base de cálculo fija en ACT/365
+    day_count_basis = "ACT/365"
     
     # Calcular
     if st.button("🔄 Calcular", type="primary"):
@@ -364,6 +416,10 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Calcular duraciones
                 macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
+                
+                # Calcular intereses corridos
+                base_calculo_bono = bono_flows['base_calculo'].iloc[0] if 'base_calculo' in bono_flows.columns else "ACT/365"
+                accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono)
                 
                 # Mostrar resultados
                 st.subheader("Resultados del Análisis")
@@ -385,6 +441,17 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 with col4:
                     st.metric("Duración Modificada", f"{modified_duration:.2f} años", help="Sensibilidad del precio a cambios en la tasa de interés")
+                
+                # Mostrar intereses corridos
+                st.subheader("Intereses Corridos")
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.metric("Intereses Corridos", f"{accrued_interest:.4f}%", help=f"Intereses acumulados desde el último cupón (base: {base_calculo_bono})")
+                
+                with col2:
+                    clean_price = bond_price - accrued_interest
+                    st.metric("Precio Limpio", f"{clean_price:.2f}", help="Precio dirty menos intereses corridos")
                 
                 # Tabla de flujos detallada
                 st.subheader("Flujos de Caja Detallados")
