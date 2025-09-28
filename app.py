@@ -415,7 +415,7 @@ def calcular_ytm(precio_dirty, flujos, fechas, fecha_liquidacion, base_calculo="
             elif base_calculo == "ACT/ACT":
                 factor_descuento = (1 + rate) ** (dias / 365)
                 derivada = -flujo * (dias / 365) * (1 + rate) ** (dias / 365 - 1)
-        else:
+            else:
                 factor_descuento = (1 + rate) ** (dias / 365)
                 derivada = -flujo * (dias / 365) * (1 + rate) ** (dias / 365 - 1)
             total += derivada
