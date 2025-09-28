@@ -14,7 +14,156 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# CSS personalizado que simula TailwindCSS optimizado para Streamlit
+st.markdown("""
+<style>
+/* Reset y base */
+* {
+    box-sizing: border-box;
+}
 
+/* Flexbox utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+
+/* Spacing */
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.m-2 { margin: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+
+/* Backgrounds */
+.bg-white { background-color: white; }
+.bg-gray-50 { background-color: #f9fafb; }
+.bg-gray-100 { background-color: #f3f4f6; }
+.bg-blue-50 { background-color: #eff6ff; }
+
+/* Borders */
+.border { border: 1px solid #e5e7eb; }
+.border-gray-200 { border-color: #e5e7eb; }
+.rounded { border-radius: 0.25rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+
+/* Shadows */
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+
+/* Text */
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.text-gray-600 { color: #4b5563; }
+.text-gray-700 { color: #374151; }
+.text-gray-900 { color: #111827; }
+
+/* Width */
+.w-full { width: 100%; }
+.w-1/2 { width: 50%; }
+.w-1/3 { width: 33.333333%; }
+.w-1/4 { width: 25%; }
+
+/* Height */
+.h-16 { height: 4rem; }
+.h-20 { height: 5rem; }
+.h-24 { height: 6rem; }
+
+/* Custom components para Streamlit */
+.metric-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 5rem;
+    text-align: center;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Override de estilos de Streamlit */
+.stMetric > div {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.stMetric [data-testid="metric-container"] {
+    background-color: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.75rem !important;
+    padding: 1rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+    height: 5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.stMetric [data-testid="metric-container"] label {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #6b7280 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.stMetric [data-testid="metric-container"] div[data-testid="metric-value"] {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+}
+
+/* Columnas con mejor espaciado */
+.stColumn {
+    padding: 0.5rem !important;
+}
+
+/* Panel de configuración */
+.config-panel {
+    background-color: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+
+/* Panel de resultados */
+.results-panel {
+    background-color: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+</style>
+""", unsafe_allow_html=True)
 
 st.title("Calculadora de Bonos")
 st.markdown("---")
@@ -522,18 +671,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     
     # SECCIÓN IZQUIERDA: Menús desplegables y botón de calcular
     with col_left:
+        st.markdown('<div class="config-panel">', unsafe_allow_html=True)
         st.subheader("Configuración")
-        
-        # CSS para fondo gris claro en la columna izquierda
-        st.markdown("""
-        <style>
-        .stColumn:first-child {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        </style>
-        """, unsafe_allow_html=True)
         
         # Selector de tipo de bono
         st.write("**Tipo de Bono**")
@@ -596,6 +735,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
         
         # Botón de calcular
         calcular = st.button("🔄 Calcular", type="primary")
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # SECCIÓN DERECHA: Resultados
     with col_right:
@@ -646,17 +786,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Mostrar resultados en la columna derecha
                 with col_right:
-                    # CSS para fondo gris claro en la columna derecha (igual que la izquierda)
-                    st.markdown("""
-                    <style>
-                    .stColumn:last-child {
-                        background-color: #f8f9fa;
-                        padding: 20px;
-                        border-radius: 10px;
-                    }
-                    </style>
-                    """, unsafe_allow_html=True)
-                    
+                    st.markdown('<div class="results-panel">', unsafe_allow_html=True)
                     st.subheader("Resultados")
                     
                     # Información de la base de cálculo y periodicidad
@@ -734,6 +864,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.metric("Duración Modificada", f"{modified_duration:.2f} años")
                     with col4:
                         st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años")
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
                 
                 
         except Exception as e:
