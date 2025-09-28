@@ -530,26 +530,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             padding: 20px;
             border-radius: 10px;
         }
-        /* Fondo gris para todas las métricas en la columna derecha */
-        .stColumn:last-child .element-container {
-            background-color: #f8f9fa !important;
-            border-radius: 5px;
-            padding: 8px;
-            margin: 2px;
-        }
-        .stColumn:last-child div[data-testid="column"] {
-            background-color: #f8f9fa !important;
-            border-radius: 5px;
-            padding: 8px;
-            margin: 2px;
-        }
-        /* Fondo gris para contenedores de métricas personalizados */
-        .metric-container {
-            background-color: #f8f9fa !important;
-            border-radius: 5px;
-            padding: 8px;
-            margin: 2px;
-        }
         </style>
         """, unsafe_allow_html=True)
         
@@ -665,6 +645,18 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Mostrar resultados en la columna derecha
                 with col_right:
                     st.subheader("Resultados")
+                    
+                    # CSS para fondo gris en las métricas de resultados
+                    st.markdown("""
+                    <style>
+                    .metric-container {
+                        background-color: #f8f9fa !important;
+                        border-radius: 5px;
+                        padding: 8px;
+                        margin: 2px;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
                     
                     # Información de la base de cálculo y periodicidad
                     if periodicidad == 1:
