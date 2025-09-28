@@ -774,12 +774,7 @@ try:
             df_cash_flows_compact = df_cash_flows_compact.replace(0, '')
             
             # Mostrar tabla compacta
-            st.dataframe(
-                df_cash_flows_compact,
-                use_container_width=True,
-                height=400,
-                hide_index=True
-            )
+            st.table(df_cash_flows_compact)
             
             # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
