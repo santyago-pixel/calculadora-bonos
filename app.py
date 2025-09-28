@@ -773,8 +773,30 @@ try:
             # Reemplazar 0 con vacío
             df_cash_flows_compact = df_cash_flows_compact.replace(0, '')
             
-            # Mostrar tabla compacta
+            # Mostrar tabla compacta con formato mejorado
+            st.markdown("""
+            <style>
+            .cashflow-table table {
+                font-size: 12px !important;
+                width: 100% !important;
+            }
+            .cashflow-table th, .cashflow-table td {
+                padding: 4px 8px !important;
+                text-align: right !important;
+                font-size: 11px !important;
+            }
+            .cashflow-table th:first-child {
+                text-align: left !important;
+            }
+            .cashflow-table td:first-child {
+                text-align: left !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown('<div class="cashflow-table">', unsafe_allow_html=True)
             st.table(df_cash_flows_compact)
+            st.markdown('</div>', unsafe_allow_html=True)
             
             # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
