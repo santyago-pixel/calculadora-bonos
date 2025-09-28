@@ -712,30 +712,30 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Precio Limpio</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{clean_price:.2f}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Precio Limpio</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{clean_price:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col2:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Intereses Corridos</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{accrued_interest:.4f}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Intereses Corridos</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{accrued_interest:.4f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Capital Residual</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{capital_residual:.2f}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Capital Residual</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{capital_residual:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Valor Técnico</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{technical_value:.2f}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Valor Técnico</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{technical_value:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     
@@ -743,39 +743,39 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Cupón Vigente</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{(cupon_vigente * 100):.2f}%</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Cupón Vigente</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{(cupon_vigente * 100):.2f}%</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col2:
                         if next_coupon_date:
                             next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
                             st.markdown(f"""
-                            <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                                <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Próximo Cupón</div>
-                                <div style="font-size: 14px; font-weight: 700; color: #262730;">{next_coupon_str}</div>
+                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                                <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Próximo Cupón</div>
+                                <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{next_coupon_str}</div>
                             </div>
                             """, unsafe_allow_html=True)
                         else:
                             st.markdown(f"""
-                            <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                                <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Próximo Cupón</div>
-                                <div style="font-size: 14px; font-weight: 700; color: #262730;">N/A</div>
+                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                                <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Próximo Cupón</div>
+                                <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">N/A</div>
                             </div>
                             """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Paridad</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{parity:.4f}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Paridad</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{parity:.4f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Vida Media</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{average_life:.2f} años</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Vida Media</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{average_life:.2f} años</div>
                         </div>
                         """, unsafe_allow_html=True)
                     
@@ -783,30 +783,30 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">TIR Efectiva</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{ytm:.4%}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">TIR Efectiva</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{ytm:.4%}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col2:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">TIR {periodicidad_titulo}</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{ytm_anualizada:.4%}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">TIR {periodicidad_titulo}</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{ytm_anualizada:.4%}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Duración Modificada</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{modified_duration:.2f} años</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Duración Modificada</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{modified_duration:.2f} años</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Duración Macaulay</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{macaulay_duration:.2f} años</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
+                            <div style="font-size: 12px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Duración Macaulay</div>
+                            <div style="font-size: 14px !important; font-weight: 700 !important; color: #262730 !important;">{macaulay_duration:.2f} años</div>
                         </div>
                         """, unsafe_allow_html=True)
                 
