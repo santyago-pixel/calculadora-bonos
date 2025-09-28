@@ -90,6 +90,11 @@ st.markdown("""
         margin: 0.5rem 0;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        height: 120px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
     
     .metric-card:hover {
@@ -104,6 +109,7 @@ st.markdown("""
         margin-bottom: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        text-align: center;
     }
     
     .metric-value {
@@ -111,6 +117,7 @@ st.markdown("""
         font-weight: 700;
         color: #1e293b;
         line-height: 1.2;
+        text-align: center;
     }
     
     /* Grid de métricas */
