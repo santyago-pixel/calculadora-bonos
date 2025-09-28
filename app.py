@@ -775,8 +775,12 @@ try:
             
             # Debug: mostrar información de la tabla
             st.write(f"Debug: DataFrame tiene {len(df_cash_flows_compact)} filas")
-            st.write("Debug: Primeras 3 filas del DataFrame:")
-            st.write(df_cash_flows_compact.head(3))
+            st.write("Debug: Columnas del DataFrame:")
+            st.write(df_cash_flows_compact.columns.tolist())
+            st.write("Debug: Tipos de datos:")
+            st.write(df_cash_flows_compact.dtypes)
+            st.write("Debug: DataFrame completo:")
+            st.write(df_cash_flows_compact)
             
             # Mostrar tabla compacta
             st.markdown('<div class="cashflow-table">', unsafe_allow_html=True)
