@@ -163,6 +163,36 @@ st.markdown("""
     border: 1px solid #e2e8f0;
 }
 
+/* Ocultar bordes y menús de la tabla de flujo de fondos */
+.cashflow-table .stDataFrame {
+    border: none !important;
+}
+
+.cashflow-table .stDataFrame > div {
+    border: none !important;
+}
+
+.cashflow-table .stDataFrame table {
+    border: none !important;
+    border-collapse: collapse !important;
+}
+
+.cashflow-table .stDataFrame th,
+.cashflow-table .stDataFrame td {
+    border: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+.cashflow-table .stDataFrame th:last-child,
+.cashflow-table .stDataFrame td:last-child {
+    border-right: none !important;
+}
+
+/* Ocultar menú de opciones de la tabla */
+.cashflow-table .stDataFrame > div > div:first-child {
+    display: none !important;
+}
+
 /* Override de Streamlit */
 .stSidebar {
     background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
@@ -951,38 +981,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 </div>
                 ''', unsafe_allow_html=True)
                 
-                # TABLA DE FLUJO DE FONDOS
-                st.markdown("## Flujo de Fondos")
-                
-                df_cash_flows = pd.DataFrame(cash_flows)
-                df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
-                
-                # Formatear valores numéricos y manejar ceros
-                def format_value(value):
-                    if value == 0 or pd.isna(value):
-                        return ""
-                    else:
-                        return f"{value:.2f}"
-                
-                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].apply(format_value)
-                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].apply(format_value)
-                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].apply(format_value)
-                
-                # Renombrar columnas para mejor presentación
-                df_cash_flows = df_cash_flows.rename(columns={
-                    'Fecha': 'Fecha de Pago',
-                    'Pago_Capital': 'Capital',
-                    'Cupon': 'Cupón',
-                    'Flujo_Total': 'Flujo Total'
-                })
-                
-                # Eliminar la columna de días
-                df_cash_flows = df_cash_flows.drop('Días', axis=1)
-                
-                # Mostrar tabla con estilo
-                st.markdown('<div class="cashflow-table">', unsafe_allow_html=True)
-                st.dataframe(df_cash_flows, use_container_width=True, hide_index=True)
-                st.markdown('</div>', unsafe_allow_html=True)
                 
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
