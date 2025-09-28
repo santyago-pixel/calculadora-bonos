@@ -522,21 +522,16 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     with col_left:
         st.subheader("Configuración")
         
-        # CSS personalizado para el contenedor
+        # CSS para fondo gris claro en la columna izquierda
         st.markdown("""
         <style>
-        .config-container {
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
+        .stColumn:first-child {
+            background-color: #f8f9fa;
             padding: 20px;
-            background-color: #fafafa;
-            margin-bottom: 20px;
+            border-radius: 10px;
         }
         </style>
         """, unsafe_allow_html=True)
-        
-        # Contenedor con borde redondeado
-        st.markdown('<div class="config-container">', unsafe_allow_html=True)
         
         # Selector de tipo de bono
         st.write("**Tipo de Bono**")
@@ -599,9 +594,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
         
         # Botón de calcular
         calcular = st.button("🔄 Calcular", type="primary")
-        
-        # Cerrar el contenedor
-        st.markdown('</div>', unsafe_allow_html=True)
     
     # SECCIÓN DERECHA: Resultados
     with col_right:
