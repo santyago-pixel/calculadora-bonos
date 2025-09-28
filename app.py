@@ -547,6 +547,8 @@ try:
         st.write(f"Debug: {len(flujos)} flujos encontrados")
         st.write(f"Debug: Precio dirty = {precio_dirty}")
         st.write(f"Debug: Fecha liquidación = {fecha_liquidacion}")
+        st.write(f"Debug: Flujos = {flujos[:5]}...")  # Mostrar primeros 5 flujos
+        st.write(f"Debug: Fechas = {fechas[:5]}...")  # Mostrar primeras 5 fechas
         
         # Calcular YTM
         ytm_efectiva = calcular_ytm(
@@ -558,8 +560,12 @@ try:
             bono_actual['periodicidad']
         )
         
+        st.write(f"Debug: YTM efectiva = {ytm_efectiva:.6f}")
+        
         # Calcular YTM anualizada según periodicidad
         ytm_anualizada = bono_actual['periodicidad'] * ((1 + ytm_efectiva) ** (1 / bono_actual['periodicidad']) - 1)
+        
+        st.write(f"Debug: YTM anualizada = {ytm_anualizada:.6f}")
         
         # Calcular duración Macaulay
         duracion_macaulay = calcular_duracion_macaulay(
@@ -578,7 +584,6 @@ try:
         )
         
         # Calcular capital residual
-        fecha_liquidacion_dt = pd.to_datetime(fecha_liquidacion)
         capital_residual = 100 - sum([flujo['capital'] for flujo in bono_actual['flujos'] if flujo['fecha'] <= fecha_liquidacion_dt])
         
         # Calcular intereses corridos
