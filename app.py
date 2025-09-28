@@ -658,19 +658,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 # Mostrar resultados en la columna derecha
                 with col_right:
                     st.subheader("Resultados")
-                    st.markdown("<br>", unsafe_allow_html=True)  # Espacio adicional
-                    
-                    # CSS para fondo gris en las métricas de resultados
-                    st.markdown("""
-                    <style>
-                    .metric-container {
-                        background-color: #f8f9fa;
-                        padding: 15px;
-                        border-radius: 8px;
-                        margin-bottom: 10px;
-                    }
-                    </style>
-                    """, unsafe_allow_html=True)
                     
                     # Información de la base de cálculo y periodicidad
                     if periodicidad == 1:
