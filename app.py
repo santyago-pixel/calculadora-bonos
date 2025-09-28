@@ -655,17 +655,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         border-radius: 10px;
                     }
                     
-                    /* Reducir tamaño de fuentes en la sección derecha */
-                    .stColumn:last-child h3 {
-                        font-size: 14px !important;
-                    }
-                    
-                    .stColumn:last-child label {
+                    /* Reducir tamaño de fuentes en métricas de la sección derecha */
+                    .stColumn:last-child [data-testid="metric-container"] label {
                         font-size: 12px !important;
+                        font-weight: 600 !important;
                     }
                     
-                    .stColumn:last-child div[data-testid="metric-value"] {
+                    .stColumn:last-child [data-testid="metric-container"] div[data-testid="metric-value"] {
                         font-size: 14px !important;
+                        font-weight: 700 !important;
+                    }
+                    
+                    .stColumn:last-child [data-testid="metric-container"] {
+                        font-size: 12px !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
