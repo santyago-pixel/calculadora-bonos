@@ -752,6 +752,9 @@ try:
         # SECCIÓN FLUJO DE FONDOS - DEBAJO DE LAS TARJETAS
         st.markdown("## Flujo de Fondos")
         
+        # Debug: mostrar información de flujos
+        st.write(f"Debug: {len(flujos)} flujos, {len(fechas)} fechas, {len(flujos_capital)} capitales")
+        
         # Crear DataFrame para el flujo de fondos
         cash_flows = []
         for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
@@ -763,6 +766,8 @@ try:
                 'Flujo Total': flujo
             })
         
+        st.write(f"Debug: {len(cash_flows)} cash_flows creados")
+        
         df_cash_flows = pd.DataFrame(cash_flows)
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
@@ -771,6 +776,10 @@ try:
         
         # Reemplazar 0 con vacío
         df_cash_flows = df_cash_flows.replace(0, '')
+        
+        st.write(f"Debug: DataFrame tiene {len(df_cash_flows)} filas")
+        st.write("Debug: Primeras 3 filas:")
+        st.write(df_cash_flows.head(3))
         
         # Mostrar tabla con formato mejorado
         st.markdown("""
