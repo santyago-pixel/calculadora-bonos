@@ -425,9 +425,6 @@ def encontrar_proximo_cupon(fecha_liquidacion, fechas_cupones):
 # Cargar datos del Excel
 try:
     df = pd.read_excel('bonos_flujos.xlsx', engine='openpyxl')
-    st.write(f"Debug: Archivo cargado con {len(df)} filas y {len(df.columns)} columnas")
-    st.write(f"Debug: Primeras 5 filas:")
-    st.write(df.head())
     
     # Extraer tipos de bonos de las celdas J6:J8
     tipos_bono = []
@@ -479,9 +476,6 @@ try:
     if current_bono:
         bonos.append(current_bono)
     
-    st.write(f"Debug: Se procesaron {len(bonos)} bonos")
-    for i, bono in enumerate(bonos):
-        st.write(f"Debug: Bono {i+1}: {bono['nombre']} con {len(bono['flujos'])} flujos")
     
     if not bonos:
         st.error("❌ No se encontraron bonos en el archivo")
@@ -550,12 +544,6 @@ try:
             st.error("❌ No hay flujos futuros para calcular")
             st.stop()
         
-        # Debug: mostrar información de flujos
-        st.write(f"Debug: {len(flujos)} flujos encontrados")
-        st.write(f"Debug: Precio dirty = {precio_dirty}")
-        st.write(f"Debug: Fecha liquidación = {fecha_liquidacion}")
-        st.write(f"Debug: Flujos = {flujos[:5]}...")  # Mostrar primeros 5 flujos
-        st.write(f"Debug: Fechas = {fechas[:5]}...")  # Mostrar primeras 5 fechas
         
         # Calcular YTM
         ytm_efectiva = calcular_ytm(
@@ -567,12 +555,8 @@ try:
             bono_actual['periodicidad']
         )
         
-        st.write(f"Debug: YTM efectiva = {ytm_efectiva:.6f}")
-        
         # Calcular YTM anualizada según periodicidad
         ytm_anualizada = bono_actual['periodicidad'] * ((1 + ytm_efectiva) ** (1 / bono_actual['periodicidad']) - 1)
-        
-        st.write(f"Debug: YTM anualizada = {ytm_anualizada:.6f}")
         
         # Calcular duración Macaulay
         duracion_macaulay = calcular_duracion_macaulay(
