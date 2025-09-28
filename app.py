@@ -646,6 +646,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 with col_right:
                     st.subheader("Resultados")
                     
+                    # CSS para pintar de gris todas las celdas de métricas
+                    st.markdown("""
+                    <style>
+                    /* Fondo gris para todas las columnas de métricas en la sección de resultados */
+                    .stColumn:last-child .element-container {
+                        background-color: #f8f9fa !important;
+                        border-radius: 5px;
+                        padding: 10px;
+                        margin: 2px;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
                     
                     # Información de la base de cálculo y periodicidad
                     if periodicidad == 1:
