@@ -18,7 +18,7 @@ st.markdown("""
 <style>
     /* Estilos generales */
     .main > div {
-        padding-top: 2rem;
+        padding-top: 0.5rem;
     }
     
     /* Sidebar */
