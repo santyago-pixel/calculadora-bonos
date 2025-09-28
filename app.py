@@ -773,28 +773,13 @@ try:
             # Reemplazar 0 con vacío
             df_cash_flows_compact = df_cash_flows_compact.replace(0, '')
             
-            # Debug: mostrar información de la tabla
-            st.write(f"Debug: DataFrame tiene {len(df_cash_flows_compact)} filas")
-            st.write("Debug: Primeras 5 filas:")
-            st.write(df_cash_flows_compact.head())
-            
             # Mostrar tabla compacta
-            st.write("Debug: Mostrando tabla con st.dataframe:")
-            try:
-                st.dataframe(
-                    df_cash_flows_compact,
-                    use_container_width=True,
-                    height=400,
-                    hide_index=True
-                )
-            except Exception as e:
-                st.write(f"Error al mostrar DataFrame: {e}")
-                st.write("DataFrame raw:")
-                st.write(df_cash_flows_compact.to_string())
-            
-            # Mostrar tabla simple
-            st.write("Debug: Mostrando tabla simple:")
-            st.table(df_cash_flows_compact)
+            st.dataframe(
+                df_cash_flows_compact,
+                use_container_width=True,
+                height=400,
+                hide_index=True
+            )
             
             # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
