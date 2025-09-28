@@ -775,22 +775,17 @@ try:
             
             # Debug: mostrar información de la tabla
             st.write(f"Debug: DataFrame tiene {len(df_cash_flows_compact)} filas")
-            st.write("Debug: Columnas del DataFrame:")
-            st.write(df_cash_flows_compact.columns.tolist())
-            st.write("Debug: Tipos de datos:")
-            st.write(df_cash_flows_compact.dtypes)
-            st.write("Debug: DataFrame completo:")
-            st.write(df_cash_flows_compact)
+            st.write("Debug: Primeras 5 filas:")
+            st.write(df_cash_flows_compact.head())
             
             # Mostrar tabla compacta
-            st.markdown('<div class="cashflow-table">', unsafe_allow_html=True)
+            st.write("Debug: Mostrando tabla con st.dataframe:")
             st.dataframe(
                 df_cash_flows_compact,
                 use_container_width=True,
                 height=400,
                 hide_index=True
             )
-            st.markdown('</div>', unsafe_allow_html=True)
             
             # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
