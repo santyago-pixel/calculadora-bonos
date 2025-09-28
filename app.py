@@ -773,6 +773,11 @@ try:
             # Reemplazar 0 con vacío
             df_cash_flows_compact = df_cash_flows_compact.replace(0, '')
             
+            # Debug: mostrar información de la tabla
+            st.write(f"Debug: DataFrame tiene {len(df_cash_flows_compact)} filas")
+            st.write("Debug: Primeras 3 filas del DataFrame:")
+            st.write(df_cash_flows_compact.head(3))
+            
             # Mostrar tabla compacta
             st.markdown('<div class="cashflow-table">', unsafe_allow_html=True)
             st.dataframe(
