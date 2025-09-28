@@ -712,28 +712,28 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Precio Limpio</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{clean_price:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col2:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Intereses Corridos</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{accrued_interest:.4f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Capital Residual</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{capital_residual:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Valor Técnico</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{technical_value:.2f}</div>
                         </div>
@@ -743,7 +743,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Cupón Vigente</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{(cupon_vigente * 100):.2f}%</div>
                         </div>
@@ -752,28 +752,28 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         if next_coupon_date:
                             next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
                             st.markdown(f"""
-                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                                 <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Próximo Cupón</div>
                                 <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{next_coupon_str}</div>
                             </div>
                             """, unsafe_allow_html=True)
                         else:
                             st.markdown(f"""
-                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                                 <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Próximo Cupón</div>
                                 <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">N/A</div>
                             </div>
                             """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Paridad</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{parity:.4f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Vida Media</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{average_life:.2f} años</div>
                         </div>
@@ -783,28 +783,28 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">TIR Efectiva</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{ytm:.4%}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col2:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">TIR {periodicidad_titulo}</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{ytm_anualizada:.4%}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Duración Modificada</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{modified_duration:.2f} años</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; height: 80px !important; text-align: center !important;">
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; box-sizing: border-box !important;">
                             <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Duración Macaulay</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{macaulay_duration:.2f} años</div>
                         </div>
