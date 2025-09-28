@@ -17,17 +17,19 @@ st.set_page_config(
 # CSS para asegurar formato consistente en métricas
 st.markdown("""
 <style>
-/* Asegurar que todas las métricas tengan el mismo formato */
-[data-testid="metric-container"] {
+/* Selector más agresivo para TODAS las métricas */
+div[data-testid="metric-container"],
+.stMetric,
+.stMetric > div,
+div[data-testid="metric-container"] > div,
+.stColumn > div[data-testid="metric-container"],
+.stColumn > div[data-testid="metric-container"] > div {
     background-color: #f0f2f6 !important;
     border: 1px solid #e0e0e0 !important;
     border-radius: 8px !important;
     padding: 15px !important;
     text-align: center !important;
     vertical-align: middle !important;
-}
-
-[data-testid="metric-container"] > div {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -35,18 +37,27 @@ st.markdown("""
     height: 100% !important;
 }
 
-[data-testid="metric-container"] label {
+/* Asegurar que los labels tengan el mismo formato */
+div[data-testid="metric-container"] label,
+.stMetric label {
     font-size: 14px !important;
     font-weight: 600 !important;
     color: #262730 !important;
     margin-bottom: 5px !important;
 }
 
-[data-testid="metric-container"] div[data-testid="metric-value"] {
+/* Asegurar que los valores tengan el mismo formato */
+div[data-testid="metric-container"] div[data-testid="metric-value"],
+.stMetric div[data-testid="metric-value"] {
     font-size: 18px !important;
     font-weight: 700 !important;
     color: #262730 !important;
     line-height: 1.2 !important;
+}
+
+/* Forzar fondo gris en cualquier contenedor de métrica */
+.stColumn div:has([data-testid="metric-container"]) {
+    background-color: #f0f2f6 !important;
 }
 </style>
 """, unsafe_allow_html=True)
