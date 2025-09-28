@@ -154,6 +154,14 @@ st.markdown("""
         font-weight: 600;
     }
     
+    .stSidebar .stDateInput > div > div > input {
+        color: white !important;
+    }
+    
+    .stSidebar .stDateInput > div > div > input::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
     .stSidebar .stNumberInput > div > div > input {
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -407,7 +415,7 @@ def calcular_ytm(precio_dirty, flujos, fechas, fecha_liquidacion, base_calculo="
             elif base_calculo == "ACT/ACT":
                 factor_descuento = (1 + rate) ** (dias / 365)
                 derivada = -flujo * (dias / 365) * (1 + rate) ** (dias / 365 - 1)
-            else:
+        else:
                 factor_descuento = (1 + rate) ** (dias / 365)
                 derivada = -flujo * (dias / 365) * (1 + rate) ** (dias / 365 - 1)
             total += derivada
@@ -545,8 +553,8 @@ try:
             valor = df.iloc[i-1, 9]  # Columna J (índice 9)
             if pd.notna(valor) and str(valor).strip():
                 tipos_bono.append(str(valor).strip())
-    except:
-        pass
+        except:
+            pass
     
     if not tipos_bono:
         tipos_bono = ["Todos"]
@@ -612,32 +620,42 @@ try:
         
         # Selección de bono
         nombres_bonos = [bono['nombre'] for bono in bonos_filtrados]
-        bono_seleccionado = st.selectbox("Elija un Bono", nombres_bonos)
-        
-        # Encontrar el bono seleccionado
-        bono_actual = next(bono for bono in bonos_filtrados if bono['nombre'] == bono_seleccionado)
-        
-        # Inputs
-        fecha_liquidacion = st.date_input(
-            "Fecha de Liquidación",
-            value=get_next_business_day(),
-            format="DD/MM/YYYY"
+        bono_seleccionado = st.selectbox(
+            "Elija un Bono", 
+            nombres_bonos,
+            index=None,  # Ningún bono seleccionado por defecto
+            placeholder="Seleccione un bono..."
         )
         
-        precio_dirty = st.number_input(
-            "Precio Dirty (base 100)",
-            min_value=0.0,
-            max_value=200.0,
-            value=100.0,
-            step=0.01,
-            format="%.2f"
-        )
-    
-        # Botón de cálculo
-        calcular = st.button("Calcular", type="primary")
+        # Solo mostrar inputs si hay un bono seleccionado
+        if bono_seleccionado:
+            # Encontrar el bono seleccionado
+            bono_actual = next(bono for bono in bonos_filtrados if bono['nombre'] == bono_seleccionado)
+            
+            # Inputs
+            fecha_liquidacion = st.date_input(
+                "Fecha de Liquidación",
+                value=get_next_business_day(),
+                format="DD/MM/YYYY"
+            )
+            
+            precio_dirty = st.number_input(
+                "Precio Dirty (base 100)",
+                min_value=0.0,
+                max_value=200.0,
+                value=100.0,
+                step=0.01,
+                format="%.2f"
+            )
+        
+            # Botón de cálculo
+            calcular = st.button("Calcular", type="primary")
+        else:
+            calcular = False
+            bono_actual = None
     
     # Contenido principal
-    if calcular:
+    if calcular and bono_seleccionado:
         # Convertir fecha_liquidacion a datetime para comparación
         fecha_liquidacion_dt = pd.to_datetime(fecha_liquidacion)
         
@@ -874,8 +892,8 @@ try:
                 'Cupón': cupon,
                 'Flujo Total': flujo
             })
-        
-        df_cash_flows = pd.DataFrame(cash_flows)
+                
+                df_cash_flows = pd.DataFrame(cash_flows)
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
         df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
@@ -947,7 +965,10 @@ try:
             st.components.v1.html(tradingview_html, height=675)
             
     else:
-        st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
+        if not bono_seleccionado:
+            st.info("👆 Seleccione un bono en el sidebar para comenzar")
+        else:
+            st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
         
         # Mapear periodicidad a texto
         periodicidad_texto = {
@@ -971,5 +992,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-except Exception as e:
+        except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
