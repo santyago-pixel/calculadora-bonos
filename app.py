@@ -14,6 +14,19 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# CSS global para las celdas de métricas
+st.markdown("""
+<style>
+.metric-cell {
+    background-color: #f8f9fa !important;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 5px;
+    text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.title("Calculadora de Bonos")
 st.markdown("---")
 
@@ -644,18 +657,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Mostrar resultados en la columna derecha
                 with col_right:
-                    # CSS para fondo gris en todas las celdas de métricas
-                    st.markdown("""
-                    <style>
-                    .metric-cell {
-                        background-color: #f8f9fa !important;
-                        border-radius: 5px;
-                        padding: 15px;
-                        margin: 5px;
-                        text-align: center;
-                    }
-                    </style>
-                    """, unsafe_allow_html=True)
                     
                     # 1ra fila: 1 celda con título "Resultados"
                     st.markdown('<div class="metric-cell">', unsafe_allow_html=True)
