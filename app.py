@@ -21,6 +21,21 @@ st.markdown("""
         padding-top: 0rem;
     }
     
+    /* Eliminar espaciado superior adicional */
+    .main .block-container {
+        padding-top: 0rem !important;
+    }
+    
+    .main .element-container {
+        margin-top: 0rem !important;
+    }
+    
+    /* Eliminar espaciado del primer elemento */
+    .main .element-container:first-child {
+        margin-top: 0rem !important;
+        padding-top: 0rem !important;
+    }
+    
     /* Sidebar */
     .stSidebar {
         background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
