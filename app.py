@@ -594,18 +594,9 @@ try:
     tipos_bono.sort()  # Ordenar alfabéticamente
     tipos_bono = ["Todos"] + tipos_bono
     
-    # Debug: mostrar información de bonos procesados
-    st.write(f"Debug: Se procesaron {len(bonos)} bonos del archivo Excel")
-    for i, bono in enumerate(bonos):
-        st.write(f"Debug: Bono {i+1}: {bono['nombre']} (tipo: {bono['tipo_bono']}) con {len(bono['flujos'])} flujos")
-    
     # Sidebar
     with st.sidebar:
         st.markdown("# CALCULADORA DE BONOS")
-        
-        # Debug: mostrar información
-        st.write(f"Debug: {len(tipos_bono)} tipos de bono: {tipos_bono}")
-        st.write(f"Debug: {len(bonos)} bonos cargados")
         
         # Filtro por tipo de bono
         tipo_seleccionado = st.selectbox("Tipo de Bono", tipos_bono)
@@ -616,18 +607,12 @@ try:
         else:
             bonos_filtrados = [bono for bono in bonos if bono['tipo_bono'] == tipo_seleccionado]
         
-        # Debug: mostrar bonos filtrados
-        st.write(f"Debug: {len(bonos_filtrados)} bonos filtrados para tipo '{tipo_seleccionado}'")
-        for i, bono in enumerate(bonos_filtrados):
-            st.write(f"Debug: Bono {i+1}: {bono['nombre']} (tipo: {bono['tipo_bono']})")
-        
         if not bonos_filtrados:
             st.error("No hay bonos del tipo seleccionado")
             st.stop()
         
         # Selección de bono
         nombres_bonos = [bono['nombre'] for bono in bonos_filtrados]
-        st.write(f"Debug: {len(nombres_bonos)} nombres de bonos: {nombres_bonos}")
         bono_seleccionado = st.selectbox(
             "Elija un Bono", 
             nombres_bonos,
