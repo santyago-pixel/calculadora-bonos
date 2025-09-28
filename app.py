@@ -29,10 +29,10 @@ st.markdown("""
     background-color: #f0f4f8;
 }
 
-/* Sidebar */
+/* Sidebar - Celeste grisáceo */
 .sidebar {
     width: 250px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
     color: white;
     padding: 2rem 1.5rem;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
@@ -47,7 +47,7 @@ st.markdown("""
 }
 
 .sidebar h3 {
-    color: #cbd5e1;
+    color: #e2e8f0;
     font-size: 0.9rem;
     margin: 1.5rem 0 0.5rem 0;
     text-transform: uppercase;
@@ -95,24 +95,64 @@ st.markdown("""
     font-size: 2rem;
     font-weight: bold;
     margin: 0.5rem 0;
+    color: #374151; /* Gris oscuro unificado */
 }
 
 .metric-label {
     font-size: 0.9rem;
-    color: #64748b;
+    color: #374151; /* Gris oscuro unificado */
     font-weight: 500;
 }
 
 .metric-change {
     font-size: 0.8rem;
     margin-top: 0.5rem;
+    color: #374151; /* Gris oscuro unificado */
 }
 
-/* Colores para métricas */
-.metric-earnings { color: #3b82f6; }
-.metric-downloads { color: #f59e0b; }
-.metric-favorites { color: #10b981; }
-.metric-default { color: #6b7280; }
+/* Información adicional como bullets */
+.info-bullets {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.info-bullets ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.info-bullets li {
+    display: flex;
+    align-items: center;
+    color: #374151; /* Gris oscuro unificado */
+    font-size: 0.95rem;
+}
+
+.info-bullets li::before {
+    content: "•";
+    color: #3b82f6;
+    font-weight: bold;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-bullets .info-label {
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.info-bullets .info-value {
+    font-weight: 500;
+    color: #6b7280;
+}
 
 /* Tabla de flujo */
 .cashflow-table {
@@ -125,7 +165,7 @@ st.markdown("""
 
 /* Override de Streamlit */
 .stSidebar {
-    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
 }
 
 .stSidebar .stSelectbox label,
@@ -779,6 +819,17 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 with col1:
                     st.markdown("## 📈 Resultados del Análisis")
                     
+                    # Información adicional como bullets
+                    st.markdown(f'''
+                    <div class="info-bullets">
+                        <ul>
+                            <li><span class="info-label">Base de Cálculo:</span> <span class="info-value">{base_calculo_bono}</span></li>
+                            <li><span class="info-label">Periodicidad:</span> <span class="info-value">{periodicidad_texto}</span></li>
+                            <li><span class="info-label">Cupón Vigente:</span> <span class="info-value">{(cupon_vigente * 100):.2f}%</span></li>
+                        </ul>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    
                     # Grid de métricas principales
                     st.markdown('<div class="metrics-grid">', unsafe_allow_html=True)
                     
@@ -788,7 +839,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.markdown(f'''
                         <div class="metric-card">
                             <div class="metric-label">Precio Limpio</div>
-                            <div class="metric-value metric-earnings">{clean_price:.2f}</div>
+                            <div class="metric-value">{clean_price:.2f}</div>
                         </div>
                         ''', unsafe_allow_html=True)
                     
@@ -796,7 +847,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.markdown(f'''
                         <div class="metric-card">
                             <div class="metric-label">Intereses Corridos</div>
-                            <div class="metric-value metric-downloads">{accrued_interest:.4f}</div>
+                            <div class="metric-value">{accrued_interest:.4f}</div>
                         </div>
                         ''', unsafe_allow_html=True)
                     
@@ -804,7 +855,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.markdown(f'''
                         <div class="metric-card">
                             <div class="metric-label">Capital Residual</div>
-                            <div class="metric-value metric-favorites">{capital_residual:.2f}</div>
+                            <div class="metric-value">{capital_residual:.2f}</div>
                         </div>
                         ''', unsafe_allow_html=True)
                     
@@ -814,7 +865,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.markdown(f'''
                         <div class="metric-card">
                             <div class="metric-label">TIR Efectiva</div>
-                            <div class="metric-value metric-earnings">{ytm:.4%}</div>
+                            <div class="metric-value">{ytm:.4%}</div>
                         </div>
                         ''', unsafe_allow_html=True)
                     
@@ -822,7 +873,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.markdown(f'''
                         <div class="metric-card">
                             <div class="metric-label">Duración Modificada</div>
-                            <div class="metric-value metric-downloads">{modified_duration:.2f} años</div>
+                            <div class="metric-value">{modified_duration:.2f} años</div>
                         </div>
                         ''', unsafe_allow_html=True)
                     
@@ -830,34 +881,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         st.markdown(f'''
                         <div class="metric-card">
                             <div class="metric-label">Vida Media</div>
-                            <div class="metric-value metric-favorites">{average_life:.2f} años</div>
+                            <div class="metric-value">{average_life:.2f} años</div>
                         </div>
                         ''', unsafe_allow_html=True)
                     
                     st.markdown('</div>', unsafe_allow_html=True)
                 
-                # COLUMNA DERECHA - INFORMACIÓN ADICIONAL
+                # COLUMNA DERECHA - VACÍA POR AHORA
                 with col2:
-                    st.markdown("## ℹ️ Información Adicional")
-                    
-                    st.markdown(f'''
-                    <div class="card">
-                        <div class="card-title">Base de Cálculo</div>
-                        <div style="font-size: 1.2rem; color: #3b82f6; font-weight: 600;">{base_calculo_bono}</div>
-                    </div>
-                    ''', unsafe_allow_html=True)
-                    
-                    st.markdown(f'''
-                    <div class="card">
-                        <div class="card-title">Periodicidad</div>
-                        <div style="font-size: 1.2rem; color: #f59e0b; font-weight: 600;">{periodicidad_texto}</div>
-                    </div>
-                    ''', unsafe_allow_html=True)
-                    
-                    st.markdown(f'''
-                    <div class="card">
-                        <div class="card-title">Cupón Vigente</div>
-                        <div style="font-size: 1.2rem; color: #10b981; font-weight: 600;">{(cupon_vigente * 100):.2f}%</div>
+                    st.markdown("## 🔮 Área Futura")
+                    st.markdown('''
+                    <div class="future-content">
+                        <h3>🚀 Contenido Futuro</h3>
+                        <p>Esta área estará disponible próximamente</p>
                     </div>
                     ''', unsafe_allow_html=True)
                 
