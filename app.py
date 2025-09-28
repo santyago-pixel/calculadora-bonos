@@ -36,6 +36,27 @@ st.markdown("""
         padding-top: 0rem !important;
     }
     
+    /* Reducir tamaño de títulos y alinear arriba */
+    .main h1, .main h2, .main h3 {
+        margin-top: 0rem !important;
+        margin-bottom: 0.5rem !important;
+        padding-top: 0rem !important;
+        font-size: 1.2rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .main h1 {
+        font-size: 1.4rem !important;
+    }
+    
+    .main h2 {
+        font-size: 1.2rem !important;
+    }
+    
+    .main h3 {
+        font-size: 1.1rem !important;
+    }
+    
     /* Sidebar */
     .stSidebar {
         background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
