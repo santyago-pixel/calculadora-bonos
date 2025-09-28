@@ -522,77 +522,86 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     with col_left:
         st.subheader("Configuración")
         
-        # Contenedor con borde redondeado usando st.container
-        with st.container():
-            st.markdown("""
-            <div style='border: 2px solid #e0e0e0; border-radius: 15px; padding: 20px; 
-                        background-color: #fafafa; margin-bottom: 20px;'>
-            """, unsafe_allow_html=True)
-            
-            # Selector de tipo de bono
-            st.write("**Tipo de Bono**")
-            tipo_selected = st.selectbox(
-                "Selecciona el tipo de bono:",
-                options=["Todos"] + tipos_bonos_disponibles,
-                label_visibility="collapsed"
-            )
-            
-            # Filtrar bonos por tipo seleccionado
-            if tipo_selected == "Todos":
-                flows_filtered = flows_df
-            else:
-                flows_filtered = flows_df[flows_df['tipo_bono'] == tipo_selected]
-            
-            # Agrupar por nombre de bono (solo los filtrados)
-            unique_bonos = flows_filtered['nombre_bono'].unique()
-            
-            if len(unique_bonos) == 0:
-                st.warning(f"⚠️ No se encontraron bonos del tipo '{tipo_selected}'")
-                st.stop()
-            
-            # Selector de bono
-            st.write("**Elija un Bono**")
-            bono_selected = st.selectbox(
-                "Selecciona un bono:",
-                options=unique_bonos,
-                label_visibility="collapsed"
-            )
-            
-            # Filtrar flujos del bono seleccionado
-            bono_flows = flows_filtered[flows_filtered['nombre_bono'] == bono_selected].copy()
-            
-            # Convertir fechas a datetime y ordenar
-            bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
-            bono_flows = bono_flows.sort_values('fecha')
-            
-            # Inputs para cálculo
-            st.write("**Datos para el Cálculo**")
-            
-            settlement_date = st.date_input(
-                "Fecha de liquidación:",
-                value=get_next_business_day(),  # Próximo día hábil
-                min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
-                max_value=pd.to_datetime(bono_flows['fecha'].max()).date(),
-                format="DD/MM/YYYY"
-            )
-            
-            bond_price = st.number_input(
-                "Precio Dirty (base 100):",
-                min_value=0.0,
-                max_value=200.0,
-                value=100.0,
-                step=0.01,
-                format="%.2f"
-            )
-            
-            # Base de cálculo fija en ACT/365
-            day_count_basis = "ACT/365"
-            
-            # Botón de calcular
-            calcular = st.button("🔄 Calcular", type="primary")
-            
-            # Cerrar el contenedor con borde redondeado
-            st.markdown("</div>", unsafe_allow_html=True)
+        # CSS personalizado para el contenedor
+        st.markdown("""
+        <style>
+        .config-container {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            background-color: #fafafa;
+            margin-bottom: 20px;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Contenedor con borde redondeado
+        st.markdown('<div class="config-container">', unsafe_allow_html=True)
+        
+        # Selector de tipo de bono
+        st.write("**Tipo de Bono**")
+        tipo_selected = st.selectbox(
+            "Selecciona el tipo de bono:",
+            options=["Todos"] + tipos_bonos_disponibles,
+            label_visibility="collapsed"
+        )
+        
+        # Filtrar bonos por tipo seleccionado
+        if tipo_selected == "Todos":
+            flows_filtered = flows_df
+        else:
+            flows_filtered = flows_df[flows_df['tipo_bono'] == tipo_selected]
+        
+        # Agrupar por nombre de bono (solo los filtrados)
+        unique_bonos = flows_filtered['nombre_bono'].unique()
+        
+        if len(unique_bonos) == 0:
+            st.warning(f"⚠️ No se encontraron bonos del tipo '{tipo_selected}'")
+            st.stop()
+        
+        # Selector de bono
+        st.write("**Elija un Bono**")
+        bono_selected = st.selectbox(
+            "Selecciona un bono:",
+            options=unique_bonos,
+            label_visibility="collapsed"
+        )
+        
+        # Filtrar flujos del bono seleccionado
+        bono_flows = flows_filtered[flows_filtered['nombre_bono'] == bono_selected].copy()
+        
+        # Convertir fechas a datetime y ordenar
+        bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
+        bono_flows = bono_flows.sort_values('fecha')
+        
+        # Inputs para cálculo
+        st.write("**Datos para el Cálculo**")
+        
+        settlement_date = st.date_input(
+            "Fecha de liquidación:",
+            value=get_next_business_day(),  # Próximo día hábil
+            min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
+            max_value=pd.to_datetime(bono_flows['fecha'].max()).date(),
+            format="DD/MM/YYYY"
+        )
+        
+        bond_price = st.number_input(
+            "Precio Dirty (base 100):",
+            min_value=0.0,
+            max_value=200.0,
+            value=100.0,
+            step=0.01,
+            format="%.2f"
+        )
+        
+        # Base de cálculo fija en ACT/365
+        day_count_basis = "ACT/365"
+        
+        # Botón de calcular
+        calcular = st.button("🔄 Calcular", type="primary")
+        
+        # Cerrar el contenedor
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # SECCIÓN DERECHA: Resultados
     with col_right:
