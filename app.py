@@ -530,15 +530,15 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             padding: 20px;
             border-radius: 10px;
         }
-        /* Fondo gris para elementos de métricas individuales en la columna derecha */
-        .stColumn:last-child .element-container > div {
-            background-color: #f8f9fa;
+        /* Fondo gris para todas las métricas en la columna derecha */
+        .stColumn:last-child .element-container {
+            background-color: #f8f9fa !important;
             border-radius: 5px;
             padding: 8px;
             margin: 2px;
         }
-        .stColumn:last-child h3 {
-            background-color: #f8f9fa;
+        .stColumn:last-child div[data-testid="column"] {
+            background-color: #f8f9fa !important;
             border-radius: 5px;
             padding: 8px;
             margin: 2px;
