@@ -187,6 +187,11 @@ st.markdown("""
     color: white;
 }
 
+/* Ocultar botones +/- del number input */
+.stNumberInput > div > div > button {
+    display: none !important;
+}
+
 /* Botón personalizado */
 .calculate-btn {
     background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
@@ -206,12 +211,17 @@ st.markdown("""
     transform: translateY(-1px);
 }
 
-/* Grid layout */
+/* Grid layout con espacio entre filas */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
+}
+
+/* Espacio entre filas de métricas */
+.metrics-row {
+    margin-bottom: 1.5rem;
 }
 
 /* Placeholder para contenido futuro */
@@ -699,7 +709,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     # SIDEBAR IZQUIERDO
     with st.sidebar:
         st.markdown('<div class="sidebar">', unsafe_allow_html=True)
-        st.markdown("# 📊 CALCULADORA DE BONOS")
+        st.markdown("# CALCULADORA DE BONOS")
         
         st.markdown("### Configuración")
         
@@ -817,7 +827,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # COLUMNA IZQUIERDA - MÉTRICAS PRINCIPALES
                 with col1:
-                    st.markdown("## 📈 Resultados del Análisis")
+                    st.markdown("## Resultados del Análisis")
                     
                     # Información adicional como bullets
                     st.markdown(f'''
@@ -834,6 +844,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown('<div class="metrics-grid">', unsafe_allow_html=True)
                     
                     # Fila 1: Métricas principales
+                    st.markdown('<div class="metrics-row">', unsafe_allow_html=True)
                     col1_1, col1_2, col1_3 = st.columns(3)
                     with col1_1:
                         st.markdown(f'''
@@ -858,8 +869,10 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                             <div class="metric-value">{capital_residual:.2f}</div>
                         </div>
                         ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
                     
                     # Fila 2: Más métricas
+                    st.markdown('<div class="metrics-row">', unsafe_allow_html=True)
                     col2_1, col2_2, col2_3 = st.columns(3)
                     with col2_1:
                         st.markdown(f'''
@@ -884,24 +897,25 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                             <div class="metric-value">{average_life:.2f} años</div>
                         </div>
                         ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
                     
                     st.markdown('</div>', unsafe_allow_html=True)
                 
                 # COLUMNA DERECHA - VACÍA POR AHORA
                 with col2:
-                    st.markdown("## 🔮 Área Futura")
+                    st.markdown("## Área Futura")
                     st.markdown('''
                     <div class="future-content">
-                        <h3>🚀 Contenido Futuro</h3>
+                        <h3>Contenido Futuro</h3>
                         <p>Esta área estará disponible próximamente</p>
                     </div>
                     ''', unsafe_allow_html=True)
                 
                 # SECCIÓN INFERIOR - CONTENIDO FUTURO
-                st.markdown("## 🔮 Contenido Futuro")
+                st.markdown("## Contenido Futuro")
                 st.markdown('''
                 <div class="future-content">
-                    <h3>🚀 Próximas Funcionalidades</h3>
+                    <h3>Próximas Funcionalidades</h3>
                     <p>Esta sección estará disponible próximamente con:</p>
                     <ul style="text-align: left; display: inline-block;">
                         <li>Gráficos interactivos de rendimiento</li>
@@ -913,7 +927,7 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 ''', unsafe_allow_html=True)
                 
                 # TABLA DE FLUJO DE FONDOS
-                st.markdown("## 💰 Flujo de Fondos")
+                st.markdown("## Flujo de Fondos")
                 
                 df_cash_flows = pd.DataFrame(cash_flows)
                 df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
