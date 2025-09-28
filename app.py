@@ -505,7 +505,9 @@ try:
         flujos_capital = []
         
         for flujo in bono_actual['flujos']:
-            if flujo['fecha'] > fecha_liquidacion:
+            # Convertir fecha_liquidacion a datetime para comparación
+            fecha_liquidacion_dt = pd.to_datetime(fecha_liquidacion)
+            if flujo['fecha'] > fecha_liquidacion_dt:
                 flujos.append(flujo['total'])
                 fechas.append(flujo['fecha'])
                 flujos_capital.append(flujo['capital'])
@@ -544,10 +546,11 @@ try:
         )
         
         # Calcular capital residual
-        capital_residual = 100 - sum([flujo['capital'] for flujo in bono_actual['flujos'] if flujo['fecha'] <= fecha_liquidacion])
+        fecha_liquidacion_dt = pd.to_datetime(fecha_liquidacion)
+        capital_residual = 100 - sum([flujo['capital'] for flujo in bono_actual['flujos'] if flujo['fecha'] <= fecha_liquidacion_dt])
         
         # Calcular intereses corridos
-        fecha_ultimo_cupon = encontrar_ultimo_cupon(fecha_liquidacion, [flujo['fecha'] for flujo in bono_actual['flujos']])
+        fecha_ultimo_cupon = encontrar_ultimo_cupon(fecha_liquidacion_dt, [flujo['fecha'] for flujo in bono_actual['flujos']])
         if fecha_ultimo_cupon:
             intereses_corridos = calcular_intereses_corridos(
                 fecha_liquidacion,
@@ -575,7 +578,7 @@ try:
         paridad = precio_limpio / valor_tecnico if valor_tecnico > 0 else 0
         
         # Encontrar próximo cupón
-        proximo_cupon = encontrar_proximo_cupon(fecha_liquidacion, [flujo['fecha'] for flujo in bono_actual['flujos']])
+        proximo_cupon = encontrar_proximo_cupon(fecha_liquidacion_dt, [flujo['fecha'] for flujo in bono_actual['flujos']])
         
         # Mapear periodicidad a texto
         periodicidad_texto = {
