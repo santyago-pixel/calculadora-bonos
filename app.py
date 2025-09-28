@@ -776,27 +776,32 @@ try:
             # Mostrar tabla compacta con formato mejorado
             st.markdown("""
             <style>
-            .cashflow-table table {
+            .stDataFrame table {
                 font-size: 12px !important;
                 width: 100% !important;
             }
-            .cashflow-table th, .cashflow-table td {
+            .stDataFrame th, .stDataFrame td {
                 padding: 4px 8px !important;
                 text-align: right !important;
                 font-size: 11px !important;
             }
-            .cashflow-table th:first-child {
+            .stDataFrame th:first-child, .stDataFrame td:first-child {
                 text-align: left !important;
             }
-            .cashflow-table td:first-child {
-                text-align: left !important;
+            /* Ocultar la primera columna (índice) */
+            .stDataFrame table tr th:first-child,
+            .stDataFrame table tr td:first-child {
+                display: none !important;
             }
             </style>
             """, unsafe_allow_html=True)
             
-            st.markdown('<div class="cashflow-table">', unsafe_allow_html=True)
-            st.table(df_cash_flows_compact)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.dataframe(
+                df_cash_flows_compact,
+                use_container_width=True,
+                height=400,
+                hide_index=True
+            )
             
             # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
