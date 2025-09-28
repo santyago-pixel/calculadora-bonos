@@ -654,21 +654,6 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         padding: 20px;
                         border-radius: 10px;
                     }
-                    
-                    /* Reducir tamaño de fuentes en métricas de la sección derecha */
-                    .stColumn:last-child [data-testid="metric-container"] label {
-                        font-size: 12px !important;
-                        font-weight: 600 !important;
-                    }
-                    
-                    .stColumn:last-child [data-testid="metric-container"] div[data-testid="metric-value"] {
-                        font-size: 14px !important;
-                        font-weight: 700 !important;
-                    }
-                    
-                    .stColumn:last-child [data-testid="metric-container"] {
-                        font-size: 12px !important;
-                    }
                     </style>
                     """, unsafe_allow_html=True)
                     
@@ -709,46 +694,121 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     # 2da fila: 2 celdas (Base de Cálculo + Periodicidad)
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.metric("Base de Cálculo", base_calculo_bono)
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Base de Cálculo</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{base_calculo_bono}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col2:
-                        st.metric("Periodicidad", periodicidad_texto)
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Periodicidad</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{periodicidad_texto}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     
                     # 3ra fila: 4 celdas (Precio Limpio, Intereses Corridos, Capital Residual, Valor Técnico)
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.metric("Precio Limpio", f"{clean_price:.2f}")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Precio Limpio</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{clean_price:.2f}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col2:
-                        st.metric("Intereses Corridos", f"{accrued_interest:.4f}")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Intereses Corridos</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{accrued_interest:.4f}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col3:
-                        st.metric("Capital Residual", f"{capital_residual:.2f}")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Capital Residual</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{capital_residual:.2f}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col4:
-                        st.metric("Valor Técnico", f"{technical_value:.2f}")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Valor Técnico</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{technical_value:.2f}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     
                     # 4ta fila: 4 celdas (Cupón Vigente, Próximo Cupón, Paridad, Vida Media)
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.metric("Cupón Vigente", f"{(cupon_vigente * 100):.2f}%")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Cupón Vigente</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{(cupon_vigente * 100):.2f}%</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col2:
                         if next_coupon_date:
                             next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
-                            st.metric("Próximo Cupón", next_coupon_str)
+                            st.markdown(f"""
+                            <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                                <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Próximo Cupón</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #262730;">{next_coupon_str}</div>
+                            </div>
+                            """, unsafe_allow_html=True)
                         else:
-                            st.metric("Próximo Cupón", "N/A")
+                            st.markdown(f"""
+                            <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                                <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Próximo Cupón</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #262730;">N/A</div>
+                            </div>
+                            """, unsafe_allow_html=True)
                     with col3:
-                        st.metric("Paridad", f"{parity:.4f}")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Paridad</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{parity:.4f}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col4:
-                        st.metric("Vida Media", f"{average_life:.2f} años")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Vida Media</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{average_life:.2f} años</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     
                     # 5ta fila: 4 celdas (TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay)
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.metric("TIR Efectiva", f"{ytm:.4%}")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">TIR Efectiva</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{ytm:.4%}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col2:
-                        st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">TIR {periodicidad_titulo}</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{ytm_anualizada:.4%}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col3:
-                        st.metric("Duración Modificada", f"{modified_duration:.2f} años")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Duración Modificada</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{modified_duration:.2f} años</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with col4:
-                        st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años")
+                        st.markdown(f"""
+                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Duración Macaulay</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{macaulay_duration:.2f} años</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                 
                 
         except Exception as e:
