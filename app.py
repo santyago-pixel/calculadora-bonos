@@ -228,6 +228,12 @@ def get_next_business_day():
 
 # Función para calcular días entre fechas según base de cálculo
 def calcular_dias(fecha1, fecha2, base_calculo):
+    # Convertir ambas fechas a datetime para asegurar compatibilidad
+    if hasattr(fecha1, 'date'):
+        fecha1 = fecha1.date()
+    if hasattr(fecha2, 'date'):
+        fecha2 = fecha2.date()
+    
     if base_calculo == "30/360":
         d1, m1, y1 = fecha1.day, fecha1.month, fecha1.year
         d2, m2, y2 = fecha2.day, fecha2.month, fecha2.year
@@ -251,10 +257,15 @@ def calcular_dias(fecha1, fecha2, base_calculo):
 
 # Función para calcular YTM usando Newton-Raphson
 def calcular_ytm(precio_dirty, flujos, fechas, fecha_liquidacion, base_calculo="ACT/365", periodicidad=2):
+    # Convertir fecha_liquidacion a date si es datetime
+    fecha_liq = fecha_liquidacion
+    if hasattr(fecha_liq, 'date'):
+        fecha_liq = fecha_liq.date()
+    
     def npv(rate):
         total = 0
         for i, (flujo, fecha) in enumerate(zip(flujos, fechas)):
-            dias = calcular_dias(fecha_liquidacion, fecha, base_calculo)
+            dias = calcular_dias(fecha_liq, fecha, base_calculo)
             if base_calculo == "30/360":
                 factor_descuento = (1 + rate) ** (dias / 360)
             elif base_calculo == "ACT/360":
@@ -271,7 +282,7 @@ def calcular_ytm(precio_dirty, flujos, fechas, fecha_liquidacion, base_calculo="
     def npv_derivative(rate):
         total = 0
         for i, (flujo, fecha) in enumerate(zip(flujos, fechas)):
-            dias = calcular_dias(fecha_liquidacion, fecha, base_calculo)
+            dias = calcular_dias(fecha_liq, fecha, base_calculo)
             if base_calculo == "30/360":
                 factor_descuento = (1 + rate) ** (dias / 360)
                 derivada = -flujo * (dias / 360) * (1 + rate) ** (dias / 360 - 1)
@@ -303,7 +314,7 @@ def calcular_ytm(precio_dirty, flujos, fechas, fecha_liquidacion, base_calculo="
         derivative = npv_derivative(rate)
         if abs(derivative) < 1e-12:
             break
-        
+    
         rate = rate - npv_val / derivative
     
     # Si no converge, usar búsqueda binaria
@@ -323,11 +334,16 @@ def calcular_ytm(precio_dirty, flujos, fechas, fecha_liquidacion, base_calculo="
 
 # Función para calcular duración Macaulay
 def calcular_duracion_macaulay(flujos, fechas, fecha_liquidacion, ytm, base_calculo="ACT/365"):
+    # Convertir fecha_liquidacion a date si es datetime
+    fecha_liq = fecha_liquidacion
+    if hasattr(fecha_liq, 'date'):
+        fecha_liq = fecha_liq.date()
+    
     pv_total = 0
     pv_weighted = 0
     
     for flujo, fecha in zip(flujos, fechas):
-        dias = calcular_dias(fecha_liquidacion, fecha, base_calculo)
+        dias = calcular_dias(fecha_liq, fecha, base_calculo)
         if base_calculo == "30/360":
             factor_descuento = (1 + ytm) ** (dias / 360)
         elif base_calculo == "ACT/360":
@@ -354,7 +370,12 @@ def calcular_duracion_modificada(duracion_macaulay, ytm, periodicidad):
 
 # Función para calcular intereses corridos
 def calcular_intereses_corridos(fecha_liquidacion, fecha_ultimo_cupon, tasa_cupon, capital_residual, base_calculo="ACT/365"):
-    dias = calcular_dias(fecha_ultimo_cupon, fecha_liquidacion, base_calculo)
+    # Convertir fecha_liquidacion a date si es datetime
+    fecha_liq = fecha_liquidacion
+    if hasattr(fecha_liq, 'date'):
+        fecha_liq = fecha_liq.date()
+    
+    dias = calcular_dias(fecha_ultimo_cupon, fecha_liq, base_calculo)
     if base_calculo == "30/360":
         return (tasa_cupon * capital_residual) / 360 * dias
     elif base_calculo == "ACT/360":
@@ -375,6 +396,11 @@ def encontrar_ultimo_cupon(fecha_liquidacion, fechas_cupones):
 
 # Función para calcular vida media
 def calcular_vida_media(flujos_capital, fechas, fecha_liquidacion, base_calculo="ACT/365"):
+    # Convertir fecha_liquidacion a date si es datetime
+    fecha_liq = fecha_liquidacion
+    if hasattr(fecha_liq, 'date'):
+        fecha_liq = fecha_liq.date()
+    
     if not flujos_capital or sum(flujos_capital) == 0:
         return 0
     
@@ -383,7 +409,7 @@ def calcular_vida_media(flujos_capital, fechas, fecha_liquidacion, base_calculo=
     
     for flujo, fecha in zip(flujos_capital, fechas):
         if flujo > 0:
-            dias = calcular_dias(fecha_liquidacion, fecha, base_calculo)
+            dias = calcular_dias(fecha_liq, fecha, base_calculo)
             peso = flujo / total_capital
             vida_media += peso * (dias / 365)
     
@@ -493,7 +519,7 @@ try:
             step=0.01,
             format="%.2f"
         )
-        
+    
         # Botón de cálculo
         calcular = st.button("Calcular", type="primary")
     
@@ -559,13 +585,13 @@ try:
                 capital_residual,
                 bono_actual['base_calculo']
             )
-        else:
+            else:
             intereses_corridos = 0
         
         # Calcular precio limpio
         precio_limpio = precio_dirty - intereses_corridos
-        
-        # Calcular vida media
+                
+                # Calcular vida media
         vida_media = calcular_vida_media(
             flujos_capital,
             fechas,
@@ -816,5 +842,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-except Exception as e:
+        except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
