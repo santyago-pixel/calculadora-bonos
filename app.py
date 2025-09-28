@@ -11,10 +11,10 @@ st.set_page_config(
     page_title="Calculadora de Bonos",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
-# CSS personalizado que simula TailwindCSS optimizado para Streamlit
+# CSS para el dashboard moderno
 st.markdown("""
 <style>
 /* Reset y base */
@@ -22,151 +22,180 @@ st.markdown("""
     box-sizing: border-box;
 }
 
-/* Flexbox utilities */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.justify-between { justify-content: space-between; }
-.justify-center { justify-content: center; }
-.items-center { align-items: center; }
-.items-start { align-items: flex-start; }
-
-/* Spacing */
-.space-y-2 > * + * { margin-top: 0.5rem; }
-.space-y-4 > * + * { margin-top: 1rem; }
-.p-4 { padding: 1rem; }
-.p-6 { padding: 1.5rem; }
-.px-4 { padding-left: 1rem; padding-right: 1rem; }
-.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.m-2 { margin: 0.5rem; }
-.mb-4 { margin-bottom: 1rem; }
-
-/* Backgrounds */
-.bg-white { background-color: white; }
-.bg-gray-50 { background-color: #f9fafb; }
-.bg-gray-100 { background-color: #f3f4f6; }
-.bg-blue-50 { background-color: #eff6ff; }
-
-/* Borders */
-.border { border: 1px solid #e5e7eb; }
-.border-gray-200 { border-color: #e5e7eb; }
-.rounded { border-radius: 0.25rem; }
-.rounded-lg { border-radius: 0.5rem; }
-.rounded-xl { border-radius: 0.75rem; }
-
-/* Shadows */
-.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-
-/* Text */
-.text-sm { font-size: 0.875rem; }
-.text-base { font-size: 1rem; }
-.text-lg { font-size: 1.125rem; }
-.text-xl { font-size: 1.25rem; }
-.font-medium { font-weight: 500; }
-.font-semibold { font-weight: 600; }
-.font-bold { font-weight: 700; }
-.text-gray-600 { color: #4b5563; }
-.text-gray-700 { color: #374151; }
-.text-gray-900 { color: #111827; }
-
-/* Width */
-.w-full { width: 100%; }
-.w-1/2 { width: 50%; }
-.w-1/3 { width: 33.333333%; }
-.w-1/4 { width: 25%; }
-
-/* Height */
-.h-16 { height: 4rem; }
-.h-20 { height: 5rem; }
-.h-24 { height: 6rem; }
-
-/* Custom components para Streamlit */
-.metric-card {
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+/* Layout principal */
+.main-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 5rem;
+    min-height: 100vh;
+    background-color: #f0f4f8;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    color: white;
+    padding: 2rem 1.5rem;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar h1 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
     text-align: center;
 }
 
-.metric-label {
-    font-size: 0.75rem;
+.sidebar h3 {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    margin: 1.5rem 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Main content area */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    background-color: #f0f4f8;
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.card-title {
+    font-size: 1.1rem;
     font-weight: 600;
-    color: #6b7280;
-    margin-bottom: 0.25rem;
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.metric-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .metric-value {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #111827;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
 }
 
-/* Override de estilos de Streamlit */
-.stMetric > div {
-    background-color: transparent !important;
-    border: none !important;
-    padding: 0 !important;
+.metric-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
-.stMetric [data-testid="metric-container"] {
-    background-color: white !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 0.75rem !important;
-    padding: 1rem !important;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
-    height: 5rem !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
+.metric-change {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
 }
 
-.stMetric [data-testid="metric-container"] label {
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    color: #6b7280 !important;
-    margin-bottom: 0.25rem !important;
-}
+/* Colores para métricas */
+.metric-earnings { color: #3b82f6; }
+.metric-downloads { color: #f59e0b; }
+.metric-favorites { color: #10b981; }
+.metric-default { color: #6b7280; }
 
-.stMetric [data-testid="metric-container"] div[data-testid="metric-value"] {
-    font-size: 1rem !important;
-    font-weight: 700 !important;
-    color: #111827 !important;
-}
-
-/* Columnas con mejor espaciado */
-.stColumn {
-    padding: 0.5rem !important;
-}
-
-/* Panel de configuración */
-.config-panel {
-    background-color: #f9fafb;
+/* Tabla de flujo */
+.cashflow-table {
+    background: white;
+    border-radius: 12px;
     padding: 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
 }
 
-/* Panel de resultados */
-.results-panel {
-    background-color: #f9fafb;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
+/* Override de Streamlit */
+.stSidebar {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+}
+
+.stSidebar .stSelectbox label,
+.stSidebar .stDateInput label,
+.stSidebar .stNumberInput label,
+.stSidebar .stButton button {
+    color: white !important;
+}
+
+.stSidebar .stSelectbox > div > div,
+.stSidebar .stDateInput > div > div,
+.stSidebar .stNumberInput > div > div {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.stSidebar .stSelectbox > div > div > div {
+    color: white;
+}
+
+/* Botón personalizado */
+.calculate-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.calculate-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-1px);
+}
+
+/* Grid layout */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Placeholder para contenido futuro */
+.future-content {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 2px dashed #cbd5e1;
+    text-align: center;
+    color: #64748b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
-
-st.title("Calculadora de Bonos")
-st.markdown("---")
 
 # Función para calcular el próximo día hábil
 def get_next_business_day():
@@ -470,214 +499,173 @@ def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, p
     else:  # Default ACT/365
         accrued_interest = (current_coupon_rate * capital_residual) / 365.0 * days
     
-    # Debug info removido para compatibilidad
-    
     return accrued_interest
 
-# Interfaz principal
-
-# Cargar automáticamente el archivo por defecto
-try:
-    # Leer el archivo por defecto con múltiples estrategias para compatibilidad
-    flows_df = None
-    
-    # Estrategia 1: openpyxl (más compatible con archivos modernos)
+# Cargar datos del archivo Excel
+@st.cache_data
+def load_bond_data():
+    """Carga los datos de bonos desde el archivo Excel"""
     try:
-        flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl')
-    except:
-        pass
-    
-    # Estrategia 2: xlrd (para archivos más antiguos)
-    if flows_df is None:
-        try:
-            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='xlrd')
-        except:
-            pass
-    
-    # Estrategia 3: pandas por defecto
-    if flows_df is None:
-        try:
-            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
-        except:
-            pass
-    
-    # Estrategia 4: con diferentes parámetros
-    if flows_df is None:
-        try:
-            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', na_values=[''])
-        except:
-            pass
-    
-    # Estrategia 5: ignorar validaciones y formato
-    if flows_df is None:
-        try:
-            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', 
-                                   na_values=['', ' ', 'N/A', 'n/a'], 
-                                   keep_default_na=False)
-        except:
-            pass
-    
-    # Estrategia 6: leer como texto puro
-    if flows_df is None:
-        try:
-            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', 
-                                   dtype=str, na_values=[''])
-        except:
-            pass
-    
-    if flows_df is None:
-        raise Exception("No se pudo cargar el archivo con ninguna estrategia")
-    
-    # Procesar datos - manejar múltiples bonos
-    processed_data = []
-    current_bono_name = None
-    
-    for _, row in flows_df.iterrows():
-        if len(row) >= 5 and not pd.isna(row[0]):
-            # Convertir a string y limpiar
-            cell_value = str(row[0]).strip()
-            
-            # Saltar filas vacías o con solo espacios
-            if not cell_value or cell_value.lower() in ['nan', 'none', '']:
-                continue
-            
-            # Verificar si es el inicio de un nuevo bono (cualquier carácter que no sea una fecha)
-            try:
-                # Intentar convertir a fecha
-                pd.to_datetime(cell_value, errors='raise')
-                # Si llegamos aquí, es una fecha válida, continuar procesando
-            except:
-                # No es una fecha, es el inicio de un nuevo bono
-                current_bono_name = cell_value
-                # Extraer base de cálculo de la celda contigua (columna B)
-                try:
-                    base_calculo_bono = str(row[1]).strip() if not pd.isna(row[1]) else "ACT/365"
-                except:
-                    base_calculo_bono = "ACT/365"
-                
-                # Extraer periodicidad de la siguiente celda (columna C)
-                try:
-                    periodicidad = int(float(str(row[2]))) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 12
-                except:
-                    periodicidad = 12
-                
-                # Extraer tipo de bono de la siguiente celda (columna D)
-                try:
-                    tipo_bono = str(row[3]).strip() if not pd.isna(row[3]) else "Sin clasificar"
-                except:
-                    tipo_bono = "Sin clasificar"
-                continue
-            
-            # Si tenemos un nombre de bono y es una fecha válida, procesar
-            if current_bono_name:
-                try:
-                    # Intentar convertir fecha con múltiples formatos
-                    fecha_valida = pd.to_datetime(row[0], errors='coerce')
-                    if not pd.isna(fecha_valida):
-                        # Procesar valores numéricos de forma más robusta
-                        # Nueva estructura: A=fecha, B=tasa_cupon, C=cupon, D=capital, E=total
-                        tasa_cupon = 0.0
-                        cupon = 0.0
-                        capital = 0.0
-                        flujo_total = 0.0
-                        
-                        try:
-                            tasa_cupon = float(str(row[1]).replace(',', '.')) if not pd.isna(row[1]) and str(row[1]).strip() not in ['', 'nan'] else 0.0
-                        except:
-                            tasa_cupon = 0.0
-                            
-                        try:
-                            cupon = float(str(row[2]).replace(',', '.')) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 0.0
-                        except:
-                            cupon = 0.0
-                            
-                        try:
-                            capital = float(str(row[3]).replace(',', '.')) if not pd.isna(row[3]) and str(row[3]).strip() not in ['', 'nan'] else 0.0
-                        except:
-                            capital = 0.0
-                            
-                        try:
-                            flujo_total = float(str(row[4]).replace(',', '.')) if not pd.isna(row[4]) and str(row[4]).strip() not in ['', 'nan'] else 0.0
-                        except:
-                            flujo_total = cupon + capital
-                        
-                        processed_data.append({
-                            'nombre_bono': current_bono_name,
-                            'base_calculo': base_calculo_bono,
-                            'periodicidad': periodicidad,
-                            'tipo_bono': tipo_bono,
-                            'fecha': fecha_valida,
-                            'tasa_cupon': tasa_cupon,
-                            'cupon_porcentaje': cupon,
-                            'pago_capital_porcentaje': capital,
-                            'flujo_total': flujo_total
-                        })
-                except:
-                    # Si la fecha no es válida, saltar esta fila
-                    continue
-    
-    flows_df = pd.DataFrame(processed_data)
-    
-    if len(flows_df) == 0:
-        st.error("❌ No se encontraron flujos válidos en el archivo")
         flows_df = None
-    else:
+        
+        # Estrategia 1: openpyxl (más compatible con archivos modernos)
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl')
+        except:
+            pass
+        
+        # Estrategia 2: xlrd (para archivos más antiguos)
+        if flows_df is None:
+            try:
+                flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='xlrd')
+            except:
+                pass
+        
+        # Estrategia 3: pandas por defecto
+        if flows_df is None:
+            try:
+                flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
+            except:
+                pass
+        
+        if flows_df is None:
+            return None, ["Todos"]
+        
+        # Procesar datos - manejar múltiples bonos
+        processed_data = []
+        current_bono_name = None
+        
+        for _, row in flows_df.iterrows():
+            if len(row) >= 5 and not pd.isna(row[0]):
+                # Convertir a string y limpiar
+                cell_value = str(row[0]).strip()
+                
+                # Saltar filas vacías o con solo espacios
+                if not cell_value or cell_value.lower() in ['nan', 'none', '']:
+                    continue
+                
+                # Verificar si es el inicio de un nuevo bono (cualquier carácter que no sea una fecha)
+                try:
+                    # Intentar convertir a fecha
+                    pd.to_datetime(cell_value, errors='raise')
+                    # Si llegamos aquí, es una fecha válida, continuar procesando
+                except:
+                    # No es una fecha, es el inicio de un nuevo bono
+                    current_bono_name = cell_value
+                    # Extraer base de cálculo de la celda contigua (columna B)
+                    try:
+                        base_calculo_bono = str(row[1]).strip() if not pd.isna(row[1]) else "ACT/365"
+                    except:
+                        base_calculo_bono = "ACT/365"
+                    
+                    # Extraer periodicidad de la siguiente celda (columna C)
+                    try:
+                        periodicidad = int(float(str(row[2]))) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 12
+                    except:
+                        periodicidad = 12
+                    
+                    # Extraer tipo de bono de la siguiente celda (columna D)
+                    try:
+                        tipo_bono = str(row[3]).strip() if not pd.isna(row[3]) else "Sin clasificar"
+                    except:
+                        tipo_bono = "Sin clasificar"
+                    continue
+                
+                # Si tenemos un nombre de bono y es una fecha válida, procesar
+                if current_bono_name:
+                    try:
+                        # Intentar convertir fecha con múltiples formatos
+                        fecha_valida = pd.to_datetime(row[0], errors='coerce')
+                        if not pd.isna(fecha_valida):
+                            # Procesar valores numéricos de forma más robusta
+                            # Nueva estructura: A=fecha, B=tasa_cupon, C=cupon, D=capital, E=total
+                            tasa_cupon = 0.0
+                            cupon = 0.0
+                            capital = 0.0
+                            flujo_total = 0.0
+                            
+                            try:
+                                tasa_cupon = float(str(row[1]).replace(',', '.')) if not pd.isna(row[1]) and str(row[1]).strip() not in ['', 'nan'] else 0.0
+                            except:
+                                tasa_cupon = 0.0
+                                
+                            try:
+                                cupon = float(str(row[2]).replace(',', '.')) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 0.0
+                            except:
+                                cupon = 0.0
+                                
+                            try:
+                                capital = float(str(row[3]).replace(',', '.')) if not pd.isna(row[3]) and str(row[3]).strip() not in ['', 'nan'] else 0.0
+                            except:
+                                capital = 0.0
+                                
+                            try:
+                                flujo_total = float(str(row[4]).replace(',', '.')) if not pd.isna(row[4]) and str(row[4]).strip() not in ['', 'nan'] else 0.0
+                            except:
+                                flujo_total = cupon + capital
+                            
+                            processed_data.append({
+                                'nombre_bono': current_bono_name,
+                                'base_calculo': base_calculo_bono,
+                                'periodicidad': periodicidad,
+                                'tipo_bono': tipo_bono,
+                                'fecha': fecha_valida,
+                                'tasa_cupon': tasa_cupon,
+                                'cupon_porcentaje': cupon,
+                                'pago_capital_porcentaje': capital,
+                                'flujo_total': flujo_total
+                            })
+                    except:
+                        # Si la fecha no es válida, saltar esta fila
+                        continue
+        
+        flows_df = pd.DataFrame(processed_data)
+        
+        if len(flows_df) == 0:
+            return None, ["Todos"]
+        
         # Leer tipos de bonos desde las celdas J6:J8 del archivo Excel original
         tipos_bonos_disponibles = []
         try:
-            # Leer directamente del archivo Excel las celdas J6, J7, J8
-            # Estrategia 1: openpyxl (más compatible con archivos modernos)
-            try:
-                import openpyxl
-                wb = openpyxl.load_workbook('bonos_flujos.xlsx')
-                ws = wb.active
-                
-                # Leer celdas J6, J7, J8 (fila 6, 7, 8, columna J = 10)
-                for row_num in [6, 7, 8]:
-                    cell_value = ws.cell(row=row_num, column=10).value
-                    if cell_value and str(cell_value).strip() and str(cell_value).strip().lower() not in ['nan', 'none', '']:
-                        tipos_bonos_disponibles.append(str(cell_value).strip())
-                
-                wb.close()
-            except:
-                # Estrategia 2: pandas con rangos específicos
-                try:
-                    # Leer solo las celdas J6:J8 usando pandas
-                    tipos_df = pd.read_excel('bonos_flujos.xlsx', header=None, 
-                                           usecols=[9], skiprows=5, nrows=3, engine='openpyxl')
-                    
-                    for _, row in tipos_df.iterrows():
-                        tipo = str(row.iloc[0]).strip()
-                        if tipo and tipo.lower() not in ['nan', 'none', '']:
-                            tipos_bonos_disponibles.append(tipo)
-                except:
-                    pass
+            import openpyxl
+            wb = openpyxl.load_workbook('bonos_flujos.xlsx')
+            ws = wb.active
             
-            if not tipos_bonos_disponibles:
-                tipos_bonos_disponibles = ["Todos"]  # Valor por defecto
+            # Leer celdas J6, J7, J8 (fila 6, 7, 8, columna J = 10)
+            for row_num in [6, 7, 8]:
+                cell_value = ws.cell(row=row_num, column=10).value
+                if cell_value and str(cell_value).strip() and str(cell_value).strip().lower() not in ['nan', 'none', '']:
+                    tipos_bonos_disponibles.append(str(cell_value).strip())
+            
+            wb.close()
         except:
-            tipos_bonos_disponibles = ["Todos"]  # Valor por defecto si falla
-    
-except Exception as e:
-    st.error(f"❌ Error al cargar el archivo: {e}")
-    flows_df = None
-    tipos_bonos_disponibles = ["Todos"]
+            tipos_bonos_disponibles = ["Todos"]
+        
+        if not tipos_bonos_disponibles:
+            tipos_bonos_disponibles = ["Todos"]
+        
+        return flows_df, tipos_bonos_disponibles
+        
+    except Exception as e:
+        st.error(f"❌ Error al cargar el archivo: {e}")
+        return None, ["Todos"]
 
+# Cargar datos
+flows_df, tipos_bonos_disponibles = load_bond_data()
 
-# Layout de dos secciones independientes
+# Layout principal del dashboard
 if flows_df is not None and 'nombre_bono' in flows_df.columns:
-    # Crear dos columnas principales
-    col_left, col_right = st.columns(2)
     
-    # SECCIÓN IZQUIERDA: Menús desplegables y botón de calcular
-    with col_left:
-        st.markdown('<div class="config-panel">', unsafe_allow_html=True)
-        st.subheader("Configuración")
+    # SIDEBAR IZQUIERDO
+    with st.sidebar:
+        st.markdown('<div class="sidebar">', unsafe_allow_html=True)
+        st.markdown("# 📊 CALCULADORA DE BONOS")
+        
+        st.markdown("### Configuración")
         
         # Selector de tipo de bono
-        st.write("**Tipo de Bono**")
         tipo_selected = st.selectbox(
-            "Selecciona el tipo de bono:",
+            "Tipo de Bono",
             options=["Todos"] + tipos_bonos_disponibles,
             label_visibility="collapsed"
         )
@@ -696,9 +684,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             st.stop()
         
         # Selector de bono
-        st.write("**Elija un Bono**")
         bono_selected = st.selectbox(
-            "Selecciona un bono:",
+            "Elija un Bono",
             options=unique_bonos,
             label_visibility="collapsed"
         )
@@ -710,19 +697,18 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
         bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
         bono_flows = bono_flows.sort_values('fecha')
         
-        # Inputs para cálculo
-        st.write("**Datos para el Cálculo**")
+        st.markdown("### Datos para el Cálculo")
         
         settlement_date = st.date_input(
-            "Fecha de liquidación:",
-            value=get_next_business_day(),  # Próximo día hábil
+            "Fecha de liquidación",
+            value=get_next_business_day(),
             min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
             max_value=pd.to_datetime(bono_flows['fecha'].max()).date(),
             format="DD/MM/YYYY"
         )
         
         bond_price = st.number_input(
-            "Precio Dirty (base 100):",
+            "Precio Dirty (base 100)",
             min_value=0.0,
             max_value=200.0,
             value=100.0,
@@ -730,48 +716,30 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             format="%.2f"
         )
         
-        # Base de cálculo fija en ACT/365
-        day_count_basis = "ACT/365"
-        
         # Botón de calcular
-        calcular = st.button("🔄 Calcular", type="primary")
+        calcular = st.button("🔄 CALCULAR", type="primary", use_container_width=True)
+        
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # SECCIÓN DERECHA: Resultados
-    with col_right:
-        pass  # El contenido se mostrará solo cuando se haga clic en calcular
-    
-    # Lógica de cálculo (fuera de las columnas)
+    # ÁREA PRINCIPAL
     if calcular:
         try:
             # Procesar flujos
-            cash_flows = process_irregular_flows(bono_flows, settlement_date, bond_price, day_count_basis)
+            cash_flows = process_irregular_flows(bono_flows, settlement_date, bond_price, "ACT/365")
             
             if len(cash_flows) <= 1:
                 st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
             elif len(cash_flows) == 1:
                 st.error("Solo hay el flujo inicial. No hay flujos futuros para calcular TIR")
             else:
-                # Calcular TIR
-                ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
-                
-                # Calcular TIR según periodicidad (anualizada)
+                # Calcular métricas
+                ytm = calculate_ytm_irregular(cash_flows, "ACT/365")
                 periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
-                # Fórmula: periodicidad * ((1 + TIR efectiva)^(1/periodicidad) - 1)
                 ytm_anualizada = periodicidad * ((1 + ytm) ** (1.0 / periodicidad) - 1)
-                
-                # Calcular duraciones
-                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
-                
-                # Calcular vida media
-                average_life = calculate_average_life(bono_flows, settlement_date, day_count_basis)
-                
-                # Calcular intereses corridos
+                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, "ACT/365")
+                average_life = calculate_average_life(bono_flows, settlement_date, "ACT/365")
                 base_calculo_bono = bono_flows['base_calculo'].iloc[0] if 'base_calculo' in bono_flows.columns else "ACT/365"
-                periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
                 accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad)
-                
-                # Calcular paridad y próximo cupón
                 clean_price = bond_price - accrued_interest
                 capital_amortizado = 0.0
                 settlement_ts = pd.Timestamp(settlement_date)
@@ -784,140 +752,165 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 parity = calculate_parity(clean_price, technical_value)
                 next_coupon_date = find_next_coupon_date(bono_flows, settlement_date)
                 
-                # Mostrar resultados en la columna derecha
-                with col_right:
-                    st.markdown('<div class="results-panel">', unsafe_allow_html=True)
-                    st.subheader("Resultados")
+                # Obtener la tasa de cupón vigente
+                cupon_vigente = 0.0
+                settlement_ts = pd.Timestamp(settlement_date)
+                for _, row in bono_flows.iterrows():
+                    row_date = pd.Timestamp(row['fecha'])
+                    if row_date < settlement_ts and row['tasa_cupon'] > 0:
+                        cupon_vigente = row['tasa_cupon']
+                
+                # Convertir periodicidad a texto
+                if periodicidad == 1:
+                    periodicidad_texto = "anual"
+                elif periodicidad == 2:
+                    periodicidad_texto = "semestral"
+                elif periodicidad == 4:
+                    periodicidad_texto = "trimestral"
+                elif periodicidad == 12:
+                    periodicidad_texto = "mensual"
+                else:
+                    periodicidad_texto = f"{periodicidad} meses"
+                
+                # LAYOUT PRINCIPAL CON GRID
+                col1, col2 = st.columns([2, 1])
+                
+                # COLUMNA IZQUIERDA - MÉTRICAS PRINCIPALES
+                with col1:
+                    st.markdown("## 📈 Resultados del Análisis")
                     
-                    # Información de la base de cálculo y periodicidad
-                    if periodicidad == 1:
-                        periodicidad_texto = "anual"
-                    elif periodicidad == 2:
-                        periodicidad_texto = "semestral"
-                    elif periodicidad == 4:
-                        periodicidad_texto = "trimestral"
-                    elif periodicidad == 12:
-                        periodicidad_texto = "mensual"
-                    else:
-                        periodicidad_texto = f"{periodicidad} meses"
+                    # Grid de métricas principales
+                    st.markdown('<div class="metrics-grid">', unsafe_allow_html=True)
                     
-                    # Convertir periodicidad a texto para el título
-                    if periodicidad == 1:
-                        periodicidad_titulo = "Anual"
-                    elif periodicidad == 2:
-                        periodicidad_titulo = "Semianual"
-                    elif periodicidad == 4:
-                        periodicidad_titulo = "Trimestral"
-                    elif periodicidad == 12:
-                        periodicidad_titulo = "Mensual"
-                    else:
-                        periodicidad_titulo = f"Cada {12//periodicidad} meses"
+                    # Fila 1: Métricas principales
+                    col1_1, col1_2, col1_3 = st.columns(3)
+                    with col1_1:
+                        st.markdown(f'''
+                        <div class="metric-card">
+                            <div class="metric-label">Precio Limpio</div>
+                            <div class="metric-value metric-earnings">{clean_price:.2f}</div>
+                        </div>
+                        ''', unsafe_allow_html=True)
                     
-                    # Obtener la tasa de cupón vigente
-                    cupon_vigente = 0.0
-                    settlement_ts = pd.Timestamp(settlement_date)
-                    for _, row in bono_flows.iterrows():
-                        row_date = pd.Timestamp(row['fecha'])
-                        if row_date < settlement_ts and row['tasa_cupon'] > 0:
-                            cupon_vigente = row['tasa_cupon']
+                    with col1_2:
+                        st.markdown(f'''
+                        <div class="metric-card">
+                            <div class="metric-label">Intereses Corridos</div>
+                            <div class="metric-value metric-downloads">{accrued_interest:.4f}</div>
+                        </div>
+                        ''', unsafe_allow_html=True)
                     
-                    # 2da fila: 2 celdas (Base de Cálculo + Periodicidad)
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("Base de Cálculo", base_calculo_bono)
-                    with col2:
-                        st.metric("Periodicidad", periodicidad_texto)
+                    with col1_3:
+                        st.markdown(f'''
+                        <div class="metric-card">
+                            <div class="metric-label">Capital Residual</div>
+                            <div class="metric-value metric-favorites">{capital_residual:.2f}</div>
+                        </div>
+                        ''', unsafe_allow_html=True)
                     
-                    # 3ra fila: 4 celdas (Precio Limpio, Intereses Corridos, Capital Residual, Valor Técnico)
-                    col1, col2, col3, col4 = st.columns(4)
-                    with col1:
-                        st.metric("Precio Limpio", f"{clean_price:.2f}")
-                    with col2:
-                        st.metric("Intereses Corridos", f"{accrued_interest:.4f}")
-                    with col3:
-                        st.metric("Capital Residual", f"{capital_residual:.2f}")
-                    with col4:
-                        st.metric("Valor Técnico", f"{technical_value:.2f}")
+                    # Fila 2: Más métricas
+                    col2_1, col2_2, col2_3 = st.columns(3)
+                    with col2_1:
+                        st.markdown(f'''
+                        <div class="metric-card">
+                            <div class="metric-label">TIR Efectiva</div>
+                            <div class="metric-value metric-earnings">{ytm:.4%}</div>
+                        </div>
+                        ''', unsafe_allow_html=True)
                     
-                    # 4ta fila: 4 celdas (Cupón Vigente, Próximo Cupón, Paridad, Vida Media)
-                    col1, col2, col3, col4 = st.columns(4)
-                    with col1:
-                        st.metric("Cupón Vigente", f"{(cupon_vigente * 100):.2f}%")
-                    with col2:
-                        if next_coupon_date:
-                            next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
-                            st.metric("Próximo Cupón", next_coupon_str)
-                        else:
-                            st.metric("Próximo Cupón", "N/A")
-                    with col3:
-                        st.metric("Paridad", f"{parity:.4f}")
-                    with col4:
-                        st.metric("Vida Media", f"{average_life:.2f} años")
+                    with col2_2:
+                        st.markdown(f'''
+                        <div class="metric-card">
+                            <div class="metric-label">Duración Modificada</div>
+                            <div class="metric-value metric-downloads">{modified_duration:.2f} años</div>
+                        </div>
+                        ''', unsafe_allow_html=True)
                     
-                    # 5ta fila: 4 celdas (TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay)
-                    col1, col2, col3, col4 = st.columns(4)
-                    with col1:
-                        st.metric("TIR Efectiva", f"{ytm:.4%}")
-                    with col2:
-                        st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}")
-                    with col3:
-                        st.metric("Duración Modificada", f"{modified_duration:.2f} años")
-                    with col4:
-                        st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años")
+                    with col2_3:
+                        st.markdown(f'''
+                        <div class="metric-card">
+                            <div class="metric-label">Vida Media</div>
+                            <div class="metric-value metric-favorites">{average_life:.2f} años</div>
+                        </div>
+                        ''', unsafe_allow_html=True)
                     
                     st.markdown('</div>', unsafe_allow_html=True)
                 
+                # COLUMNA DERECHA - INFORMACIÓN ADICIONAL
+                with col2:
+                    st.markdown("## ℹ️ Información Adicional")
+                    
+                    st.markdown(f'''
+                    <div class="card">
+                        <div class="card-title">Base de Cálculo</div>
+                        <div style="font-size: 1.2rem; color: #3b82f6; font-weight: 600;">{base_calculo_bono}</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    
+                    st.markdown(f'''
+                    <div class="card">
+                        <div class="card-title">Periodicidad</div>
+                        <div style="font-size: 1.2rem; color: #f59e0b; font-weight: 600;">{periodicidad_texto}</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    
+                    st.markdown(f'''
+                    <div class="card">
+                        <div class="card-title">Cupón Vigente</div>
+                        <div style="font-size: 1.2rem; color: #10b981; font-weight: 600;">{(cupon_vigente * 100):.2f}%</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                
+                # SECCIÓN INFERIOR - CONTENIDO FUTURO
+                st.markdown("## 🔮 Contenido Futuro")
+                st.markdown('''
+                <div class="future-content">
+                    <h3>🚀 Próximas Funcionalidades</h3>
+                    <p>Esta sección estará disponible próximamente con:</p>
+                    <ul style="text-align: left; display: inline-block;">
+                        <li>Gráficos interactivos de rendimiento</li>
+                        <li>Análisis de sensibilidad</li>
+                        <li>Comparación de bonos</li>
+                        <li>Exportación de reportes</li>
+                    </ul>
+                </div>
+                ''', unsafe_allow_html=True)
+                
+                # TABLA DE FLUJO DE FONDOS
+                st.markdown("## 💰 Flujo de Fondos")
+                
+                df_cash_flows = pd.DataFrame(cash_flows)
+                df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
+                
+                # Formatear valores numéricos y manejar ceros
+                def format_value(value):
+                    if value == 0 or pd.isna(value):
+                        return ""
+                    else:
+                        return f"{value:.2f}"
+                
+                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].apply(format_value)
+                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].apply(format_value)
+                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].apply(format_value)
+                
+                # Renombrar columnas para mejor presentación
+                df_cash_flows = df_cash_flows.rename(columns={
+                    'Fecha': 'Fecha de Pago',
+                    'Pago_Capital': 'Capital',
+                    'Cupon': 'Cupón',
+                    'Flujo_Total': 'Flujo Total'
+                })
+                
+                # Eliminar la columna de días
+                df_cash_flows = df_cash_flows.drop('Días', axis=1)
+                
+                # Mostrar tabla con estilo
+                st.markdown('<div class="cashflow-table">', unsafe_allow_html=True)
+                st.dataframe(df_cash_flows, use_container_width=True, hide_index=True)
+                st.markdown('</div>', unsafe_allow_html=True)
                 
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
-    
-    # Tabla de flujo de fondos (fuera de las columnas, ocupando todo el ancho)
-    if calcular and 'cash_flows' in locals():
-        st.markdown("---")  # Separador
-        st.subheader("Flujo de Fondos")
-        
-        df_cash_flows = pd.DataFrame(cash_flows)
-        df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
-        
-        # Formatear valores numéricos y manejar ceros
-        def format_value(value):
-            if value == 0 or pd.isna(value):
-                return ""
-            else:
-                return f"{value:.2f}"
-        
-        df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].apply(format_value)
-        df_cash_flows['Cupon'] = df_cash_flows['Cupon'].apply(format_value)
-        df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].apply(format_value)
-        
-        # Renombrar columnas para mejor presentación
-        df_cash_flows = df_cash_flows.rename(columns={
-            'Fecha': 'Fecha de Pago',
-            'Pago_Capital': 'Capital',
-            'Cupon': 'Cupón',
-            'Flujo_Total': 'Flujo Total'
-        })
-        
-        # Eliminar la columna de días
-        df_cash_flows = df_cash_flows.drop('Días', axis=1)
-        
-        # Crear tabla HTML personalizada para control total
-        html_table = "<table style='width: 100%; border-collapse: collapse;'>"
-        html_table += "<thead><tr>"
-        html_table += "<th style='text-align: left; padding: 8px; border-bottom: 1px solid #ddd;'>Fecha de Pago</th>"
-        html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Capital</th>"
-        html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Cupón</th>"
-        html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Flujo Total</th>"
-        html_table += "</tr></thead><tbody>"
-        
-        for _, row in df_cash_flows.iterrows():
-            html_table += "<tr>"
-            html_table += f"<td style='text-align: left; padding: 8px; border-bottom: 1px solid #eee;'>{row['Fecha de Pago']}</td>"
-            html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Capital']}</td>"
-            html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Cupón']}</td>"
-            html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Flujo Total']}</td>"
-            html_table += "</tr>"
-        
-        html_table += "</tbody></table>"
-        
-        st.markdown(html_table, unsafe_allow_html=True)
+
+else:
+    st.error("❌ No se pudo cargar el archivo de datos")
