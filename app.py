@@ -803,7 +803,7 @@ try:
             
             # Widget de TradingView usando st.components.v1.html
             tradingview_html = """
-            <div class="tradingview-widget-container" style="height: 700px; width: 100%;">
+            <div class="tradingview-widget-container" style="height: 800px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
                     <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
@@ -812,7 +812,9 @@ try:
                 </div>
                 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
                 {
-                "autosize": true,
+                "autosize": false,
+                "width": "100%",
+                "height": "800",
                 "symbol": "SPX500",
                 "interval": "D",
                 "timezone": "America/New_York",
@@ -830,7 +832,7 @@ try:
             </div>
             """
             
-            st.components.v1.html(tradingview_html, height=700)
+            st.components.v1.html(tradingview_html, height=800)
             
     else:
         st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
