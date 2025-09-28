@@ -752,9 +752,6 @@ try:
         # SECCIÓN FLUJO DE FONDOS - DEBAJO DE LAS TARJETAS
         st.markdown("## Flujo de Fondos")
         
-        # Debug: mostrar información de flujos
-        st.write(f"Debug: {len(flujos)} flujos, {len(fechas)} fechas, {len(flujos_capital)} capitales")
-        
         # Crear DataFrame para el flujo de fondos
         cash_flows = []
         for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
@@ -766,8 +763,6 @@ try:
                 'Flujo Total': flujo
             })
         
-        st.write(f"Debug: {len(cash_flows)} cash_flows creados")
-        
         df_cash_flows = pd.DataFrame(cash_flows)
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
@@ -777,14 +772,29 @@ try:
         # Reemplazar 0 con vacío
         df_cash_flows = df_cash_flows.replace(0, '')
         
-        st.write(f"Debug: DataFrame tiene {len(df_cash_flows)} filas")
-        st.write("Debug: Columnas del DataFrame:")
-        st.write(df_cash_flows.columns.tolist())
-        st.write("Debug: DataFrame completo:")
-        st.write(df_cash_flows)
+        # Mostrar tabla con formato mejorado
+        st.markdown("""
+        <style>
+        .stTable table {
+            font-size: 12px !important;
+            width: 100% !important;
+        }
+        .stTable th, .stTable td {
+            padding: 4px 8px !important;
+            text-align: right !important;
+            font-size: 11px !important;
+        }
+        .stTable th:first-child, .stTable td:first-child {
+            text-align: left !important;
+        }
+        /* Ocultar la primera columna (índice) */
+        .stTable table tr th:first-child,
+        .stTable table tr td:first-child {
+            display: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
         
-        # Mostrar tabla simple
-        st.write("Debug: Mostrando tabla simple:")
         st.table(df_cash_flows)
         
         # COLUMNA DERECHA - GRÁFICO S&P 500
