@@ -596,6 +596,11 @@ try:
     if current_bono:
         bonos.append(current_bono)
     
+    # Debug: mostrar información de bonos procesados
+    st.write(f"Debug: Se procesaron {len(bonos)} bonos del archivo Excel")
+    for i, bono in enumerate(bonos):
+        st.write(f"Debug: Bono {i+1}: {bono['nombre']} (tipo: {bono['tipo_bono']}) con {len(bono['flujos'])} flujos")
+    
     
     if not bonos:
         st.error("❌ No se encontraron bonos en el archivo")
