@@ -508,7 +508,7 @@ try:
                 tipos_bonos_disponibles = ["Todos"]  # Valor por defecto
         except:
             tipos_bonos_disponibles = ["Todos"]  # Valor por defecto si falla
-        
+    
 except Exception as e:
     st.error(f"❌ Error al cargar el archivo: {e}")
     flows_df = None
@@ -694,121 +694,46 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     # 2da fila: 2 celdas (Base de Cálculo + Periodicidad)
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Base de Cálculo</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{base_calculo_bono}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Base de Cálculo", base_calculo_bono)
                     with col2:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center;">
-                            <div style="font-size: 12px; font-weight: 600; color: #262730; margin-bottom: 5px;">Periodicidad</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #262730;">{periodicidad_texto}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Periodicidad", periodicidad_texto)
                     
                     # 3ra fila: 4 celdas (Precio Limpio, Intereses Corridos, Capital Residual, Valor Técnico)
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Precio Limpio</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{clean_price:.2f}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Precio Limpio", f"{clean_price:.2f}")
                     with col2:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Intereses Corridos</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{accrued_interest:.4f}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Intereses Corridos", f"{accrued_interest:.4f}")
                     with col3:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Capital Residual</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{capital_residual:.2f}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Capital Residual", f"{capital_residual:.2f}")
                     with col4:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Valor Técnico</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{technical_value:.2f}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Valor Técnico", f"{technical_value:.2f}")
                     
                     # 4ta fila: 4 celdas (Cupón Vigente, Próximo Cupón, Paridad, Vida Media)
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Cupón Vigente</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{(cupon_vigente * 100):.2f}%</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Cupón Vigente", f"{(cupon_vigente * 100):.2f}%")
                     with col2:
                         if next_coupon_date:
                             next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
-                            st.markdown(f"""
-                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                                <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Próximo Cupón</div>
-                                <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{next_coupon_str}</div>
-                            </div>
-                            """, unsafe_allow_html=True)
+                            st.metric("Próximo Cupón", next_coupon_str)
                         else:
-                            st.markdown(f"""
-                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                                <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Próximo Cupón</div>
-                                <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">N/A</div>
-                            </div>
-                            """, unsafe_allow_html=True)
+                            st.metric("Próximo Cupón", "N/A")
                     with col3:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Paridad</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{parity:.4f}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Paridad", f"{parity:.4f}")
                     with col4:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Vida Media</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{average_life:.2f} años</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Vida Media", f"{average_life:.2f} años")
                     
                     # 5ta fila: 4 celdas (TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay)
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">TIR Efectiva</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{ytm:.4%}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("TIR Efectiva", f"{ytm:.4%}")
                     with col2:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">TIR {periodicidad_titulo}</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{ytm_anualizada:.4%}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric(f"TIR {periodicidad_titulo}", f"{ytm_anualizada:.4%}")
                     with col3:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Duración Modificada</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{modified_duration:.2f} años</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Duración Modificada", f"{modified_duration:.2f} años")
                     with col4:
-                        st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; margin: 5px !important; width: 100% !important; height: 80px !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; box-sizing: border-box !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 10px !important; line-height: 1.2 !important; vertical-align: middle !important;">Duración Macaulay</div>
-                            <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important; line-height: 1.2 !important; vertical-align: middle !important;">{macaulay_duration:.2f} años</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.metric("Duración Macaulay", f"{macaulay_duration:.2f} años")
                 
                 
         except Exception as e:
