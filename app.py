@@ -967,20 +967,136 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     st.markdown('</div>', unsafe_allow_html=True)
                 
                 # SECCIÓN INFERIOR - CONTENIDO FUTURO
-                st.markdown("## Contenido Futuro")
-                st.markdown('''
-                <div class="future-content">
-                    <h3>Próximas Funcionalidades</h3>
-                    <p>Esta sección estará disponible próximamente con:</p>
-                    <ul style="text-align: left; display: inline-block;">
-                        <li>Gráficos interactivos de rendimiento</li>
-                        <li>Análisis de sensibilidad</li>
-                        <li>Comparación de bonos</li>
-                        <li>Exportación de reportes</li>
-                    </ul>
+                # SECCIÓN INFERIOR - WIDGET DE COTIZACIONES TRADINGVIEW
+                st.markdown("## Cotizaciones de Mercado")
+                st.markdown("""
+                <div class="future-content" style="padding: 1rem;">
+                    <!-- TradingView Widget BEGIN -->
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <div class="tradingview-widget-copyright">
+                            <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                                <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                            </a>
+                        </div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                        {
+                        "colorTheme": "light",
+                        "dateRange": "12M",
+                        "showChart": true,
+                        "locale": "es",
+                        "width": "100%",
+                        "height": "500",
+                        "largeChartUrl": "",
+                        "isTransparent": false,
+                        "showSymbolLogo": true,
+                        "showFloatingTooltip": false,
+                        "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
+                        "plotLineColorFalling": "rgba(41, 98, 255, 1)",
+                        "gridLineColor": "rgba(240, 243, 250, 0)",
+                        "scaleFontColor": "rgba(120, 123, 134, 1)",
+                        "belowLineFillColorGrowing": "rgba(41, 98, 255, 0.12)",
+                        "belowLineFillColorFalling": "rgba(41, 98, 255, 0.12)",
+                        "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
+                        "belowLineFillColorFallingBottom": "rgba(41, 98, 255, 0)",
+                        "symbolActiveColor": "rgba(41, 98, 255, 0.12)",
+                        "tabs": [
+                            {
+                                "title": "Indices",
+                                "symbols": [
+                                    {
+                                        "s": "FOREXCOM:SPX500",
+                                        "d": "S&P 500"
+                                    },
+                                    {
+                                        "s": "FOREXCOM:NSXUSD",
+                                        "d": "NASDAQ 100"
+                                    },
+                                    {
+                                        "s": "FOREXCOM:DJI",
+                                        "d": "Dow 30"
+                                    },
+                                    {
+                                        "s": "INDEX:NKY",
+                                        "d": "Nikkei 225"
+                                    },
+                                    {
+                                        "s": "INDEX:DEU40",
+                                        "d": "DAX"
+                                    },
+                                    {
+                                        "s": "FOREXCOM:UKXGBP",
+                                        "d": "FTSE 100"
+                                    }
+                                ],
+                                "originalTitle": "Indices"
+                            },
+                            {
+                                "title": "Bonos",
+                                "symbols": [
+                                    {
+                                        "s": "CME:GE1!",
+                                        "d": "Eurodollar"
+                                    },
+                                    {
+                                        "s": "CBOT:ZB1!",
+                                        "d": "T-Bond"
+                                    },
+                                    {
+                                        "s": "CBOT:UB1!",
+                                        "d": "Ultra T-Bond"
+                                    },
+                                    {
+                                        "s": "EUREX:FGBL1!",
+                                        "d": "Euro Bund"
+                                    },
+                                    {
+                                        "s": "EUREX:FGBM1!",
+                                        "d": "Euro BTP"
+                                    },
+                                    {
+                                        "s": "EUREX:FGBS1!",
+                                        "d": "Euro Schatz"
+                                    }
+                                ],
+                                "originalTitle": "Bonos"
+                            },
+                            {
+                                "title": "Forex",
+                                "symbols": [
+                                    {
+                                        "s": "FX:EURUSD",
+                                        "d": "EUR/USD"
+                                    },
+                                    {
+                                        "s": "FX:GBPUSD",
+                                        "d": "GBP/USD"
+                                    },
+                                    {
+                                        "s": "FX:USDJPY",
+                                        "d": "USD/JPY"
+                                    },
+                                    {
+                                        "s": "FX:USDCHF",
+                                        "d": "USD/CHF"
+                                    },
+                                    {
+                                        "s": "FX:AUDUSD",
+                                        "d": "AUD/USD"
+                                    },
+                                    {
+                                        "s": "FX:USDCAD",
+                                        "d": "USD/CAD"
+                                    }
+                                ],
+                                "originalTitle": "Forex"
+                            }
+                        ]
+                    }
+                    </script>
+                    <!-- TradingView Widget END -->
                 </div>
-                ''', unsafe_allow_html=True)
-                
+                """, unsafe_allow_html=True)                
                 
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
