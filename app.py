@@ -553,8 +553,8 @@ try:
             valor = df.iloc[i-1, 9]  # Columna J (índice 9)
             if pd.notna(valor) and str(valor).strip():
                 tipos_bono.append(str(valor).strip())
-        except:
-            pass
+    except:
+        pass
     
     if not tipos_bono:
         tipos_bono = ["Todos"]
