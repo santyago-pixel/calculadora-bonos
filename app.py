@@ -123,13 +123,13 @@ st.markdown("""
     
     /* Bajar el título del sidebar */
     .stSidebar h1 {
-        margin-top: 2rem !important;
-        padding-top: 2rem !important;
+        margin-top: 0.8rem !important;
+        padding-top: 0.8rem !important;
     }
     
     .stSidebar .element-container:first-child h1 {
-        margin-top: 2rem !important;
-        padding-top: 2rem !important;
+        margin-top: 0.8rem !important;
+        padding-top: 0.8rem !important;
     }
     
     .stSidebar .stSelectbox > div > div {
