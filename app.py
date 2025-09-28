@@ -901,15 +901,40 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     
                     st.markdown('</div>', unsafe_allow_html=True)
                 
-                # COLUMNA DERECHA - VACÍA POR AHORA
+                # COLUMNA DERECHA - FLUJO DE FONDOS COMPACTO
                 with col2:
-                    st.markdown("## Área Futura")
-                    st.markdown('''
-                    <div class="future-content">
-                        <h3>Contenido Futuro</h3>
-                        <p>Esta área estará disponible próximamente</p>
-                    </div>
-                    ''', unsafe_allow_html=True)
+                    st.markdown("## Flujo de Fondos")
+                    
+                    # Crear DataFrame compacto para la columna derecha
+                    df_cash_flows_compact = pd.DataFrame(cash_flows)
+                    df_cash_flows_compact['Fecha'] = pd.to_datetime(df_cash_flows_compact['Fecha']).dt.strftime('%d/%m')
+                    
+                    # Formatear valores numéricos y manejar ceros
+                    def format_value_compact(value):
+                        if value == 0 or pd.isna(value):
+                            return ""
+                        else:
+                            return f"{value:.1f}"
+                    
+                    df_cash_flows_compact['Pago_Capital'] = df_cash_flows_compact['Pago_Capital'].apply(format_value_compact)
+                    df_cash_flows_compact['Cupon'] = df_cash_flows_compact['Cupon'].apply(format_value_compact)
+                    df_cash_flows_compact['Flujo_Total'] = df_cash_flows_compact['Flujo_Total'].apply(format_value_compact)
+                    
+                    # Renombrar columnas para mejor presentación compacta
+                    df_cash_flows_compact = df_cash_flows_compact.rename(columns={
+                        'Fecha': 'Fecha',
+                        'Pago_Capital': 'Capital',
+                        'Cupon': 'Cupón',
+                        'Flujo_Total': 'Total'
+                    })
+                    
+                    # Eliminar la columna de días
+                    df_cash_flows_compact = df_cash_flows_compact.drop('Días', axis=1)
+                    
+                    # Mostrar tabla compacta
+                    st.markdown('<div class="cashflow-table" style="padding: 1rem; font-size: 0.85rem;">', unsafe_allow_html=True)
+                    st.dataframe(df_cash_flows_compact, use_container_width=True, hide_index=True, height=400)
+                    st.markdown('</div>', unsafe_allow_html=True)
                 
                 # SECCIÓN INFERIOR - CONTENIDO FUTURO
                 st.markdown("## Contenido Futuro")
