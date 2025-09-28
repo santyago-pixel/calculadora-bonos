@@ -723,6 +723,16 @@ try:
             st.markdown("## Flujo de Fondos")
             
             # Crear DataFrame compacto para la columna derecha
+            cash_flows = []
+            for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
+                cupon = flujo - capital
+                cash_flows.append({
+                    'Fecha': fecha,
+                    'Capital': capital,
+                    'Cupón': cupon,
+                    'Flujo Total': flujo
+                })
+            
             df_cash_flows_compact = pd.DataFrame(cash_flows)
             df_cash_flows_compact['Fecha'] = df_cash_flows_compact['Fecha'].dt.strftime('%d/%m/%y')
             df_cash_flows_compact['Capital'] = df_cash_flows_compact['Capital'].round(1)
