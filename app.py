@@ -13,12 +13,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Desactivar modo noche
-st.set_option('theme.base', 'light')
-
 # CSS personalizado para el dashboard
 st.markdown("""
 <style>
+    /* Forzar tema claro */
+    .stApp {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .stApp > div {
+        background-color: white !important;
+    }
+    
     /* Estilos generales */
     .main > div {
         padding-top: 0rem;
@@ -637,13 +644,13 @@ try:
             
             precio_dirty = st.number_input(
                 "Precio Dirty (base 100)",
-                min_value=0.0,
-                max_value=200.0,
-                value=100.0,
-                step=0.01,
-                format="%.2f"
-            )
-        
+            min_value=0.0,
+            max_value=200.0,
+            value=100.0,
+            step=0.01,
+            format="%.2f"
+        )
+    
             # Botón de cálculo
             calcular = st.button("Calcular", type="primary")
         else:
@@ -888,8 +895,8 @@ try:
                 'Cupón': cupon,
                 'Flujo Total': flujo
             })
-        
-        df_cash_flows = pd.DataFrame(cash_flows)
+                
+                df_cash_flows = pd.DataFrame(cash_flows)
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
         df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
@@ -989,5 +996,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-except Exception as e:
+        except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
