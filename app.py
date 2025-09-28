@@ -37,7 +37,9 @@ st.markdown("""
     }
     
     /* Reducir tamaño de títulos y alinear arriba */
-    .main h1, .main h2, .main h3 {
+    .main h1, .main h2, .main h3, 
+    .main .element-container h1, .main .element-container h2, .main .element-container h3,
+    .main .block-container h1, .main .block-container h2, .main .block-container h3 {
         margin-top: 0rem !important;
         margin-bottom: 0.5rem !important;
         padding-top: 0rem !important;
@@ -45,15 +47,38 @@ st.markdown("""
         line-height: 1.2 !important;
     }
     
-    .main h1 {
+    .main h1, .main .element-container h1, .main .block-container h1 {
         font-size: 1.4rem !important;
     }
     
-    .main h2 {
+    .main h2, .main .element-container h2, .main .block-container h2 {
         font-size: 1.2rem !important;
     }
     
-    .main h3 {
+    .main h3, .main .element-container h3, .main .block-container h3 {
+        font-size: 1.1rem !important;
+    }
+    
+    /* Selectores más específicos para Streamlit */
+    div[data-testid="stMarkdownContainer"] h1,
+    div[data-testid="stMarkdownContainer"] h2,
+    div[data-testid="stMarkdownContainer"] h3 {
+        margin-top: 0rem !important;
+        margin-bottom: 0.5rem !important;
+        padding-top: 0rem !important;
+        font-size: 1.2rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    div[data-testid="stMarkdownContainer"] h1 {
+        font-size: 1.4rem !important;
+    }
+    
+    div[data-testid="stMarkdownContainer"] h2 {
+        font-size: 1.2rem !important;
+    }
+    
+    div[data-testid="stMarkdownContainer"] h3 {
         font-size: 1.1rem !important;
     }
     
