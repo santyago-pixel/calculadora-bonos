@@ -14,53 +14,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# CSS para asegurar formato consistente en métricas
-st.markdown("""
-<style>
-/* Selector más agresivo para TODAS las métricas */
-div[data-testid="metric-container"],
-.stMetric,
-.stMetric > div,
-div[data-testid="metric-container"] > div,
-.stColumn > div[data-testid="metric-container"],
-.stColumn > div[data-testid="metric-container"] > div {
-    background-color: #f0f2f6 !important;
-    border: 1px solid #e0e0e0 !important;
-    border-radius: 8px !important;
-    padding: 15px !important;
-    text-align: center !important;
-    vertical-align: middle !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-}
-
-/* Asegurar que los labels tengan el mismo formato */
-div[data-testid="metric-container"] label,
-.stMetric label {
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    color: #262730 !important;
-    margin-bottom: 5px !important;
-}
-
-/* Asegurar que los valores tengan el mismo formato */
-div[data-testid="metric-container"] div[data-testid="metric-value"],
-.stMetric div[data-testid="metric-value"] {
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    color: #262730 !important;
-    line-height: 1.2 !important;
-}
-
-/* Forzar fondo gris en cualquier contenedor de métrica */
-.stColumn div:has([data-testid="metric-container"]) {
-    background-color: #f0f2f6 !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 
 st.title("Calculadora de Bonos")
@@ -693,6 +646,17 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                 
                 # Mostrar resultados en la columna derecha
                 with col_right:
+                    # CSS para fondo gris claro en la columna derecha (igual que la izquierda)
+                    st.markdown("""
+                    <style>
+                    .stColumn:last-child {
+                        background-color: #f8f9fa;
+                        padding: 20px;
+                        border-radius: 10px;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
                     st.subheader("Resultados")
                     
                     # Información de la base de cálculo y periodicidad
