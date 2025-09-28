@@ -780,12 +780,17 @@ try:
             
             # Mostrar tabla compacta
             st.write("Debug: Mostrando tabla con st.dataframe:")
-            st.dataframe(
-                df_cash_flows_compact,
-                use_container_width=True,
-                height=400,
-                hide_index=True
-            )
+            try:
+                st.dataframe(
+                    df_cash_flows_compact,
+                    use_container_width=True,
+                    height=400,
+                    hide_index=True
+                )
+            except Exception as e:
+                st.write(f"Error al mostrar DataFrame: {e}")
+                st.write("DataFrame raw:")
+                st.write(df_cash_flows_compact.to_string())
             
             # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
