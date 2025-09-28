@@ -743,8 +743,8 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Cupón Vigente</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Cupón Vigente</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{(cupon_vigente * 100):.2f}%</div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -752,29 +752,29 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         if next_coupon_date:
                             next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
                             st.markdown(f"""
-                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                                <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Próximo Cupón</div>
+                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                                <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Próximo Cupón</div>
                                 <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{next_coupon_str}</div>
                             </div>
                             """, unsafe_allow_html=True)
                         else:
                             st.markdown(f"""
-                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                                <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Próximo Cupón</div>
+                            <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                                <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Próximo Cupón</div>
                                 <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">N/A</div>
                             </div>
                             """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Paridad</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Paridad</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{parity:.4f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Vida Media</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Vida Media</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{average_life:.2f} años</div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -783,29 +783,29 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">TIR Efectiva</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">TIR Efectiva</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{ytm:.4%}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col2:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">TIR {periodicidad_titulo}</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">TIR {periodicidad_titulo}</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{ytm_anualizada:.4%}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Duración Modificada</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Duración Modificada</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{modified_duration:.2f} años</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Duración Macaulay</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Duración Macaulay</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{macaulay_duration:.2f} años</div>
                         </div>
                         """, unsafe_allow_html=True)
