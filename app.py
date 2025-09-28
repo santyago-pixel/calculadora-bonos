@@ -132,7 +132,7 @@ st.markdown("""
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.75rem;
     }
     
     /* Info bullets */
