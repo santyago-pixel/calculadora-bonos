@@ -803,7 +803,7 @@ try:
             
             # Widget de TradingView usando st.components.v1.html
             tradingview_html = """
-            <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
+            <div class="tradingview-widget-container" style="height: 700px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
                     <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
@@ -830,7 +830,7 @@ try:
             </div>
             """
             
-            st.components.v1.html(tradingview_html, height=500)
+            st.components.v1.html(tradingview_html, height=700)
             
     else:
         st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
