@@ -552,6 +552,18 @@ try:
     bonos = []
     current_bono = None
     
+    # Procesar bono de la celda A1 si existe
+    if pd.notna(df.iloc[0, 0]) and not isinstance(df.iloc[0, 0], datetime):
+        # Es un nombre de bono en A1, procesarlo
+        current_bono = {
+            'nombre': str(df.iloc[0, 0]),
+            'base_calculo': str(df.iloc[0, 1]) if pd.notna(df.iloc[0, 1]) else "ACT/365",
+            'periodicidad': int(df.iloc[0, 2]) if pd.notna(df.iloc[0, 2]) else 2,
+            'tipo_bono': str(df.iloc[0, 3]) if pd.notna(df.iloc[0, 3]) else "General",
+            'tasa_cupon': float(df.iloc[0, 4]) if pd.notna(df.iloc[0, 4]) else 0.05,
+            'flujos': []
+        }
+    
     for index, row in df.iterrows():
         # Verificar si es el inicio de un nuevo bono (cualquier carácter que no sea fecha en columna A)
         if pd.notna(row.iloc[0]) and not isinstance(row.iloc[0], datetime):
