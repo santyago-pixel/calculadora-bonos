@@ -546,20 +546,7 @@ def encontrar_proximo_cupon(fecha_liquidacion, fechas_cupones):
 try:
     df = pd.read_excel('bonos_flujos.xlsx', engine='openpyxl')
     
-    # Extraer tipos de bonos de las celdas J6:J8
-    tipos_bono = []
-    try:
-        for i in range(6, 9):  # J6, J7, J8
-            valor = df.iloc[i-1, 9]  # Columna J (índice 9)
-            if pd.notna(valor) and str(valor).strip():
-                tipos_bono.append(str(valor).strip())
-    except:
-        pass
-    
-    if not tipos_bono:
-        tipos_bono = ["Todos"]
-    else:
-        tipos_bono = ["Todos"] + tipos_bono
+    # Los tipos de bonos se generarán automáticamente después de procesar los bonos
     
     # Procesar bonos
     bonos = []
@@ -599,6 +586,11 @@ try:
     if not bonos:
         st.error("❌ No se encontraron bonos en el archivo")
         st.stop()
+    
+    # Generar tipos de bonos automáticamente a partir de los bonos procesados
+    tipos_bono = list(set([bono['tipo_bono'] for bono in bonos]))
+    tipos_bono.sort()  # Ordenar alfabéticamente
+    tipos_bono = ["Todos"] + tipos_bono
     
     # Debug: mostrar información de bonos procesados
     st.write(f"Debug: Se procesaron {len(bonos)} bonos del archivo Excel")
