@@ -585,13 +585,13 @@ try:
                 capital_residual,
                 bono_actual['base_calculo']
             )
-            else:
+        else:
             intereses_corridos = 0
         
         # Calcular precio limpio
         precio_limpio = precio_dirty - intereses_corridos
-                
-                # Calcular vida media
+        
+        # Calcular vida media
         vida_media = calcular_vida_media(
             flujos_capital,
             fechas,
