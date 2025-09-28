@@ -792,6 +792,10 @@ try:
                 st.write("DataFrame raw:")
                 st.write(df_cash_flows_compact.to_string())
             
+            # Mostrar tabla simple
+            st.write("Debug: Mostrando tabla simple:")
+            st.table(df_cash_flows_compact)
+            
             # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
             st.markdown("""
