@@ -121,6 +121,17 @@ st.markdown("""
         color: white;
     }
     
+    /* Bajar el título del sidebar */
+    .stSidebar h1 {
+        margin-top: 2rem !important;
+        padding-top: 2rem !important;
+    }
+    
+    .stSidebar .element-container:first-child h1 {
+        margin-top: 2rem !important;
+        padding-top: 2rem !important;
+    }
+    
     .stSidebar .stSelectbox > div > div {
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
