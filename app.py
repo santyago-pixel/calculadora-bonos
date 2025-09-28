@@ -654,6 +654,19 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                         padding: 20px;
                         border-radius: 10px;
                     }
+                    
+                    /* Reducir tamaño de fuentes en la sección derecha */
+                    .stColumn:last-child h3 {
+                        font-size: 14px !important;
+                    }
+                    
+                    .stColumn:last-child label {
+                        font-size: 12px !important;
+                    }
+                    
+                    .stColumn:last-child div[data-testid="metric-value"] {
+                        font-size: 14px !important;
+                    }
                     </style>
                     """, unsafe_allow_html=True)
                     
