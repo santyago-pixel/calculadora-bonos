@@ -749,61 +749,61 @@ try:
             
             st.markdown('</div>', unsafe_allow_html=True)
         
-        # COLUMNA DERECHA - FLUJO DE FONDOS COMPACTO
+        # SECCIÓN FLUJO DE FONDOS - DEBAJO DE LAS TARJETAS
+        st.markdown("## Flujo de Fondos")
+        
+        # Crear DataFrame para el flujo de fondos
+        cash_flows = []
+        for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
+            cupon = flujo - capital
+            cash_flows.append({
+                'Fecha': fecha,
+                'Capital': capital,
+                'Cupón': cupon,
+                'Flujo Total': flujo
+            })
+        
+        df_cash_flows = pd.DataFrame(cash_flows)
+        df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
+        df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
+        df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
+        df_cash_flows['Flujo Total'] = df_cash_flows['Flujo Total'].round(1)
+        
+        # Reemplazar 0 con vacío
+        df_cash_flows = df_cash_flows.replace(0, '')
+        
+        # Mostrar tabla con formato mejorado
+        st.markdown("""
+        <style>
+        .stDataFrame table {
+            font-size: 12px !important;
+            width: 100% !important;
+        }
+        .stDataFrame th, .stDataFrame td {
+            padding: 4px 8px !important;
+            text-align: right !important;
+            font-size: 11px !important;
+        }
+        .stDataFrame th:first-child, .stDataFrame td:first-child {
+            text-align: left !important;
+        }
+        /* Ocultar la primera columna (índice) */
+        .stDataFrame table tr th:first-child,
+        .stDataFrame table tr td:first-child {
+            display: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        st.dataframe(
+            df_cash_flows,
+            use_container_width=True,
+            height=400,
+            hide_index=True
+        )
+        
+        # COLUMNA DERECHA - GRÁFICO S&P 500
         with col2:
-            st.markdown("## Flujo de Fondos")
-            
-            # Crear DataFrame compacto para la columna derecha
-            cash_flows = []
-            for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
-                cupon = flujo - capital
-                cash_flows.append({
-                    'Fecha': fecha,
-                    'Capital': capital,
-                    'Cupón': cupon,
-                    'Flujo Total': flujo
-                })
-            
-            df_cash_flows_compact = pd.DataFrame(cash_flows)
-            df_cash_flows_compact['Fecha'] = df_cash_flows_compact['Fecha'].dt.strftime('%d/%m/%y')
-            df_cash_flows_compact['Capital'] = df_cash_flows_compact['Capital'].round(1)
-            df_cash_flows_compact['Cupón'] = df_cash_flows_compact['Cupón'].round(1)
-            df_cash_flows_compact['Flujo Total'] = df_cash_flows_compact['Flujo Total'].round(1)
-            
-            # Reemplazar 0 con vacío
-            df_cash_flows_compact = df_cash_flows_compact.replace(0, '')
-            
-            # Mostrar tabla compacta con formato mejorado
-            st.markdown("""
-            <style>
-            .stDataFrame table {
-                font-size: 12px !important;
-                width: 100% !important;
-            }
-            .stDataFrame th, .stDataFrame td {
-                padding: 4px 8px !important;
-                text-align: right !important;
-                font-size: 11px !important;
-            }
-            .stDataFrame th:first-child, .stDataFrame td:first-child {
-                text-align: left !important;
-            }
-            /* Ocultar la primera columna (índice) */
-            .stDataFrame table tr th:first-child,
-            .stDataFrame table tr td:first-child {
-                display: none !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
-            
-            st.dataframe(
-                df_cash_flows_compact,
-                use_container_width=True,
-                height=400,
-                hide_index=True
-            )
-            
-            # SECCIÓN INFERIOR - GRÁFICO S&P 500
             st.markdown("## Gráfico S&P 500")
             st.markdown("""
             <div class="future-content" style="padding: 1rem;">
