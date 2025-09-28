@@ -543,6 +543,13 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
             padding: 8px;
             margin: 2px;
         }
+        /* Fondo gris para contenedores de métricas personalizados */
+        .metric-container {
+            background-color: #f8f9fa !important;
+            border-radius: 5px;
+            padding: 8px;
+            margin: 2px;
+        }
         </style>
         """, unsafe_allow_html=True)
         
