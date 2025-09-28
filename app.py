@@ -778,38 +778,14 @@ try:
         df_cash_flows = df_cash_flows.replace(0, '')
         
         st.write(f"Debug: DataFrame tiene {len(df_cash_flows)} filas")
-        st.write("Debug: Primeras 3 filas:")
-        st.write(df_cash_flows.head(3))
+        st.write("Debug: Columnas del DataFrame:")
+        st.write(df_cash_flows.columns.tolist())
+        st.write("Debug: DataFrame completo:")
+        st.write(df_cash_flows)
         
-        # Mostrar tabla con formato mejorado
-        st.markdown("""
-        <style>
-        .stDataFrame table {
-            font-size: 12px !important;
-            width: 100% !important;
-        }
-        .stDataFrame th, .stDataFrame td {
-            padding: 4px 8px !important;
-            text-align: right !important;
-            font-size: 11px !important;
-        }
-        .stDataFrame th:first-child, .stDataFrame td:first-child {
-            text-align: left !important;
-        }
-        /* Ocultar la primera columna (índice) */
-        .stDataFrame table tr th:first-child,
-        .stDataFrame table tr td:first-child {
-            display: none !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        st.dataframe(
-            df_cash_flows,
-            use_container_width=True,
-            height=400,
-            hide_index=True
-        )
+        # Mostrar tabla simple
+        st.write("Debug: Mostrando tabla simple:")
+        st.table(df_cash_flows)
         
         # COLUMNA DERECHA - GRÁFICO S&P 500
         with col2:
