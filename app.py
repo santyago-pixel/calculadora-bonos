@@ -425,6 +425,9 @@ def encontrar_proximo_cupon(fecha_liquidacion, fechas_cupones):
 # Cargar datos del Excel
 try:
     df = pd.read_excel('bonos_flujos.xlsx', engine='openpyxl')
+    st.write(f"Debug: Archivo cargado con {len(df)} filas y {len(df.columns)} columnas")
+    st.write(f"Debug: Primeras 5 filas:")
+    st.write(df.head())
     
     # Extraer tipos de bonos de las celdas J6:J8
     tipos_bono = []
@@ -475,6 +478,10 @@ try:
     
     if current_bono:
         bonos.append(current_bono)
+    
+    st.write(f"Debug: Se procesaron {len(bonos)} bonos")
+    for i, bono in enumerate(bonos):
+        st.write(f"Debug: Bono {i+1}: {bono['nombre']} con {len(bono['flujos'])} flujos")
     
     if not bonos:
         st.error("❌ No se encontraron bonos en el archivo")
@@ -596,13 +603,13 @@ try:
                 capital_residual,
                 bono_actual['base_calculo']
             )
-        else:
+            else:
             intereses_corridos = 0
         
         # Calcular precio limpio
         precio_limpio = precio_dirty - intereses_corridos
-        
-        # Calcular vida media
+                
+                # Calcular vida media
         vida_media = calcular_vida_media(
             flujos_capital,
             fechas,
@@ -853,5 +860,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-except Exception as e:
+        except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
