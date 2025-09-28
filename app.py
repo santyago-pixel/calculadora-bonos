@@ -520,13 +520,13 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
     
     # SECCIÓN IZQUIERDA: Menús desplegables y botón de calcular
     with col_left:
+        st.subheader("Configuración")
+        
         # Contenedor con borde redondeado para la sección de Configuración
         st.markdown("""
         <div style='border: 2px solid #e0e0e0; border-radius: 15px; padding: 20px; 
                     background-color: #fafafa; margin-bottom: 20px;'>
         """, unsafe_allow_html=True)
-        
-        st.subheader("Configuración")
         
         # Selector de tipo de bono
         st.write("**Tipo de Bono**")
