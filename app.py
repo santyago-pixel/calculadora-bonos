@@ -712,29 +712,29 @@ if flows_df is not None and 'nombre_bono' in flows_df.columns:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Precio Limpio</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Precio Limpio</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{clean_price:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col2:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Intereses Corridos</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Intereses Corridos</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{accrued_interest:.4f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col3:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Capital Residual</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Capital Residual</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{capital_residual:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
                     with col4:
                         st.markdown(f"""
-                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important;">
-                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important;">Valor Técnico</div>
+                        <div style="background-color: #f0f2f6 !important; border: 1px solid #e0e0e0 !important; border-radius: 8px !important; padding: 15px !important; text-align: center !important; margin: 5px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; height: 80px !important;">
+                            <div style="font-size: 10px !important; font-weight: 600 !important; color: #262730 !important; margin-bottom: 5px !important; height: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important;">Valor Técnico</div>
                             <div style="font-size: 12px !important; font-weight: 700 !important; color: #262730 !important;">{technical_value:.2f}</div>
                         </div>
                         """, unsafe_allow_html=True)
