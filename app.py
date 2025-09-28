@@ -36,6 +36,39 @@ st.markdown("""
         padding-top: 0rem !important;
     }
     
+    /* Selectores más específicos para eliminar espaciado */
+    .main .block-container > div {
+        padding-top: 0rem !important;
+        margin-top: 0rem !important;
+    }
+    
+    .main .block-container > div:first-child {
+        padding-top: 0rem !important;
+        margin-top: 0rem !important;
+    }
+    
+    /* Eliminar espaciado de columnas */
+    .main .stColumn {
+        padding-top: 0rem !important;
+        margin-top: 0rem !important;
+    }
+    
+    .main .stColumn:first-child {
+        padding-top: 0rem !important;
+        margin-top: 0rem !important;
+    }
+    
+    /* Eliminar espaciado de contenedores de Streamlit */
+    div[data-testid="stMarkdownContainer"] {
+        margin-top: 0rem !important;
+        padding-top: 0rem !important;
+    }
+    
+    div[data-testid="stMarkdownContainer"]:first-child {
+        margin-top: 0rem !important;
+        padding-top: 0rem !important;
+    }
+    
     /* Reducir tamaño de títulos y alinear arriba */
     .main h1, .main h2, .main h3, 
     .main .element-container h1, .main .element-container h2, .main .element-container h3,
