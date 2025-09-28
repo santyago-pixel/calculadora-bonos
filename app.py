@@ -13,6 +13,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Desactivar modo noche
+st.set_option('theme.base', 'light')
+
 # CSS personalizado para el dashboard
 st.markdown("""
 <style>
@@ -982,7 +985,6 @@ try:
             st.markdown(f"**Base de cálculo:** {bono_actual['base_calculo']}")
             st.markdown(f"**Periodicidad:** {periodicidad_texto}")
             st.markdown(f"**Tasa de cupón:** {bono_actual['tasa_cupon']:.2%}")
-            st.markdown(f"**Número de flujos:** {len(bono_actual['flujos'])}")
 
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
