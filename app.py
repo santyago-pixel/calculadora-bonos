@@ -525,14 +525,15 @@ try:
     
     # Contenido principal
     if calcular:
+        # Convertir fecha_liquidacion a datetime para comparación
+        fecha_liquidacion_dt = pd.to_datetime(fecha_liquidacion)
+        
         # Calcular flujos de caja
         flujos = []
         fechas = []
         flujos_capital = []
         
         for flujo in bono_actual['flujos']:
-            # Convertir fecha_liquidacion a datetime para comparación
-            fecha_liquidacion_dt = pd.to_datetime(fecha_liquidacion)
             if flujo['fecha'] > fecha_liquidacion_dt:
                 flujos.append(flujo['total'])
                 fechas.append(flujo['fecha'])
@@ -541,6 +542,11 @@ try:
         if not flujos:
             st.error("❌ No hay flujos futuros para calcular")
             st.stop()
+        
+        # Debug: mostrar información de flujos
+        st.write(f"Debug: {len(flujos)} flujos encontrados")
+        st.write(f"Debug: Precio dirty = {precio_dirty}")
+        st.write(f"Debug: Fecha liquidación = {fecha_liquidacion}")
         
         # Calcular YTM
         ytm_efectiva = calcular_ytm(
