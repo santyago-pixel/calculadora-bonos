@@ -465,9 +465,9 @@ try:
         elif current_bono and pd.notna(row.iloc[0]) and isinstance(row.iloc[0], datetime):
             # Es una fecha, agregar flujo
             fecha = row.iloc[0]
-            cupon = float(row.iloc[1]) if pd.notna(row.iloc[1]) else 0
-            capital = float(row.iloc[2]) if pd.notna(row.iloc[2]) else 0
-            total = float(row.iloc[3]) if pd.notna(row.iloc[3]) else 0
+            cupon = float(row.iloc[2]) if pd.notna(row.iloc[2]) else 0  # Columna C
+            capital = float(row.iloc[3]) if pd.notna(row.iloc[3]) else 0  # Columna D
+            total = float(row.iloc[4]) if pd.notna(row.iloc[4]) else 0  # Columna E
             
             current_bono['flujos'].append({
                 'fecha': fecha,
