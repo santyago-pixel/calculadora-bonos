@@ -791,6 +791,16 @@ try:
     else:
         st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
         
+        # Mapear periodicidad a texto
+        periodicidad_texto = {
+            1: "anual",
+            2: "semestral", 
+            3: "trimestral",
+            4: "trimestral",
+            6: "bimestral",
+            12: "mensual"
+        }.get(bono_actual['periodicidad'], f"{bono_actual['periodicidad']} veces al año")
+        
         # Mostrar información del bono seleccionado
         st.markdown("## Información del Bono Seleccionado")
         st.markdown(f"**Nombre:** {bono_actual['nombre']}")
