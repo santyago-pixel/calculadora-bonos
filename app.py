@@ -922,17 +922,22 @@ try:
         
         # SECCIÓN FLUJO DE FONDOS - FORMATO BÁSICO
         st.markdown("## Flujo de Fondos")
+        st.write("DEBUG: Estoy en la sección de flujo de fondos")
         
         # Crear DataFrame simple
+        st.write("DEBUG: Creando DataFrame...")
         df_simple = pd.DataFrame({
             'Fecha': [f.strftime('%d/%m/%Y') for f in fechas],
             'Capital': [f"{c:.1f}" if c > 0 else "" for c in flujos_capital],
             'Cupón': [f"{f-c:.1f}" for f, c in zip(flujos, flujos_capital)],
             'Total': [f"{f:.1f}" for f in flujos]
         })
+        st.write("DEBUG: DataFrame creado")
         
         # Mostrar tabla simple
+        st.write("DEBUG: Mostrando tabla...")
         st.table(df_simple)
+        st.write("DEBUG: Tabla mostrada")
             
     else:
         if not bono_seleccionado:
