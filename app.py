@@ -940,6 +940,14 @@ try:
             'Total': [f"{f:.1f}" for f in flujos]
         })
         
+        # Probar diferentes métodos
+        st.write("Método 1 - st.table:")
+        st.table(df_simple)
+        
+        st.write("Método 2 - st.write:")
+        st.write(df_simple)
+        
+        st.write("Método 3 - st.dataframe:")
         st.dataframe(df_simple)
             
     else:
