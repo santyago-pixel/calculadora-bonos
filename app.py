@@ -945,13 +945,13 @@ try:
             st.markdown('</div>', unsafe_allow_html=True)
         
         
-        # COLUMNA DERECHA - GRÁFICO S&P 500
+        # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
         with col2:
+            # Gráfico S&P 500 (altura reducida)
             st.markdown("## Gráfico S&P 500")
             
-            # Widget de TradingView usando st.components.v1.html
-            tradingview_html = """
-            <div class="tradingview-widget-container" style="height: 675px; width: 100%;">
+            sp500_html = """
+            <div class="tradingview-widget-container" style="height: 337px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
                     <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
@@ -962,7 +962,7 @@ try:
                 {
                 "autosize": false,
                 "width": "100%",
-                "height": "675",
+                "height": "337",
                 "symbol": "SPX500",
                 "interval": "D",
                 "timezone": "America/New_York",
@@ -974,13 +974,48 @@ try:
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
-                "container_id": "tradingview_widget"
+                "container_id": "tradingview_widget_sp500"
                 }
                 </script>
             </div>
             """
             
-            st.components.v1.html(tradingview_html, height=675)
+            st.components.v1.html(sp500_html, height=337)
+            
+            # Gráfico Apple
+            st.markdown("## Gráfico Apple (AAPL)")
+            
+            apple_html = """
+            <div class="tradingview-widget-container" style="height: 337px; width: 100%;">
+                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                <div class="tradingview-widget-copyright">
+                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                    </a>
+                </div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                {
+                "autosize": false,
+                "width": "100%",
+                "height": "337",
+                "symbol": "NASDAQ:AAPL",
+                "interval": "D",
+                "timezone": "America/New_York",
+                "theme": "light",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_widget_apple"
+                }
+                </script>
+            </div>
+            """
+            
+            st.components.v1.html(apple_html, height=337)
         
         # SECCIÓN FLUJO DE FONDOS - FORMATO MEJORADO
         st.markdown("## Flujo de Fondos")
