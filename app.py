@@ -986,10 +986,10 @@ try:
             
             st.components.v1.html(bono_html, height=270)
             
-            # Gráfico Apple
-            st.markdown("## Gráfico Apple (AAPL)")
+            # Gráfico Merval
+            st.markdown("## Gráfico Merval (IMV)")
             
-            apple_html = """
+            merval_html = """
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
@@ -1002,9 +1002,9 @@ try:
                 "autosize": false,
                 "width": "100%",
                 "height": "270",
-                "symbol": "NASDAQ:AAPL",
+                "symbol": "IMV",
                 "interval": "D",
-                "timezone": "America/New_York",
+                "timezone": "America/Argentina/Buenos_Aires",
                 "theme": "light",
                 "style": "1",
                 "locale": "es",
@@ -1013,13 +1013,13 @@ try:
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
-                "container_id": "tradingview_widget_apple"
+                "container_id": "tradingview_widget_merval"
                 }
                 </script>
             </div>
             """
             
-            st.components.v1.html(apple_html, height=270)
+            st.components.v1.html(merval_html, height=270)
         
         # SECCIÓN FLUJO DE FONDOS - FORMATO MEJORADO
         st.markdown("## Flujo de Fondos")
