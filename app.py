@@ -920,60 +920,27 @@ try:
             
             st.components.v1.html(tradingview_html, height=675)
         
-        # SECCIÓN FLUJO DE FONDOS - FUERA DE LAS COLUMNAS
+        # SECCIÓN FLUJO DE FONDOS - FORMATO BÁSICO
         st.markdown("## Flujo de Fondos")
-        st.write("DEBUG: Llegué a la sección de flujo de fondos")
         
-        # Crear DataFrame para el flujo de fondos
-        st.write("DEBUG: Creando cash_flows...")
-        cash_flows = []
+        # Crear tabla básica
+        st.write("**Datos del flujo de fondos:**")
+        
+        # Mostrar datos en formato simple
         for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
             cupon = flujo - capital
-            cash_flows.append({
-                'Fecha': fecha,
-                'Capital': capital,
-                'Cupón': cupon,
-                'Flujo Total': flujo
-            })
+            st.write(f"**Flujo {i+1}:** Fecha: {fecha.strftime('%d/%m/%Y')}, Capital: {capital}, Cupón: {cupon:.2f}, Total: {flujo:.2f}")
         
-        st.write(f"DEBUG: cash_flows creado con {len(cash_flows)} elementos")
-        st.write("DEBUG: Creando DataFrame...")
-        df_cash_flows = pd.DataFrame(cash_flows)
-        st.write("DEBUG: DataFrame creado")
+        # Crear DataFrame simple
+        st.write("**Tabla simple:**")
+        df_simple = pd.DataFrame({
+            'Fecha': [f.strftime('%d/%m/%Y') for f in fechas],
+            'Capital': [f"{c:.1f}" if c > 0 else "" for c in flujos_capital],
+            'Cupón': [f"{f-c:.1f}" for f, c in zip(flujos, flujos_capital)],
+            'Total': [f"{f:.1f}" for f in flujos]
+        })
         
-        st.write("DEBUG: Formateando fechas...")
-        df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
-        st.write("DEBUG: Fechas formateadas")
-        
-        st.write("DEBUG: Redondeando números...")
-        df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
-        df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
-        df_cash_flows['Flujo Total'] = df_cash_flows['Flujo Total'].round(1)
-        st.write("DEBUG: Números redondeados")
-        
-        # Reemplazar 0 con vacío
-        st.write("DEBUG: Reemplazando 0 con vacío...")
-        df_cash_flows = df_cash_flows.replace(0, '')
-        st.write("DEBUG: 0 reemplazados")
-        
-        # Mostrar tabla simple
-        st.write("DEBUG: Mostrando tabla...")
-        st.write(f"DEBUG: DataFrame shape: {df_cash_flows.shape}")
-        st.write(f"DEBUG: DataFrame columns: {df_cash_flows.columns.tolist()}")
-        st.write("DEBUG: DataFrame head:")
-        st.write(df_cash_flows.head())
-        
-        # Probar con diferentes métodos de visualización
-        st.write("=== MÉTODO 1: st.dataframe ===")
-        st.dataframe(df_cash_flows)
-        
-        st.write("=== MÉTODO 2: st.table ===")
-        st.table(df_cash_flows)
-        
-        st.write("=== MÉTODO 3: st.write ===")
-        st.write(df_cash_flows)
-        
-        st.write("DEBUG: Tabla mostrada")
+        st.dataframe(df_simple)
             
     else:
         if not bono_seleccionado:
