@@ -950,29 +950,11 @@ try:
         # Reemplazar 0 con vacío
         df_cash_flows = df_cash_flows.replace(0, '')
         
-        # Mostrar tabla con formato mejorado
-        st.markdown("""
-        <style>
-        .stTable table {
-            font-size: 12px !important;
-            width: 100% !important;
-        }
-        .stTable th, .stTable td {
-            padding: 4px 8px !important;
-            text-align: right !important;
-            font-size: 11px !important;
-        }
-        .stTable th:first-child, .stTable td:first-child {
-            text-align: left !important;
-        }
-        /* Ocultar la primera columna (índice) */
-        .stTable table tr th:first-child,
-        .stTable table tr td:first-child {
-            display: none !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+        # Mostrar tabla simple primero
+        st.write("Tabla simple:")
+        st.dataframe(df_cash_flows)
         
+        st.write("Tabla con st.table:")
         st.table(df_cash_flows)
             
     else:
