@@ -958,6 +958,10 @@ try:
         
         # Mostrar tabla simple
         st.write("DEBUG: Mostrando tabla...")
+        st.write(f"DEBUG: DataFrame shape: {df_cash_flows.shape}")
+        st.write(f"DEBUG: DataFrame columns: {df_cash_flows.columns.tolist()}")
+        st.write("DEBUG: DataFrame head:")
+        st.write(df_cash_flows.head())
         st.dataframe(df_cash_flows)
         st.write("DEBUG: Tabla mostrada")
             
