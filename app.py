@@ -996,5 +996,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-except Exception as e:
+        except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
