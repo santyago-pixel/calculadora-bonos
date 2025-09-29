@@ -923,6 +923,11 @@ try:
         # SECCIÓN FLUJO DE FONDOS - FUERA DE LAS COLUMNAS
         st.markdown("## Flujo de Fondos")
         
+        # Debug: verificar variables
+        st.write(f"Debug: flujos = {flujos}")
+        st.write(f"Debug: fechas = {fechas}")
+        st.write(f"Debug: flujos_capital = {flujos_capital}")
+        
         # Crear DataFrame para el flujo de fondos
         cash_flows = []
         for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
