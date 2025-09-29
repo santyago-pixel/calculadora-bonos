@@ -627,6 +627,7 @@ try:
                 'periodicidad': int(row.iloc[2]) if pd.notna(row.iloc[2]) else 2,
                 'tipo_bono': str(row.iloc[3]) if pd.notna(row.iloc[3]) else "General",
                 'tasa_cupon': safe_float(row.iloc[4], 0.05),
+                'ticker': str(row.iloc[4]) if pd.notna(row.iloc[4]) else "SPX500",  # Columna E - ticker
                 'flujos': []
             }
         elif current_bono and pd.notna(row.iloc[0]) and isinstance(row.iloc[0], datetime):
@@ -950,10 +951,10 @@ try:
             # Espaciado para alinear con las tarjetas
             st.markdown("<br><br>", unsafe_allow_html=True)
             
-            # Gráfico S&P 500 (altura reducida)
-            st.markdown("## Gráfico S&P 500")
+            # Gráfico del bono seleccionado
+            st.markdown(f"## Gráfico {bono_actual['ticker']}")
             
-            sp500_html = """
+            bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
@@ -962,11 +963,11 @@ try:
                     </a>
                 </div>
                 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                {
+                {{
                 "autosize": false,
                 "width": "100%",
                 "height": "270",
-                "symbol": "SPX500",
+                "symbol": "{bono_actual['ticker']}",
                 "interval": "D",
                 "timezone": "America/New_York",
                 "theme": "light",
@@ -977,13 +978,13 @@ try:
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
-                "container_id": "tradingview_widget_sp500"
-                }
+                "container_id": "tradingview_widget_bono"
+                }}
                 </script>
             </div>
             """
             
-            st.components.v1.html(sp500_html, height=270)
+            st.components.v1.html(bono_html, height=270)
             
             # Gráfico Apple
             st.markdown("## Gráfico Apple (AAPL)")
