@@ -895,8 +895,8 @@ try:
                 'Cupón': cupon,
                 'Flujo Total': flujo
             })
-        
-        df_cash_flows = pd.DataFrame(cash_flows)
+                
+                df_cash_flows = pd.DataFrame(cash_flows)
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
         df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
