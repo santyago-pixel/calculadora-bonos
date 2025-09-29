@@ -612,20 +612,39 @@ try:
             if current_bono:
                 bonos.append(current_bono)
             
+            # Función auxiliar para convertir a float de forma segura
+            def safe_float(value, default=0):
+                if pd.isna(value):
+                    return default
+                try:
+                    return float(value)
+                except (ValueError, TypeError):
+                    return default
+            
             current_bono = {
                 'nombre': str(row.iloc[0]),
                 'base_calculo': str(row.iloc[1]) if pd.notna(row.iloc[1]) else "ACT/365",
                 'periodicidad': int(row.iloc[2]) if pd.notna(row.iloc[2]) else 2,
                 'tipo_bono': str(row.iloc[3]) if pd.notna(row.iloc[3]) else "General",
-                'tasa_cupon': float(row.iloc[4]) if pd.notna(row.iloc[4]) else 0.05,
+                'tasa_cupon': safe_float(row.iloc[4], 0.05),
                 'flujos': []
             }
         elif current_bono and pd.notna(row.iloc[0]) and isinstance(row.iloc[0], datetime):
             # Es una fecha, agregar flujo
             fecha = row.iloc[0]
-            cupon = float(row.iloc[2]) if pd.notna(row.iloc[2]) else 0  # Columna C
-            capital = float(row.iloc[3]) if pd.notna(row.iloc[3]) else 0  # Columna D
-            total = float(row.iloc[4]) if pd.notna(row.iloc[4]) else 0  # Columna E
+            
+            # Función auxiliar para convertir a float de forma segura
+            def safe_float(value, default=0):
+                if pd.isna(value):
+                    return default
+                try:
+                    return float(value)
+                except (ValueError, TypeError):
+                    return default
+            
+            cupon = safe_float(row.iloc[2])  # Columna C
+            capital = safe_float(row.iloc[3])  # Columna D
+            total = safe_float(row.iloc[4])  # Columna E
             
             current_bono['flujos'].append({
                 'fecha': fecha,
