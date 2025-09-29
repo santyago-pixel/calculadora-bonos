@@ -952,10 +952,14 @@ try:
         
         # Mostrar tabla simple primero
         st.write("Tabla simple:")
+        st.write("Antes de st.dataframe")
         st.dataframe(df_cash_flows)
+        st.write("Después de st.dataframe")
         
         st.write("Tabla con st.table:")
+        st.write("Antes de st.table")
         st.table(df_cash_flows)
+        st.write("Después de st.table")
             
     else:
         if not bono_seleccionado:
