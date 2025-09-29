@@ -896,7 +896,7 @@ try:
                 'Flujo Total': flujo
             })
                 
-                df_cash_flows = pd.DataFrame(cash_flows)
+        df_cash_flows = pd.DataFrame(cash_flows)
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
         df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
@@ -996,5 +996,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-        except Exception as e:
+except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
