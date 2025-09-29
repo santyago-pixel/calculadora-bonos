@@ -882,7 +882,45 @@ try:
             
             st.markdown('</div>', unsafe_allow_html=True)
         
-        # SECCIÓN FLUJO DE FONDOS - DEBAJO DE LAS TARJETAS
+        
+        # COLUMNA DERECHA - GRÁFICO S&P 500
+        with col2:
+            st.markdown("## Gráfico S&P 500")
+            
+            # Widget de TradingView usando st.components.v1.html
+            tradingview_html = """
+            <div class="tradingview-widget-container" style="height: 675px; width: 100%;">
+                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                <div class="tradingview-widget-copyright">
+                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                    </a>
+                </div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                {
+                "autosize": false,
+                "width": "100%",
+                "height": "675",
+                "symbol": "SPX500",
+                "interval": "D",
+                "timezone": "America/New_York",
+                "theme": "light",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_widget"
+                }
+                </script>
+            </div>
+            """
+            
+            st.components.v1.html(tradingview_html, height=675)
+        
+        # SECCIÓN FLUJO DE FONDOS - FUERA DE LAS COLUMNAS
         st.markdown("## Flujo de Fondos")
         
         # Crear DataFrame para el flujo de fondos
@@ -929,43 +967,6 @@ try:
         """, unsafe_allow_html=True)
         
         st.table(df_cash_flows)
-        
-        # COLUMNA DERECHA - GRÁFICO S&P 500
-        with col2:
-            st.markdown("## Gráfico S&P 500")
-            
-            # Widget de TradingView usando st.components.v1.html
-            tradingview_html = """
-            <div class="tradingview-widget-container" style="height: 675px; width: 100%;">
-                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                <div class="tradingview-widget-copyright">
-                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                    </a>
-                </div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                {
-                "autosize": false,
-                "width": "100%",
-                "height": "675",
-                "symbol": "SPX500",
-                "interval": "D",
-                "timezone": "America/New_York",
-                "theme": "light",
-                "style": "1",
-                "locale": "es",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "save_image": false,
-                "container_id": "tradingview_widget"
-                }
-                </script>
-            </div>
-            """
-            
-            st.components.v1.html(tradingview_html, height=675)
             
     else:
         if not bono_seleccionado:
