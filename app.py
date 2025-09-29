@@ -991,7 +991,7 @@ try:
             color: white !important;
             font-weight: bold !important;
             padding: 12px 8px !important;
-            text-align: center !important;
+            text-align: right !important;
             border: 1px solid #ddd !important;
         }
         .stTable td {
