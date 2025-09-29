@@ -665,6 +665,7 @@ try:
         
         # Selección de bono
         nombres_bonos = [bono['nombre'] for bono in bonos_filtrados]
+        nombres_bonos.sort()  # Ordenar alfabéticamente
         bono_seleccionado = st.selectbox(
             "Elija un Bono", 
             nombres_bonos,
