@@ -1065,9 +1065,9 @@ try:
                 """
                 st.components.v1.html(sp500_html, height=300)
                 
-                # Merval Argentina
-                st.markdown("### Índice S&P MERVAL")
-                merval_html = """
+                # Apple Inc.
+                st.markdown("### Apple Inc. (AAPL)")
+                apple_html = """
                 <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                     <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                     <div class="tradingview-widget-copyright">
@@ -1080,9 +1080,9 @@ try:
                     "autosize": false,
                     "width": "100%",
                     "height": "300",
-                    "symbol": "SPX:MERV",
+                    "symbol": "NASDAQ:AAPL",
                     "interval": "D",
-                    "timezone": "America/Argentina/Buenos_Aires",
+                    "timezone": "America/New_York",
                     "theme": "light",
                     "style": "1",
                     "locale": "es",
@@ -1096,12 +1096,12 @@ try:
                     </script>
                 </div>
                 """
-                st.components.v1.html(merval_html, height=300)
+                st.components.v1.html(apple_html, height=300)
             
             with col2:
-                # Euro Stoxx 50 (Europa)
-                st.markdown("### Euro Stoxx 50")
-                euro_html = """
+                # Tesla Inc.
+                st.markdown("### Tesla Inc. (TSLA)")
+                tesla_html = """
                 <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                     <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                     <div class="tradingview-widget-copyright">
@@ -1114,9 +1114,9 @@ try:
                     "autosize": false,
                     "width": "100%",
                     "height": "300",
-                    "symbol": "EUROSTOXX50",
+                    "symbol": "NASDAQ:TSLA",
                     "interval": "D",
-                    "timezone": "Europe/Berlin",
+                    "timezone": "America/New_York",
                     "theme": "light",
                     "style": "1",
                     "locale": "es",
@@ -1130,7 +1130,7 @@ try:
                     </script>
                 </div>
                 """
-                st.components.v1.html(euro_html, height=300)
+                st.components.v1.html(tesla_html, height=300)
                 
                 # Nikkei 225 (Asia)
                 st.markdown("### Nikkei 225")
