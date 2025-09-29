@@ -932,7 +932,6 @@ try:
             st.write(f"**Flujo {i+1}:** Fecha: {fecha.strftime('%d/%m/%Y')}, Capital: {capital}, Cupón: {cupon:.2f}, Total: {flujo:.2f}")
         
         # Crear DataFrame simple
-        st.write("**Tabla simple:**")
         df_simple = pd.DataFrame({
             'Fecha': [f.strftime('%d/%m/%Y') for f in fechas],
             'Capital': [f"{c:.1f}" if c > 0 else "" for c in flujos_capital],
@@ -940,15 +939,30 @@ try:
             'Total': [f"{f:.1f}" for f in flujos]
         })
         
-        # Probar diferentes métodos
-        st.write("Método 1 - st.table:")
+        # Mostrar tabla con formato mejorado
+        st.markdown("""
+        <style>
+        .stTable table {
+            font-size: 12px !important;
+            width: 100% !important;
+        }
+        .stTable th, .stTable td {
+            padding: 4px 8px !important;
+            text-align: right !important;
+            font-size: 11px !important;
+        }
+        .stTable th:first-child, .stTable td:first-child {
+            text-align: left !important;
+        }
+        /* Ocultar la primera columna (índice) */
+        .stTable table tr th:first-child,
+        .stTable table tr td:first-child {
+            display: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
         st.table(df_simple)
-        
-        st.write("Método 2 - st.write:")
-        st.write(df_simple)
-        
-        st.write("Método 3 - st.dataframe:")
-        st.dataframe(df_simple)
             
     else:
         if not bono_seleccionado:
