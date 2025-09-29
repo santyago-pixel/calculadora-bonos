@@ -920,24 +920,58 @@ try:
             
             st.components.v1.html(tradingview_html, height=675)
         
-        # SECCIÓN FLUJO DE FONDOS - FORMATO BÁSICO
+        # SECCIÓN FLUJO DE FONDOS - FORMATO MEJORADO
         st.markdown("## Flujo de Fondos")
-        st.write("DEBUG: Estoy en la sección de flujo de fondos")
         
-        # Crear DataFrame simple
-        st.write("DEBUG: Creando DataFrame...")
+        # Crear DataFrame con formato mejorado
         df_simple = pd.DataFrame({
             'Fecha': [f.strftime('%d/%m/%Y') for f in fechas],
             'Capital': [f"{c:.1f}" if c > 0 else "" for c in flujos_capital],
             'Cupón': [f"{f-c:.1f}" for f, c in zip(flujos, flujos_capital)],
             'Total': [f"{f:.1f}" for f in flujos]
         })
-        st.write("DEBUG: DataFrame creado")
         
-        # Mostrar tabla simple
-        st.write("DEBUG: Mostrando tabla...")
+        # CSS para mejorar la visualización de la tabla
+        st.markdown("""
+        <style>
+        .stTable {
+            border: 2px solid #1f77b4 !important;
+            border-radius: 8px !important;
+            background-color: #f8f9fa !important;
+        }
+        .stTable table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            font-size: 14px !important;
+        }
+        .stTable th {
+            background-color: #1f77b4 !important;
+            color: white !important;
+            font-weight: bold !important;
+            padding: 12px 8px !important;
+            text-align: center !important;
+            border: 1px solid #ddd !important;
+        }
+        .stTable td {
+            padding: 10px 8px !important;
+            text-align: right !important;
+            border: 1px solid #ddd !important;
+            background-color: white !important;
+        }
+        .stTable td:first-child {
+            text-align: left !important;
+            font-weight: bold !important;
+        }
+        /* Ocultar la primera columna (índice) */
+        .stTable table tr th:first-child,
+        .stTable table tr td:first-child {
+            display: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Mostrar tabla con formato mejorado
         st.table(df_simple)
-        st.write("DEBUG: Tabla mostrada")
             
     else:
         if not bono_seleccionado:
