@@ -947,6 +947,9 @@ try:
         
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
         with col2:
+            # Espaciado para alinear con las tarjetas
+            st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+            
             # Gráfico S&P 500 (altura reducida)
             st.markdown("## Gráfico S&P 500")
             
