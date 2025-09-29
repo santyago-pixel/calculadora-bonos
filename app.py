@@ -922,6 +922,7 @@ try:
         
         # SECCIÓN FLUJO DE FONDOS - FUERA DE LAS COLUMNAS
         st.markdown("## Flujo de Fondos")
+        st.write("DEBUG: Llegué a la sección de flujo de fondos")
         
         # Crear DataFrame para el flujo de fondos
         cash_flows = []
