@@ -951,7 +951,7 @@ try:
             st.markdown("## Gráfico S&P 500")
             
             sp500_html = """
-            <div class="tradingview-widget-container" style="height: 337px; width: 100%;">
+            <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
                     <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
@@ -962,7 +962,7 @@ try:
                 {
                 "autosize": false,
                 "width": "100%",
-                "height": "337",
+                "height": "270",
                 "symbol": "SPX500",
                 "interval": "D",
                 "timezone": "America/New_York",
@@ -980,13 +980,13 @@ try:
             </div>
             """
             
-            st.components.v1.html(sp500_html, height=337)
+            st.components.v1.html(sp500_html, height=270)
             
             # Gráfico Apple
             st.markdown("## Gráfico Apple (AAPL)")
             
             apple_html = """
-            <div class="tradingview-widget-container" style="height: 337px; width: 100%;">
+            <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
                     <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
@@ -997,7 +997,7 @@ try:
                 {
                 "autosize": false,
                 "width": "100%",
-                "height": "337",
+                "height": "270",
                 "symbol": "NASDAQ:AAPL",
                 "interval": "D",
                 "timezone": "America/New_York",
@@ -1015,7 +1015,7 @@ try:
             </div>
             """
             
-            st.components.v1.html(apple_html, height=337)
+            st.components.v1.html(apple_html, height=270)
         
         # SECCIÓN FLUJO DE FONDOS - FORMATO MEJORADO
         st.markdown("## Flujo de Fondos")
