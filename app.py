@@ -923,11 +923,6 @@ try:
         # SECCIÓN FLUJO DE FONDOS - FUERA DE LAS COLUMNAS
         st.markdown("## Flujo de Fondos")
         
-        # Debug: verificar variables
-        st.write(f"Debug: flujos = {flujos}")
-        st.write(f"Debug: fechas = {fechas}")
-        st.write(f"Debug: flujos_capital = {flujos_capital}")
-        
         # Crear DataFrame para el flujo de fondos
         cash_flows = []
         for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
@@ -939,9 +934,7 @@ try:
                 'Flujo Total': flujo
             })
         
-        st.write(f"Debug: cash_flows = {cash_flows}")
         df_cash_flows = pd.DataFrame(cash_flows)
-        st.write(f"Debug: df_cash_flows = {df_cash_flows}")
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
         df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
@@ -950,16 +943,30 @@ try:
         # Reemplazar 0 con vacío
         df_cash_flows = df_cash_flows.replace(0, '')
         
-        # Mostrar tabla simple primero
-        st.write("Tabla simple:")
-        st.write("Antes de st.dataframe")
-        st.dataframe(df_cash_flows)
-        st.write("Después de st.dataframe")
+        # Mostrar tabla con formato mejorado
+        st.markdown("""
+        <style>
+        .stTable table {
+            font-size: 12px !important;
+            width: 100% !important;
+        }
+        .stTable th, .stTable td {
+            padding: 4px 8px !important;
+            text-align: right !important;
+            font-size: 11px !important;
+        }
+        .stTable th:first-child, .stTable td:first-child {
+            text-align: left !important;
+        }
+        /* Ocultar la primera columna (índice) */
+        .stTable table tr th:first-child,
+        .stTable table tr td:first-child {
+            display: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
         
-        st.write("Tabla con st.table:")
-        st.write("Antes de st.table")
         st.table(df_cash_flows)
-        st.write("Después de st.table")
             
     else:
         if not bono_seleccionado:
