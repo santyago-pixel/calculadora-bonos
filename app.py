@@ -925,6 +925,7 @@ try:
         st.write("DEBUG: Llegué a la sección de flujo de fondos")
         
         # Crear DataFrame para el flujo de fondos
+        st.write("DEBUG: Creando cash_flows...")
         cash_flows = []
         for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
             cupon = flujo - capital
@@ -935,39 +936,30 @@ try:
                 'Flujo Total': flujo
             })
         
+        st.write(f"DEBUG: cash_flows creado con {len(cash_flows)} elementos")
+        st.write("DEBUG: Creando DataFrame...")
         df_cash_flows = pd.DataFrame(cash_flows)
+        st.write("DEBUG: DataFrame creado")
+        
+        st.write("DEBUG: Formateando fechas...")
         df_cash_flows['Fecha'] = df_cash_flows['Fecha'].dt.strftime('%d/%m/%y')
+        st.write("DEBUG: Fechas formateadas")
+        
+        st.write("DEBUG: Redondeando números...")
         df_cash_flows['Capital'] = df_cash_flows['Capital'].round(1)
         df_cash_flows['Cupón'] = df_cash_flows['Cupón'].round(1)
         df_cash_flows['Flujo Total'] = df_cash_flows['Flujo Total'].round(1)
+        st.write("DEBUG: Números redondeados")
         
         # Reemplazar 0 con vacío
+        st.write("DEBUG: Reemplazando 0 con vacío...")
         df_cash_flows = df_cash_flows.replace(0, '')
+        st.write("DEBUG: 0 reemplazados")
         
-        # Mostrar tabla con formato mejorado
-        st.markdown("""
-        <style>
-        .stTable table {
-            font-size: 12px !important;
-            width: 100% !important;
-        }
-        .stTable th, .stTable td {
-            padding: 4px 8px !important;
-            text-align: right !important;
-            font-size: 11px !important;
-        }
-        .stTable th:first-child, .stTable td:first-child {
-            text-align: left !important;
-        }
-        /* Ocultar la primera columna (índice) */
-        .stTable table tr th:first-child,
-        .stTable table tr td:first-child {
-            display: none !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
+        # Mostrar tabla simple
+        st.write("DEBUG: Mostrando tabla...")
         st.table(df_cash_flows)
+        st.write("DEBUG: Tabla mostrada")
             
     else:
         if not bono_seleccionado:
