@@ -957,6 +957,7 @@ try:
             text-align: right !important;
             border: 1px solid #ddd !important;
             background-color: white !important;
+            color: black !important;
         }
         .stTable td:first-child {
             text-align: left !important;
