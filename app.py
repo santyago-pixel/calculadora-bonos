@@ -340,6 +340,48 @@ st.markdown("""
     .stDataFrame > div > div:first-child {
         display: none !important;
     }
+    
+    /* Ocultar barra de GitHub */
+    .stDeployButton {
+        display: none !important;
+    }
+    
+    /* Ocultar elementos de GitHub/Streamlit Cloud */
+    [data-testid="stDeployButton"] {
+        display: none !important;
+    }
+    
+    /* Ocultar cualquier elemento de deploy */
+    .stDeployButton,
+    .deploy-button,
+    .github-button {
+        display: none !important;
+    }
+    
+    /* Ocultar barra superior de Streamlit Cloud */
+    .stApp > header {
+        display: none !important;
+    }
+    
+    /* Ocultar elementos de la barra superior */
+    .stApp > div > div > div:first-child {
+        display: none !important;
+    }
+    
+    /* Ocultar elementos específicos de GitHub */
+    [data-testid="stHeader"],
+    [data-testid="stToolbar"],
+    .stApp > div > div > div:first-child > div {
+        display: none !important;
+    }
+    
+    /* Ocultar cualquier elemento con texto "Deploy" o "GitHub" */
+    a[href*="github"],
+    a[href*="deploy"],
+    button[title*="Deploy"],
+    button[title*="GitHub"] {
+        display: none !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -960,7 +1002,7 @@ try:
             color: black !important;
         }
         .stTable td:first-child {
-            text-align: left !important;
+            text-align: center !important;
             font-weight: bold !important;
         }
         /* Ocultar la primera columna (índice) */
