@@ -1024,6 +1024,145 @@ try:
     else:
         if not bono_seleccionado:
             st.info("👈 Seleccione un bono en el sidebar para comenzar")
+            
+            # Grid de 4 widgets de TradingView
+            st.markdown("## Mercados Globales")
+            
+            # Crear 2 filas de 2 columnas cada una
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # S&P 500
+                st.markdown("### S&P 500")
+                sp500_html = """
+                <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
+                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                    <div class="tradingview-widget-copyright">
+                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                        </a>
+                    </div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                    "autosize": false,
+                    "width": "100%",
+                    "height": "300",
+                    "symbol": "SPX500",
+                    "interval": "D",
+                    "timezone": "America/New_York",
+                    "theme": "light",
+                    "style": "1",
+                    "locale": "es",
+                    "toolbar_bg": "#f1f3f6",
+                    "enable_publishing": false,
+                    "hide_top_toolbar": false,
+                    "hide_legend": false,
+                    "save_image": false,
+                    "container_id": "tradingview_widget"
+                    }
+                    </script>
+                </div>
+                """
+                st.components.v1.html(sp500_html, height=300)
+                
+                # Merval Argentina
+                st.markdown("### Índice S&P MERVAL")
+                merval_html = """
+                <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
+                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                    <div class="tradingview-widget-copyright">
+                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                        </a>
+                    </div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                    "autosize": false,
+                    "width": "100%",
+                    "height": "300",
+                    "symbol": "SPX:MERV",
+                    "interval": "D",
+                    "timezone": "America/Argentina/Buenos_Aires",
+                    "theme": "light",
+                    "style": "1",
+                    "locale": "es",
+                    "toolbar_bg": "#f1f3f6",
+                    "enable_publishing": false,
+                    "hide_top_toolbar": false,
+                    "hide_legend": false,
+                    "save_image": false,
+                    "container_id": "tradingview_widget"
+                    }
+                    </script>
+                </div>
+                """
+                st.components.v1.html(merval_html, height=300)
+            
+            with col2:
+                # Euro Stoxx 50 (Europa)
+                st.markdown("### Euro Stoxx 50")
+                euro_html = """
+                <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
+                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                    <div class="tradingview-widget-copyright">
+                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                        </a>
+                    </div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                    "autosize": false,
+                    "width": "100%",
+                    "height": "300",
+                    "symbol": "EUROSTOXX50",
+                    "interval": "D",
+                    "timezone": "Europe/Berlin",
+                    "theme": "light",
+                    "style": "1",
+                    "locale": "es",
+                    "toolbar_bg": "#f1f3f6",
+                    "enable_publishing": false,
+                    "hide_top_toolbar": false,
+                    "hide_legend": false,
+                    "save_image": false,
+                    "container_id": "tradingview_widget"
+                    }
+                    </script>
+                </div>
+                """
+                st.components.v1.html(euro_html, height=300)
+                
+                # Nikkei 225 (Asia)
+                st.markdown("### Nikkei 225")
+                nikkei_html = """
+                <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
+                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                    <div class="tradingview-widget-copyright">
+                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                        </a>
+                    </div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                    "autosize": false,
+                    "width": "100%",
+                    "height": "300",
+                    "symbol": "NIKKEI",
+                    "interval": "D",
+                    "timezone": "Asia/Tokyo",
+                    "theme": "light",
+                    "style": "1",
+                    "locale": "es",
+                    "toolbar_bg": "#f1f3f6",
+                    "enable_publishing": false,
+                    "hide_legend": false,
+                    "save_image": false,
+                    "container_id": "tradingview_widget"
+                    }
+                    </script>
+                </div>
+                """
+                st.components.v1.html(nikkei_html, height=300)
         else:
             st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
         
