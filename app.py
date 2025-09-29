@@ -962,7 +962,17 @@ try:
         st.write(f"DEBUG: DataFrame columns: {df_cash_flows.columns.tolist()}")
         st.write("DEBUG: DataFrame head:")
         st.write(df_cash_flows.head())
+        
+        # Probar con diferentes métodos de visualización
+        st.write("=== MÉTODO 1: st.dataframe ===")
         st.dataframe(df_cash_flows)
+        
+        st.write("=== MÉTODO 2: st.table ===")
+        st.table(df_cash_flows)
+        
+        st.write("=== MÉTODO 3: st.write ===")
+        st.write(df_cash_flows)
+        
         st.write("DEBUG: Tabla mostrada")
             
     else:
