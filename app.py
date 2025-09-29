@@ -966,11 +966,17 @@ try:
         st.markdown("## Flujo de Fondos")
         
         # Crear DataFrame con formato mejorado
+        # Primera fila: fecha de liquidación y precio pagado (negativo)
+        fechas_con_liquidacion = [fecha_liquidacion] + fechas
+        capital_con_liquidacion = [""] + [f"{c:.1f}" if c > 0 else "" for c in flujos_capital]
+        cupon_con_liquidacion = [""] + [f"{f-c:.1f}" for f, c in zip(flujos, flujos_capital)]
+        total_con_liquidacion = [f"-{precio_dirty:.1f}"] + [f"{f:.1f}" for f in flujos]
+        
         df_simple = pd.DataFrame({
-            'Fecha': [f.strftime('%d/%m/%Y') for f in fechas],
-            'Capital': [f"{c:.1f}" if c > 0 else "" for c in flujos_capital],
-            'Cupón': [f"{f-c:.1f}" for f, c in zip(flujos, flujos_capital)],
-            'Total': [f"{f:.1f}" for f in flujos]
+            'Fecha': [f.strftime('%d/%m/%Y') for f in fechas_con_liquidacion],
+            'Capital': capital_con_liquidacion,
+            'Cupón': cupon_con_liquidacion,
+            'Total': total_con_liquidacion
         })
         
         # CSS para mejorar la visualización de la tabla
