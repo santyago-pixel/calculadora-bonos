@@ -958,7 +958,7 @@ try:
         
         # Mostrar tabla simple
         st.write("DEBUG: Mostrando tabla...")
-        st.table(df_cash_flows)
+        st.dataframe(df_cash_flows)
         st.write("DEBUG: Tabla mostrada")
             
     else:
