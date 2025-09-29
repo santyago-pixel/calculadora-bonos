@@ -923,14 +923,6 @@ try:
         # SECCIÓN FLUJO DE FONDOS - FORMATO BÁSICO
         st.markdown("## Flujo de Fondos")
         
-        # Crear tabla básica
-        st.write("**Datos del flujo de fondos:**")
-        
-        # Mostrar datos en formato simple
-        for i, (flujo, fecha, capital) in enumerate(zip(flujos, fechas, flujos_capital)):
-            cupon = flujo - capital
-            st.write(f"**Flujo {i+1}:** Fecha: {fecha.strftime('%d/%m/%Y')}, Capital: {capital}, Cupón: {cupon:.2f}, Total: {flujo:.2f}")
-        
         # Crear DataFrame simple
         df_simple = pd.DataFrame({
             'Fecha': [f.strftime('%d/%m/%Y') for f in fechas],
@@ -939,29 +931,7 @@ try:
             'Total': [f"{f:.1f}" for f in flujos]
         })
         
-        # Mostrar tabla con formato mejorado
-        st.markdown("""
-        <style>
-        .stTable table {
-            font-size: 12px !important;
-            width: 100% !important;
-        }
-        .stTable th, .stTable td {
-            padding: 4px 8px !important;
-            text-align: right !important;
-            font-size: 11px !important;
-        }
-        .stTable th:first-child, .stTable td:first-child {
-            text-align: left !important;
-        }
-        /* Ocultar la primera columna (índice) */
-        .stTable table tr th:first-child,
-        .stTable table tr td:first-child {
-            display: none !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
+        # Mostrar tabla simple
         st.table(df_simple)
             
     else:
