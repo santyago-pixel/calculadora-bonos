@@ -1005,6 +1005,11 @@ try:
             text-align: center !important;
             font-weight: bold !important;
         }
+        
+        /* Forzar alineación central para fechas */
+        .stTable table tr td:first-child {
+            text-align: center !important;
+        }
         /* Ocultar la primera columna (índice) */
         .stTable table tr th:first-child,
         .stTable table tr td:first-child {
@@ -1018,7 +1023,7 @@ try:
             
     else:
         if not bono_seleccionado:
-            st.info("👆 Seleccione un bono en el sidebar para comenzar")
+            st.info("👈 Seleccione un bono en el sidebar para comenzar")
         else:
             st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
         
