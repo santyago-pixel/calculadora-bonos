@@ -1468,7 +1468,6 @@ try:
         
         with col1:
             # S&P 500
-            st.markdown("### S&P 500")
             sp500_html = """
                 <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                     <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
@@ -1499,7 +1498,6 @@ try:
             
         with col2:
             # IMV Merval
-            st.markdown("### IMV Merval")
             imv_html = """
             <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
