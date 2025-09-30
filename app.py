@@ -443,6 +443,20 @@ st.markdown("""
     iframe {
         font-size: 10px !important;
     }
+    
+    /* Reducir tamaño de fuentes específicamente en el widget Market Data */
+    .tradingview-widget-container[style*="height: 800px"] {
+        font-size: 8px !important;
+    }
+    
+    .tradingview-widget-container[style*="height: 800px"] * {
+        font-size: 8px !important;
+    }
+    
+    /* Reducir tamaño de fuentes en el widget Market Data */
+    div[data-testid="stIFrame"] iframe[src*="market-overview"] {
+        font-size: 8px !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1302,9 +1316,9 @@ try:
         # Widget Market Data - Ancho completo
         st.markdown("## Datos de Mercado")
         market_data_html = """
-        <div class="tradingview-widget-container" style="height: 400px; width: 100%;">
-            <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-            <div class="tradingview-widget-copyright">
+        <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px;">
+            <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
+            <div class="tradingview-widget-copyright" style="font-size: 8px;">
                 <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
                     <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
                 </a>
@@ -1316,7 +1330,7 @@ try:
             "showChart": true,
             "locale": "es",
             "width": "100%",
-            "height": "400",
+            "height": "800",
             "largeChartUrl": "",
             "isTransparent": false,
             "showSymbolLogo": true,
@@ -1380,7 +1394,7 @@ try:
             </script>
         </div>
         """
-        st.components.v1.html(market_data_html, height=400)
+        st.components.v1.html(market_data_html, height=800)
         
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
