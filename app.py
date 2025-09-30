@@ -214,49 +214,7 @@ st.markdown("""
         margin-top: -0.5rem !important;
     }
     
-    /* Evitar desplazamiento automático al hacer clic en botones */
-    .main {
-        scroll-behavior: auto !important;
-    }
     
-    /* Mantener las tarjetas de resultados visibles */
-    .main .stColumn:first-child {
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 10 !important;
-    }
-    
-    /* Asegurar que las tarjetas no se oculten */
-    .metrics-grid {
-        position: relative !important;
-        z-index: 5 !important;
-    }
-    
-    /* Prevenir desplazamiento automático */
-    .stButton > button {
-        scroll-margin-top: 0 !important;
-    }
-    
-    /* Mantener el foco en las tarjetas */
-    .main .stColumn:first-child .element-container {
-        scroll-margin-top: 0 !important;
-    }
-    
-    /* JavaScript para prevenir desplazamiento automático */
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Prevenir desplazamiento automático al hacer clic en botones (sin bloquear widgets)
-        document.addEventListener('click', function(e) {
-            if (e.target.matches('button[data-testid="baseButton-primary"]') && 
-                !e.target.closest('.tradingview-widget-container')) {
-                // Solo prevenir si no es dentro de un widget de TradingView
-                setTimeout(function() {
-                    window.scrollTo(0, 0);
-                }, 100);
-            }
-        });
-    });
-    </script>
     
     /* Reducir tamaño de títulos y alinear arriba */
     .main h1, .main h2, .main h3, 
