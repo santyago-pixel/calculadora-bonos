@@ -1101,8 +1101,8 @@ try:
             # Espaciado para alinear con las tarjetas
             st.markdown("<br><br>", unsafe_allow_html=True)
             
-            # Minigráfico del bono seleccionado
-            st.markdown(f"## Minigráfico {bono_actual['ticker']}")
+            # Gráfico del bono seleccionado
+            st.markdown(f"## {bono_actual['ticker']}")
             
             bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
@@ -1257,7 +1257,7 @@ try:
         st.table(df_simple)
         
         # Gráfico avanzado del bono seleccionado - Ancho completo
-        st.markdown("## Gráfico Avanzado del Bono")
+        st.markdown(f"## Gráfico del {bono_actual['nombre']}")
         bono_avanzado_html = f"""
         <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
