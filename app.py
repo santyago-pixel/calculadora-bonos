@@ -1265,39 +1265,6 @@ try:
             """
             st.components.v1.html(sp500_html, height=300)
             
-            # GD30D
-            st.markdown("### GD30D")
-            gd30d_html = """
-            <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
-                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                <div class="tradingview-widget-copyright">
-                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                    </a>
-                </div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                {
-                "autosize": false,
-                "width": "100%",
-                "height": "300",
-                "symbol": "GD30D",
-                "interval": "D",
-                "timezone": "America/Argentina/Buenos_Aires",
-                "theme": "light",
-                "style": "1",
-                "locale": "es",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "save_image": false,
-                "container_id": "tradingview_widget"
-                }
-                </script>
-            </div>
-            """
-            st.components.v1.html(gd30d_html, height=300)
-            
         with col2:
             # IMV Merval
             st.markdown("### IMV Merval")
@@ -1331,38 +1298,6 @@ try:
             </div>
             """
             st.components.v1.html(imv_html, height=300)
-            
-            # AL30D
-            st.markdown("### AL30D")
-            al30d_html = """
-                <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
-                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                    <div class="tradingview-widget-copyright">
-                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                        </a>
-                    </div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                    {
-                    "autosize": false,
-                    "width": "100%",
-                    "height": "300",
-                    "symbol": "AL30D",
-                    "interval": "D",
-                    "timezone": "America/Argentina/Buenos_Aires",
-                    "theme": "light",
-                    "style": "1",
-                    "locale": "es",
-                    "toolbar_bg": "#f1f3f6",
-                    "enable_publishing": false,
-                    "hide_legend": false,
-                    "save_image": false,
-                    "container_id": "tradingview_widget"
-                    }
-                    </script>
-                </div>
-            """
-            st.components.v1.html(al30d_html, height=300)
         
         # Solo mostrar información si hay un bono seleccionado
         if bono_seleccionado and bono_actual is not None:
