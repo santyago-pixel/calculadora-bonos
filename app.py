@@ -1428,21 +1428,8 @@ try:
         # Mostrar tabla con formato mejorado
         st.table(df_simple)
         
-        # Gráfico del bono seleccionado - Ancho completo
+        # Gráfico del bono seleccionado - Ancho completo (minigráfico expandido)
         st.markdown(f"## Gráfico del {bono_actual['nombre']}")
-        
-        # Mapear ticker del bono a símbolo válido de TradingView
-        ticker_mapping = {
-            'GD30D': 'SPX500',  # S&P 500 como referencia general
-            'AL30D': 'SPX500',
-            'GD29D': 'SPX500',
-            'GD30': 'SPX500',
-            'AL30': 'SPX500',
-            'GD29': 'SPX500'
-        }
-        
-        # Usar símbolo mapeado o SPX500 por defecto
-        chart_symbol = ticker_mapping.get(bono_actual['ticker'], 'SPX500')
         
         bono_avanzado_html = f"""
         <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
@@ -1452,24 +1439,20 @@ try:
                     <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
                 </a>
             </div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
             {{
-            "autosize": false,
+            "symbol": "{bono_actual['ticker']}",
             "width": "100%",
             "height": "500",
-            "symbol": "{chart_symbol}",
-            "interval": "D",
-            "timezone": "America/New_York",
-            "theme": "light",
-            "style": "1",
             "locale": "es",
-            "toolbar_bg": "#f1f3f6",
-            "enable_publishing": false,
-            "hide_top_toolbar": false,
-            "hide_legend": false,
-            "hide_volume": true,
-            "save_image": false,
-            "container_id": "tradingview_widget_bono_avanzado"
+            "dateRange": "12M",
+            "colorTheme": "light",
+            "isTransparent": true,
+            "autosize": false,
+            "largeChartUrl": "",
+            "hideTopToolbar": true,
+            "hideLegend": false,
+            "saveImage": false
             }}
             </script>
         </div>
