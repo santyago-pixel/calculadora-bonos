@@ -245,25 +245,14 @@ st.markdown("""
     /* JavaScript para prevenir desplazamiento automático */
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Prevenir desplazamiento automático al hacer clic en botones
+        // Prevenir desplazamiento automático al hacer clic en botones (sin bloquear widgets)
         document.addEventListener('click', function(e) {
-            if (e.target.matches('button[data-testid="baseButton-primary"]')) {
-                e.preventDefault();
-                // Mantener la posición actual de scroll
+            if (e.target.matches('button[data-testid="baseButton-primary"]') && 
+                !e.target.closest('.tradingview-widget-container')) {
+                // Solo prevenir si no es dentro de un widget de TradingView
                 setTimeout(function() {
                     window.scrollTo(0, 0);
                 }, 100);
-            }
-        });
-        
-        // Prevenir scroll automático en general
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 0) {
-                // Mantener en la parte superior si hay contenido arriba
-                const firstColumn = document.querySelector('.main .stColumn:first-child');
-                if (firstColumn && firstColumn.getBoundingClientRect().top < 0) {
-                    window.scrollTo(0, 0);
-                }
             }
         });
     });
