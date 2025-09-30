@@ -816,9 +816,9 @@ try:
             
             st.markdown(f"**Nombre:** {bono_actual['nombre']}")
             st.markdown(f"**Vencimiento:** {fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A'}")
-            st.markdown(f"**Base de cálculo:** {bono_actual['base_calculo']}")
-            st.markdown(f"**Periodicidad:** {periodicidad_texto}")
             st.markdown(f"**Tasa de cupón:** {cupon_vigente_actual:.2%}")
+            st.markdown(f"**Periodicidad:** {periodicidad_texto}")
+            st.markdown(f"**Base de cálculo:** {bono_actual['base_calculo']}")
             st.markdown(f"**Ticker:** {bono_actual['ticker']}")
         else:
             calcular = False
