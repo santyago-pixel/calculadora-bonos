@@ -1246,8 +1246,6 @@ try:
                 </div>
             """
             st.components.v1.html(nikkei_html, height=300)
-        else:
-            st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
         
         # Solo mostrar información si hay un bono seleccionado
         if bono_seleccionado and bono_actual is not None:
