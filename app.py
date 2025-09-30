@@ -1299,26 +1299,6 @@ try:
             """
             st.components.v1.html(imv_html, height=300)
         
-        # Solo mostrar información si hay un bono seleccionado
-        if bono_seleccionado and bono_actual is not None:
-            # Mapear periodicidad a texto
-            periodicidad_texto = {
-                1: "anual",
-                2: "semestral", 
-                3: "trimestral",
-                4: "trimestral",
-                6: "bimestral",
-                12: "mensual"
-            }.get(bono_actual['periodicidad'], f"{bono_actual['periodicidad']} veces al año")
-            
-            # Mostrar información del bono seleccionado
-            st.markdown("## Información del Bono Seleccionado")
-            st.markdown(f"**Nombre:** {bono_actual['nombre']}")
-            st.markdown(f"**Tipo:** {bono_actual['tipo_bono']}")
-            st.markdown(f"**Base de cálculo:** {bono_actual['base_calculo']}")
-            st.markdown(f"**Periodicidad:** {periodicidad_texto}")
-            st.markdown(f"**Tasa de cupón:** {bono_actual['tasa_cupon']:.2%}")
-
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
