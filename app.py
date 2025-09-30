@@ -4,334 +4,753 @@ import pandas as pd
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import math
+import io
 
 # Configuración de la página
 st.set_page_config(
     page_title="Calculadora de Bonos",
     page_icon="📊",
-    layout="wide"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
-st.title("📊 Calculadora de Bonos")
+st.title("Calculadora de Bonos")
 st.markdown("---")
 
-# Parámetros del bono
-st.sidebar.header("Parámetros del Bono")
-st.sidebar.write("**Fecha de emisión:** 10/09/2025")
-st.sidebar.write("**Fecha de vencimiento:** 10/09/2035")
-st.sidebar.write("**Cupón:** 10% anual (5% semestral)")
-st.sidebar.write("**Base de cálculo:** 30/360")
-st.sidebar.write("**Valor nominal:** 100")
-
-# Inputs del usuario
-st.header("📝 Datos de Entrada")
-col1, col2 = st.columns(2)
-
-with col1:
-    settlement_date = st.date_input(
-        "Fecha de liquidación",
-        value=datetime(2025, 9, 10),
-        min_value=datetime(2025, 9, 10),
-        max_value=datetime(2035, 9, 10)
-    )
-
-with col2:
-    bond_price = st.number_input(
-        "Precio del bono (base 100)",
-        min_value=0.0,
-        max_value=200.0,
-        value=100.0,
-        step=0.01,
-        format="%.2f"
-    )
-
-# Función para calcular días usando base 30/360
-def days_30_360(start_date, end_date):
-    """Calcula días entre fechas usando base 30/360"""
-    d1 = min(start_date.day, 30)
-    d2 = min(end_date.day, 30)
-    
-    # Si d1 es 30, entonces d2 también debe ser 30
-    if start_date.day == 30:
-        d2 = 30
-    
-    days = (end_date.year - start_date.year) * 360 + \
-           (end_date.month - start_date.month) * 30 + \
-           (d2 - d1)
+# Función para calcular días usando diferentes bases
+def days_calculation(start_date, end_date, base):
+    """Calcula días entre fechas usando diferentes bases"""
+    if base == "30/360":
+        d1 = min(start_date.day, 30)
+        d2 = min(end_date.day, 30)
+        if start_date.day == 30:
+            d2 = 30
+        days = (end_date.year - start_date.year) * 360 + \
+               (end_date.month - start_date.month) * 30 + \
+               (d2 - d1)
+    elif base == "ACT/360":
+        days = (end_date - start_date).days
+    elif base == "ACT/365":
+        days = (end_date - start_date).days
+    elif base == "ACT/ACT":
+        days = (end_date - start_date).days
+    else:  # Default to 30/360
+        days = days_calculation(start_date, end_date, "30/360")
     
     return days
 
-# Función para generar fechas de pago de cupones
-def generate_coupon_dates(issue_date, maturity_date, frequency=2):
-    """Genera fechas de pago de cupones semestrales"""
-    dates = []
-    current_date = issue_date
+# Función para procesar flujos irregulares
+def process_irregular_flows(flows_df, settlement_date, dirty_price, base_calculo="ACT/365"):
+    """Procesa flujos irregulares incluyendo el precio dirty como flujo inicial"""
+    processed_flows = []
     
-    # Agregar fecha de emisión
-    dates.append(issue_date)
+    # Agregar flujo inicial negativo (precio dirty pagado) en la fecha de liquidación
+    processed_flows.append({
+        'Fecha': settlement_date,
+        'Pago_Capital': 0,
+        'Cupon': 0,
+        'Flujo_Total': -dirty_price,  # Flujo negativo (pago)
+        'Días': 0
+    })
     
-    # Generar fechas semestrales
-    while current_date < maturity_date:
-        current_date = current_date + relativedelta(months=6)
-        if current_date <= maturity_date:
-            dates.append(current_date)
-    
-    # Asegurar que la fecha de vencimiento esté incluida
-    if dates[-1] != maturity_date:
-        dates.append(maturity_date)
-    
-    return dates
-
-# Función para calcular flujos de caja
-def calculate_cash_flows(coupon_dates, coupon_rate, face_value, settlement_date):
-    """Calcula los flujos de caja del bono"""
-    cash_flows = []
-    coupon_payment = face_value * coupon_rate / 2  # Semestral
-    
-    for i, date in enumerate(coupon_dates):
-        if date > settlement_date:
-            if i == len(coupon_dates) - 1:  # Última fecha (vencimiento)
-                cash_flow = face_value + coupon_payment
-            else:
-                cash_flow = coupon_payment
+    # Procesar flujos futuros
+    for _, row in flows_df.iterrows():
+        flow_date = pd.to_datetime(row['fecha']).date()
+        
+        if flow_date > settlement_date:
+            days = days_calculation(settlement_date, flow_date, base_calculo)
             
-            cash_flows.append({
-                'Fecha': date,
-                'Flujo': cash_flow,
-                'Días': days_30_360(settlement_date, date)
+            # Los porcentajes están sobre el valor nominal del bono (100)
+            # Los flujos se calculan sobre el valor nominal, no sobre el precio dirty
+            # El precio dirty solo afecta el flujo inicial (pago)
+            capital_payment = row['pago_capital_porcentaje']  # 10% = 10
+            coupon_payment = row['cupon_porcentaje']  # 4.5% = 4.5
+            total_flow = capital_payment + coupon_payment
+            
+            processed_flows.append({
+                'Fecha': flow_date,
+                'Pago_Capital': capital_payment,
+                'Cupon': coupon_payment,
+                'Flujo_Total': total_flow,
+                'Días': days
             })
     
-    return cash_flows
+    return processed_flows
 
-# Función para calcular TIR usando Newton-Raphson
-def calculate_ytm(cash_flows, price, face_value, settlement_date, max_iterations=100, tolerance=1e-6):
-    """Calcula la TIR semestral usando el método Newton-Raphson"""
+# Función para calcular TIR
+def calculate_ytm_irregular(cash_flows, day_count_basis='ACT/365', max_iterations=100, tolerance=1e-8):
+    """Calcula la TIR usando Newton-Raphson para flujos irregulares (equivalente a TIR.NO.PER de Excel)"""
+    
+    # Determinar el divisor según la base de cálculo
+    if day_count_basis == "30/360":
+        divisor = 360.0
+    elif day_count_basis == "ACT/360":
+        divisor = 360.0
+    elif day_count_basis == "ACT/365":
+        divisor = 365.0
+    elif day_count_basis == "ACT/ACT":
+        divisor = 365.0  # Para ACT/ACT usamos 365 como base estándar
+    else:
+        divisor = 360.0  # Default
     
     def pv_function(yield_rate):
-        """Función de valor presente"""
         pv = 0
         for cf in cash_flows:
             days = cf['Días']
-            periods = days / 180  # Semestres
-            pv += cf['Flujo'] / ((1 + yield_rate) ** periods)
+            periods = days / divisor
+            pv += cf['Flujo_Total'] / ((1 + yield_rate) ** periods)
         return pv
     
     def pv_derivative(yield_rate):
-        """Derivada de la función de valor presente"""
         derivative = 0
         for cf in cash_flows:
             days = cf['Días']
-            periods = days / 180
-            derivative -= cf['Flujo'] * periods / ((1 + yield_rate) ** (periods + 1))
+            periods = days / divisor
+            derivative -= cf['Flujo_Total'] * periods / ((1 + yield_rate) ** (periods + 1))
         return derivative
     
-    # Estimación inicial
-    ytm = 0.05  # 5% semestral como estimación inicial
+    # Usar búsqueda binaria como fallback si Newton-Raphson falla
+    def binary_search_ytm():
+        low, high = -0.99, 2.0  # Límites más conservadores para TIR
+        for _ in range(200):  # Más iteraciones para mayor precisión
+            mid = (low + high) / 2
+            pv = pv_function(mid)
+            if abs(pv) < tolerance:
+                return mid
+            elif pv < 0:
+                high = mid
+            else:
+                low = mid
+        return (low + high) / 2
     
+    # Intentar Newton-Raphson primero
+    ytm = 0.05  # Empezar con 5%
     for i in range(max_iterations):
-        pv = pv_function(ytm)
-        derivative = pv_derivative(ytm)
-        
-        # Newton-Raphson: x_new = x_old - f(x)/f'(x)
-        ytm_new = ytm - (pv - price) / derivative
-        
-        if abs(ytm_new - ytm) < tolerance:
-            return ytm_new
-        
-        ytm = ytm_new
+        try:
+            pv = pv_function(ytm)
+            derivative = pv_derivative(ytm)
+            
+            if abs(derivative) < 1e-10:  # Evitar división por cero
+                break
+                
+            ytm_new = ytm - pv / derivative
+            
+            # Verificar que no sea complejo y esté en rango razonable
+            if isinstance(ytm_new, complex) or ytm_new < -0.99 or ytm_new > 2.0:
+                return binary_search_ytm()
+            
+            if abs(ytm_new - ytm) < tolerance:
+                return ytm_new
+            
+            ytm = ytm_new
+        except:
+            return binary_search_ytm()
     
-    return ytm
+    # Si Newton-Raphson falla, usar búsqueda binaria
+    return binary_search_ytm()
 
-# Función para calcular Duración Macaulay
-def calculate_macaulay_duration(cash_flows, ytm, price):
-    """Calcula la Duración Macaulay"""
+# Función para calcular duración
+def calculate_duration_irregular(cash_flows, ytm, price, day_count_basis='ACT/365'):
+    """Calcula duración Macaulay y modificada para flujos irregulares en años"""
+    
+    # Para duración, siempre usar años (365 días) para el descuento
+    # La TIR ya está en términos anuales
     weighted_pv = 0
     total_pv = 0
     
     for cf in cash_flows:
         days = cf['Días']
-        periods = days / 180  # Semestres
-        pv = cf['Flujo'] / ((1 + ytm) ** periods)
-        weighted_pv += periods * pv
-        total_pv += pv
+        # Calcular años para duración (siempre usando 365 días por año)
+        years = days / 365.0
+        
+        # Usar la TIR anual directamente para descontar
+        pv = cf['Flujo_Total'] / ((1 + ytm) ** years)
+        
+        # Solo incluir flujos positivos en el cálculo de duración
+        if cf['Flujo_Total'] > 0:
+            weighted_pv += years * pv  # Usar años para la duración
+            total_pv += pv
     
-    return weighted_pv / total_pv
+    macaulay_duration = weighted_pv / total_pv if total_pv > 0 else 0
+    modified_duration = macaulay_duration / (1 + ytm) if (1 + ytm) > 0 else 0
+    
+    return macaulay_duration, modified_duration
 
-# Función para calcular Duración Modificada
-def calculate_modified_duration(macaulay_duration, ytm):
-    """Calcula la Duración Modificada"""
-    return macaulay_duration / (1 + ytm)
+def calculate_average_life(bono_flows, settlement_date, day_count_basis):
+    """Calcula la vida media del bono considerando todos los repagos de capital desde liquidación hasta vencimiento"""
+    
+    # Filtrar flujos futuros desde la fecha de liquidación (incluyendo la fecha de liquidación)
+    settlement_ts = pd.Timestamp(settlement_date)
+    future_flows = bono_flows[bono_flows['fecha'] >= settlement_ts].copy()
+    
+    if len(future_flows) == 0:
+        return 0.0
+    
+    # Ordenar por fecha
+    future_flows = future_flows.sort_values('fecha')
+    
+    # Calcular días desde liquidación para cada flujo
+    days_from_settlement = []
+    capital_payments = []
+    
+    for _, row in future_flows.iterrows():
+        flow_date = pd.Timestamp(row['fecha'])
+        days = (flow_date - settlement_ts).days
+        
+        # Solo considerar flujos con pago de capital
+        if row['pago_capital_porcentaje'] > 0:
+            days_from_settlement.append(days)
+            capital_payments.append(row['pago_capital_porcentaje'])
+    
+    if len(capital_payments) == 0:
+        return 0.0
+    
+    # Calcular vida media ponderada por capital
+    total_capital = sum(capital_payments)
+    if total_capital == 0:
+        return 0.0
+    
+    # Convertir días a años según la base de cálculo
+    if day_count_basis == "ACT/365":
+        divisor = 365.0
+    elif day_count_basis == "ACT/360":
+        divisor = 360.0
+    elif day_count_basis == "30/360":
+        divisor = 360.0
+    else:
+        divisor = 365.0
+    
+    weighted_years = 0.0
+    for i, days in enumerate(days_from_settlement):
+        years = days / divisor
+        weight = capital_payments[i] / total_capital
+        weighted_years += years * weight
+    
+    return weighted_years
 
-# Función para calcular interés corrido
-def calculate_accrued_interest(settlement_date, issue_date, coupon_rate, face_value):
-    """Calcula el interés corrido usando base 30/360"""
-    # Encontrar la fecha del último cupón pagado
-    current_date = issue_date
-    last_coupon_date = issue_date
-    
-    while current_date <= settlement_date:
-        last_coupon_date = current_date
-        current_date = current_date + relativedelta(months=6)
-    
-    # Calcular días desde el último cupón
-    days_since_coupon = days_30_360(last_coupon_date, settlement_date)
-    days_in_period = 180  # 6 meses = 180 días en base 30/360
-    
-    accrued_interest = face_value * (coupon_rate / 2) * (days_since_coupon / days_in_period)
-    
-    return accrued_interest, last_coupon_date
+def calculate_parity(clean_price, technical_value):
+    """Calcula la paridad como precio limpio dividido por valor técnico"""
+    if technical_value == 0:
+        return 0.0
+    return clean_price / technical_value
 
-# Cálculos principales
-if st.button("🔄 Calcular", type="primary"):
+def find_next_coupon_date(bono_flows, settlement_date):
+    """Encuentra la próxima fecha de pago de cupón más cercana a la fecha de liquidación"""
     
-    # Parámetros del bono
-    issue_date = datetime(2025, 9, 10).date()
-    maturity_date = datetime(2035, 9, 10).date()
-    coupon_rate = 0.10  # 10% anual
-    face_value = 100
+    # Filtrar flujos futuros desde la fecha de liquidación (incluyendo la fecha de liquidación)
+    settlement_ts = pd.Timestamp(settlement_date)
+    future_flows = bono_flows[bono_flows['fecha'] >= settlement_ts].copy()
     
-    # Generar fechas de cupones
-    coupon_dates = generate_coupon_dates(issue_date, maturity_date)
+    if len(future_flows) == 0:
+        return None
     
-    # Calcular flujos de caja
-    cash_flows = calculate_cash_flows(coupon_dates, coupon_rate, face_value, settlement_date)
+    # Ordenar por fecha
+    future_flows = future_flows.sort_values('fecha')
     
-    # Calcular TIR
-    ytm_semestral = calculate_ytm(cash_flows, bond_price, face_value, settlement_date)
-    ytm_anual = (1 + ytm_semestral) ** 2 - 1
+    # Buscar el primer flujo con pago de cupón
+    for _, row in future_flows.iterrows():
+        if row['cupon_porcentaje'] > 0:
+            return row['fecha']
     
-    # Calcular duraciones
-    macaulay_duration = calculate_macaulay_duration(cash_flows, ytm_semestral, bond_price)
-    modified_duration = calculate_modified_duration(macaulay_duration, ytm_semestral)
+    return None
+
+def calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad):
+    """Calcula intereses corridos hasta la fecha de liquidación sobre el capital residual no amortizado"""
     
-    # Calcular interés corrido
-    accrued_interest, last_coupon_date = calculate_accrued_interest(
-        settlement_date, issue_date, coupon_rate, face_value
+    # Filtrar solo flujos de cupón (donde hay tasa de cupón)
+    cupon_flows = bono_flows[bono_flows['tasa_cupon'] > 0].copy()
+    
+    if len(cupon_flows) == 0:
+        return 0.0
+    
+    # Ordenar por fecha
+    cupon_flows = cupon_flows.sort_values('fecha')
+    
+    # Convertir settlement_date a Timestamp para comparación
+    settlement_ts = pd.Timestamp(settlement_date)
+    
+    # Encontrar el último pago de cupón anterior a la fecha de liquidación
+    last_coupon_date = None
+    current_coupon_rate = 0.0
+    
+    # Buscar el pago de cupón inmediatamente anterior a la fecha de liquidación
+    for _, row in cupon_flows.iterrows():
+        row_date = pd.Timestamp(row['fecha'])
+        if row_date < settlement_ts:
+            last_coupon_date = row['fecha']
+            current_coupon_rate = row['tasa_cupon']
+        else:
+            break
+    
+    if last_coupon_date is None:
+        return 0.0
+    
+    # Calcular capital residual no amortizado
+    # Capital residual = 100 - sumatoria de todos los flujos de capital anteriores a la fecha de liquidación
+    capital_amortizado = 0.0
+    for _, row in bono_flows.iterrows():
+        row_date = pd.Timestamp(row['fecha'])
+        if row_date < settlement_ts:
+            capital_amortizado += row['pago_capital_porcentaje']
+    
+    capital_residual = 100.0 - capital_amortizado
+    
+    # Calcular días según la base de cálculo del bono
+    last_coupon_ts = pd.Timestamp(last_coupon_date)
+    days = (settlement_ts - last_coupon_ts).days
+    
+    # Calcular intereses corridos sobre el capital residual
+    # Fórmula: (Tasa cupón × Capital residual) / 365 × Días transcurridos
+    if base_calculo_bono == "ACT/365":
+        accrued_interest = (current_coupon_rate * capital_residual) / 365.0 * days
+    elif base_calculo_bono == "ACT/360":
+        accrued_interest = (current_coupon_rate * capital_residual) / 360.0 * days
+    elif base_calculo_bono == "30/360":
+        accrued_interest = (current_coupon_rate * capital_residual) / 360.0 * days
+    else:  # Default ACT/365
+        accrued_interest = (current_coupon_rate * capital_residual) / 365.0 * days
+    
+    # Debug info removido para compatibilidad
+    
+    return accrued_interest
+
+# Interfaz principal
+
+# Cargar automáticamente el archivo por defecto
+try:
+    # Leer el archivo por defecto con múltiples estrategias para compatibilidad
+    flows_df = None
+    
+    # Estrategia 1: openpyxl (más compatible con archivos modernos)
+    try:
+        flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl')
+    except:
+        pass
+    
+    # Estrategia 2: xlrd (para archivos más antiguos)
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='xlrd')
+        except:
+            pass
+    
+    # Estrategia 3: pandas por defecto
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None)
+        except:
+            pass
+    
+    # Estrategia 4: con diferentes parámetros
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', na_values=[''])
+        except:
+            pass
+    
+    # Estrategia 5: ignorar validaciones y formato
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', 
+                                   na_values=['', ' ', 'N/A', 'n/a'], 
+                                   keep_default_na=False)
+        except:
+            pass
+    
+    # Estrategia 6: leer como texto puro
+    if flows_df is None:
+        try:
+            flows_df = pd.read_excel('bonos_flujos.xlsx', header=None, engine='openpyxl', 
+                                   dtype=str, na_values=[''])
+        except:
+            pass
+    
+    if flows_df is None:
+        raise Exception("No se pudo cargar el archivo con ninguna estrategia")
+    
+    # Procesar datos - manejar múltiples bonos
+    processed_data = []
+    current_bono_name = None
+    
+    for _, row in flows_df.iterrows():
+        if len(row) >= 5 and not pd.isna(row[0]):
+            # Convertir a string y limpiar
+            cell_value = str(row[0]).strip()
+            
+            # Saltar filas vacías o con solo espacios
+            if not cell_value or cell_value.lower() in ['nan', 'none', '']:
+                continue
+            
+            # Verificar si es el inicio de un nuevo bono (cualquier carácter que no sea una fecha)
+            try:
+                # Intentar convertir a fecha
+                pd.to_datetime(cell_value, errors='raise')
+                # Si llegamos aquí, es una fecha válida, continuar procesando
+            except:
+                # No es una fecha, es el inicio de un nuevo bono
+                current_bono_name = cell_value
+                # Extraer base de cálculo de la celda contigua (columna B)
+                try:
+                    base_calculo_bono = str(row[1]).strip() if not pd.isna(row[1]) else "ACT/365"
+                except:
+                    base_calculo_bono = "ACT/365"
+                
+                # Extraer periodicidad de la siguiente celda (columna C)
+                try:
+                    periodicidad = int(float(str(row[2]))) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 12
+                except:
+                    periodicidad = 12
+                
+                # Extraer tipo de bono de la siguiente celda (columna D)
+                try:
+                    tipo_bono = str(row[3]).strip() if not pd.isna(row[3]) else "Sin clasificar"
+                except:
+                    tipo_bono = "Sin clasificar"
+                continue
+            
+            # Si tenemos un nombre de bono y es una fecha válida, procesar
+            if current_bono_name:
+                try:
+                    # Intentar convertir fecha con múltiples formatos
+                    fecha_valida = pd.to_datetime(row[0], errors='coerce')
+                    if not pd.isna(fecha_valida):
+                        # Procesar valores numéricos de forma más robusta
+                        # Nueva estructura: A=fecha, B=tasa_cupon, C=cupon, D=capital, E=total
+                        tasa_cupon = 0.0
+                        cupon = 0.0
+                        capital = 0.0
+                        flujo_total = 0.0
+                        
+                        try:
+                            tasa_cupon = float(str(row[1]).replace(',', '.')) if not pd.isna(row[1]) and str(row[1]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            tasa_cupon = 0.0
+                            
+                        try:
+                            cupon = float(str(row[2]).replace(',', '.')) if not pd.isna(row[2]) and str(row[2]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            cupon = 0.0
+                            
+                        try:
+                            capital = float(str(row[3]).replace(',', '.')) if not pd.isna(row[3]) and str(row[3]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            capital = 0.0
+                            
+                        try:
+                            flujo_total = float(str(row[4]).replace(',', '.')) if not pd.isna(row[4]) and str(row[4]).strip() not in ['', 'nan'] else 0.0
+                        except:
+                            flujo_total = cupon + capital
+                        
+                        processed_data.append({
+                            'nombre_bono': current_bono_name,
+                            'base_calculo': base_calculo_bono,
+                            'periodicidad': periodicidad,
+                            'tipo_bono': tipo_bono,
+                            'fecha': fecha_valida,
+                            'tasa_cupon': tasa_cupon,
+                            'cupon_porcentaje': cupon,
+                            'pago_capital_porcentaje': capital,
+                            'flujo_total': flujo_total
+                        })
+                except:
+                    # Si la fecha no es válida, saltar esta fila
+                    continue
+    
+    flows_df = pd.DataFrame(processed_data)
+    
+    if len(flows_df) == 0:
+        st.error("❌ No se encontraron flujos válidos en el archivo")
+        flows_df = None
+    else:
+        # Leer tipos de bonos desde las celdas J6:J8 del archivo Excel original
+        tipos_bonos_disponibles = []
+        try:
+            # Leer directamente del archivo Excel las celdas J6, J7, J8
+            # Estrategia 1: openpyxl (más compatible con archivos modernos)
+            try:
+                import openpyxl
+                wb = openpyxl.load_workbook('bonos_flujos.xlsx')
+                ws = wb.active
+                
+                # Leer celdas J6, J7, J8 (fila 6, 7, 8, columna J = 10)
+                for row_num in [6, 7, 8]:
+                    cell_value = ws.cell(row=row_num, column=10).value
+                    if cell_value and str(cell_value).strip() and str(cell_value).strip().lower() not in ['nan', 'none', '']:
+                        tipos_bonos_disponibles.append(str(cell_value).strip())
+                
+                wb.close()
+            except:
+                # Estrategia 2: pandas con rangos específicos
+                try:
+                    # Leer solo las celdas J6:J8 usando pandas
+                    tipos_df = pd.read_excel('bonos_flujos.xlsx', header=None, 
+                                           usecols=[9], skiprows=5, nrows=3, engine='openpyxl')
+                    
+                    for _, row in tipos_df.iterrows():
+                        tipo = str(row.iloc[0]).strip()
+                        if tipo and tipo.lower() not in ['nan', 'none', '']:
+                            tipos_bonos_disponibles.append(tipo)
+                except:
+                    pass
+            
+            if not tipos_bonos_disponibles:
+                tipos_bonos_disponibles = ["Todos"]  # Valor por defecto
+        except:
+            tipos_bonos_disponibles = ["Todos"]  # Valor por defecto si falla
+        
+except Exception as e:
+    st.error(f"❌ Error al cargar el archivo: {e}")
+    flows_df = None
+    tipos_bonos_disponibles = ["Todos"]
+
+
+# Mostrar selector de bonos
+if flows_df is not None and 'nombre_bono' in flows_df.columns:
+    # Selector de tipo de bono
+    st.subheader("Tipo de Bono")
+    tipo_selected = st.selectbox(
+        "Selecciona el tipo de bono:",
+        options=["Todos"] + tipos_bonos_disponibles
     )
     
-    # Mostrar resultados
-    st.header("📈 Resultados")
+    st.subheader("Elija un Bono")
     
-    col1, col2, col3, col4 = st.columns(4)
+    # Filtrar bonos por tipo seleccionado
+    if tipo_selected == "Todos":
+        flows_filtered = flows_df
+    else:
+        flows_filtered = flows_df[flows_df['tipo_bono'] == tipo_selected]
     
-    with col1:
-        st.metric(
-            "TIR Semestral",
-            f"{ytm_semestral:.4%}",
-            help="Yield to Maturity semestral"
-        )
+    # Agrupar por nombre de bono (solo los filtrados)
+    unique_bonos = flows_filtered['nombre_bono'].unique()
     
-    with col2:
-        st.metric(
-            "TIR Anual",
-            f"{ytm_anual:.4%}",
-            help="Yield to Maturity anualizada"
-        )
+    if len(unique_bonos) == 0:
+        st.warning(f"⚠️ No se encontraron bonos del tipo '{tipo_selected}'")
+        st.stop()
     
-    with col3:
-        st.metric(
-            "Duración Macaulay",
-            f"{macaulay_duration:.2f}",
-            help="Duración Macaulay en semestres"
-        )
+    # Selector de bono
+    bono_selected = st.selectbox(
+        "Selecciona un bono:",
+        options=unique_bonos
+    )
     
-    with col4:
-        st.metric(
-            "Duración Modificada",
-            f"{modified_duration:.2f}",
-            help="Duración Modificada en semestres"
-        )
+    # Filtrar flujos del bono seleccionado
+    bono_flows = flows_filtered[flows_filtered['nombre_bono'] == bono_selected].copy()
     
-    # Información adicional
-    st.subheader("ℹ️ Información Adicional")
+    # Convertir fechas a datetime y ordenar
+    bono_flows['fecha'] = pd.to_datetime(bono_flows['fecha'], errors='coerce')
+    bono_flows = bono_flows.sort_values('fecha')
+    
+    
+    
+    # Inputs para cálculo
+    st.subheader("Datos para el Cálculo")
     col1, col2 = st.columns(2)
     
     with col1:
-        st.metric(
-            "Interés Corrido",
-            f"{accrued_interest:.4f}",
-            help=f"Interés corrido desde {last_coupon_date.strftime('%d/%m/%Y')}"
+        settlement_date = st.date_input(
+            "Fecha de liquidación:",
+            value=datetime(2025, 9, 16),  # Cambiado a 16 de septiembre
+            min_value=pd.to_datetime(bono_flows['fecha'].min()).date(),
+            max_value=pd.to_datetime(bono_flows['fecha'].max()).date(),
+            format="DD/MM/YYYY"
         )
     
     with col2:
-        dirty_price = bond_price + accrued_interest
-        st.metric(
-            "Precio Sucio",
-            f"{dirty_price:.4f}",
-            help="Precio limpio + interés corrido"
+        bond_price = st.number_input(
+            "Precio del bono (base 100):",
+            min_value=0.0,
+            max_value=200.0,
+            value=100.0,
+            step=0.01,
+            format="%.2f"
         )
     
-    # Tabla de flujos de caja
-    st.subheader("💰 Flujos de Caja")
+    # Base de cálculo fija en ACT/365
+    day_count_basis = "ACT/365"
     
-    df_cash_flows = pd.DataFrame(cash_flows)
-    df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
-    df_cash_flows['Flujo'] = df_cash_flows['Flujo'].round(4)
-    df_cash_flows['Días'] = df_cash_flows['Días'].astype(int)
-    df_cash_flows['Períodos'] = (df_cash_flows['Días'] / 180).round(4)
-    df_cash_flows['VP'] = (df_cash_flows['Flujo'] / ((1 + ytm_semestral) ** df_cash_flows['Períodos'])).round(4)
-    
-    df_cash_flows.columns = ['Fecha', 'Flujo de Caja', 'Días', 'Períodos (semestres)', 'Valor Presente']
-    
-    st.dataframe(
-        df_cash_flows,
-        use_container_width=True,
-        hide_index=True
-    )
-    
-    # Resumen de cálculos
-    st.subheader("📊 Resumen de Cálculos")
-    
-    summary_data = {
-        'Métrica': [
-            'Fecha de Liquidación',
-            'Precio del Bono',
-            'TIR Semestral',
-            'TIR Anual',
-            'Duración Macaulay (semestres)',
-            'Duración Macaulay (años)',
-            'Duración Modificada (semestres)',
-            'Duración Modificada (años)',
-            'Interés Corrido',
-            'Precio Sucio'
-        ],
-        'Valor': [
-            settlement_date.strftime('%d/%m/%Y'),
-            f'{bond_price:.4f}',
-            f'{ytm_semestral:.4%}',
-            f'{ytm_anual:.4%}',
-            f'{macaulay_duration:.4f}',
-            f'{macaulay_duration/2:.4f}',
-            f'{modified_duration:.4f}',
-            f'{modified_duration/2:.4f}',
-            f'{accrued_interest:.4f}',
-            f'{dirty_price:.4f}'
-        ]
-    }
-    
-    df_summary = pd.DataFrame(summary_data)
-    st.dataframe(df_summary, use_container_width=True, hide_index=True)
-
-# Información sobre la aplicación
-st.markdown("---")
-st.markdown("""
-### 📚 Información sobre la Calculadora
-
-**Características del Bono:**
-- **Emisión:** 10/09/2025
-- **Vencimiento:** 10/09/2035
-- **Cupón:** 10% anual (5% semestral)
-- **Base de cálculo:** 30/360
-- **Valor nominal:** 100
-
-**Métodos de Cálculo:**
-- **TIR:** Método Newton-Raphson
-- **Duración Macaulay:** Promedio ponderado de los períodos de los flujos
-- **Duración Modificada:** Duración Macaulay / (1 + TIR)
-- **Interés Corrido:** Base 30/360 desde el último cupón pagado
-
-**Notas:**
-- Los cálculos asumen pagos semestrales
-- La base 30/360 se usa para cálculos de días
-- La TIR se calcula iterativamente hasta convergencia
-""")
+    # Calcular
+    if st.button("🔄 Calcular", type="primary"):
+        try:
+            # Procesar flujos
+            cash_flows = process_irregular_flows(bono_flows, settlement_date, bond_price, day_count_basis)
+            
+            if len(cash_flows) <= 1:
+                st.error("No hay flujos de caja futuros para la fecha de liquidación seleccionada")
+            elif len(cash_flows) == 1:
+                st.error("Solo hay el flujo inicial. No hay flujos futuros para calcular TIR")
+            else:
+                # Calcular TIR
+                ytm = calculate_ytm_irregular(cash_flows, day_count_basis)
+                
+                # Calcular TIR según periodicidad (anualizada)
+                periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
+                # Fórmula: periodicidad * ((1 + TIR efectiva)^(1/periodicidad) - 1)
+                ytm_anualizada = periodicidad * ((1 + ytm) ** (1.0 / periodicidad) - 1)
+                
+                # Calcular duraciones
+                macaulay_duration, modified_duration = calculate_duration_irregular(cash_flows, ytm, bond_price, day_count_basis)
+                
+                # Calcular vida media
+                average_life = calculate_average_life(bono_flows, settlement_date, day_count_basis)
+                
+                # Calcular intereses corridos
+                base_calculo_bono = bono_flows['base_calculo'].iloc[0] if 'base_calculo' in bono_flows.columns else "ACT/365"
+                periodicidad = bono_flows['periodicidad'].iloc[0] if 'periodicidad' in bono_flows.columns else 12
+                accrued_interest = calculate_accrued_interest(bono_flows, settlement_date, base_calculo_bono, periodicidad)
+                
+                # Calcular paridad y próximo cupón
+                clean_price = bond_price - accrued_interest
+                capital_amortizado = 0.0
+                settlement_ts = pd.Timestamp(settlement_date)
+                for _, row in bono_flows.iterrows():
+                    row_date = pd.Timestamp(row['fecha'])
+                    if row_date < settlement_ts:
+                        capital_amortizado += row['pago_capital_porcentaje']
+                capital_residual = 100.0 - capital_amortizado
+                technical_value = capital_residual + accrued_interest
+                parity = calculate_parity(clean_price, technical_value)
+                next_coupon_date = find_next_coupon_date(bono_flows, settlement_date)
+                
+                # Mostrar resultados
+                st.subheader("Resultados")
+                
+                # Información de la base de cálculo y periodicidad
+                # Convertir periodicidad a texto descriptivo
+                if periodicidad == 1:
+                    periodicidad_texto = "anual"
+                elif periodicidad == 2:
+                    periodicidad_texto = "semestral"
+                elif periodicidad == 4:
+                    periodicidad_texto = "trimestral"
+                elif periodicidad == 12:
+                    periodicidad_texto = "mensual"
+                else:
+                    periodicidad_texto = f"{periodicidad} meses"
+                
+                st.info(f"**Base de cálculo de días:** {base_calculo_bono} | **Periodicidad:** {periodicidad_texto}")
+                
+                # Convertir periodicidad a texto para el título
+                if periodicidad == 1:
+                    periodicidad_titulo = "Anual"
+                elif periodicidad == 2:
+                    periodicidad_titulo = "Semianual"
+                elif periodicidad == 4:
+                    periodicidad_titulo = "Trimestral"
+                elif periodicidad == 12:
+                    periodicidad_titulo = "Mensual"
+                else:
+                    periodicidad_titulo = f"Cada {12//periodicidad} meses"
+                
+                # Primera fila - Precio Limpio, Intereses Corridos, Capital Residual, Cupón Vigente
+                col1, col2, col3, col4 = st.columns(4)
+                
+                # Obtener la tasa de cupón vigente usada para calcular intereses corridos
+                cupon_vigente = 0.0
+                settlement_ts = pd.Timestamp(settlement_date)
+                for _, row in bono_flows.iterrows():
+                    row_date = pd.Timestamp(row['fecha'])
+                    if row_date < settlement_ts and row['tasa_cupon'] > 0:
+                        cupon_vigente = row['tasa_cupon']
+                
+                with col1:
+                    st.markdown("**Precio Limpio**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{clean_price:.2f}</h3>", unsafe_allow_html=True)
+                
+                with col2:
+                    st.markdown("**Intereses Corridos**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{accrued_interest:.4f}</h3>", unsafe_allow_html=True)
+                
+                with col3:
+                    st.markdown("**Capital Residual**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{capital_residual:.2f}</h3>", unsafe_allow_html=True)
+                
+                with col4:
+                    st.markdown("**Valor Técnico**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{technical_value:.2f}</h3>", unsafe_allow_html=True)
+                
+                # Segunda fila - Cupón Vigente, Vida Media, Paridad, Próximo Cupón
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.markdown("**Cupón Vigente**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{(cupon_vigente * 100):.2f}%</h3>", unsafe_allow_html=True)
+                with col2:
+                    st.markdown("**Próximo Cupón**")
+                    if next_coupon_date:
+                        next_coupon_str = next_coupon_date.strftime('%d/%m/%Y')
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{next_coupon_str}</h3>", unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>N/A</h3>", unsafe_allow_html=True)
+                with col3:
+                    st.markdown("**Paridad**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{parity:.4f}</h3>", unsafe_allow_html=True)
+                with col4:
+                    st.markdown("**Vida Media**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{average_life:.2f} años</h3>", unsafe_allow_html=True)
+                
+                # Tercera fila - TIR Efectiva, TIR según período, Duración Modificada, Duración Macaulay
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.markdown("**TIR Efectiva**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm:.4%}</h3>", unsafe_allow_html=True)
+                with col2:
+                    st.markdown(f"**TIR {periodicidad_titulo}**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{ytm_anualizada:.4%}</h3>", unsafe_allow_html=True)
+                with col3:
+                    st.markdown("**Duración Modificada**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{modified_duration:.2f} años</h3>", unsafe_allow_html=True)
+                with col4:
+                    st.markdown("**Duración Macaulay**")
+                    st.markdown(f"<h3 style='margin-top: -30px; margin-bottom: 0; line-height: 1.2;'>{macaulay_duration:.2f} años</h3>", unsafe_allow_html=True)
+                
+                # Tabla de flujos detallada
+                st.subheader("Flujo de Fondos")
+                
+                df_cash_flows = pd.DataFrame(cash_flows)
+                df_cash_flows['Fecha'] = pd.to_datetime(df_cash_flows['Fecha']).dt.strftime('%d/%m/%Y')
+                
+                # Formatear valores numéricos y manejar ceros
+                def format_value(value):
+                    if value == 0 or pd.isna(value):
+                        return ""
+                    else:
+                        return f"{value:.2f}"
+                
+                df_cash_flows['Pago_Capital'] = df_cash_flows['Pago_Capital'].apply(format_value)
+                df_cash_flows['Cupon'] = df_cash_flows['Cupon'].apply(format_value)
+                df_cash_flows['Flujo_Total'] = df_cash_flows['Flujo_Total'].apply(format_value)
+                
+                # Renombrar columnas para mejor presentación
+                df_cash_flows = df_cash_flows.rename(columns={
+                    'Fecha': 'Fecha de Pago',
+                    'Pago_Capital': 'Capital',
+                    'Cupon': 'Cupón',
+                    'Flujo_Total': 'Flujo Total'
+                })
+                
+                # Eliminar la columna de días
+                df_cash_flows = df_cash_flows.drop('Días', axis=1)
+                
+                # Crear tabla HTML personalizada para control total
+                html_table = "<table style='width: 100%; border-collapse: collapse;'>"
+                html_table += "<thead><tr>"
+                html_table += "<th style='text-align: left; padding: 8px; border-bottom: 1px solid #ddd;'>Fecha de Pago</th>"
+                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Capital</th>"
+                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Cupón</th>"
+                html_table += "<th style='text-align: right; padding: 8px; border-bottom: 1px solid #ddd;'>Flujo Total</th>"
+                html_table += "</tr></thead><tbody>"
+                
+                for _, row in df_cash_flows.iterrows():
+                    html_table += "<tr>"
+                    html_table += f"<td style='text-align: left; padding: 8px; border-bottom: 1px solid #eee;'>{row['Fecha de Pago']}</td>"
+                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Capital']}</td>"
+                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Cupón']}</td>"
+                    html_table += f"<td style='text-align: right; padding: 8px; border-bottom: 1px solid #eee;'>{row['Flujo Total']}</td>"
+                    html_table += "</tr>"
+                
+                html_table += "</tbody></table>"
+                
+                st.markdown(html_table, unsafe_allow_html=True)
+                
+        except Exception as e:
+            st.error(f"Error en el cálculo: {e}")
