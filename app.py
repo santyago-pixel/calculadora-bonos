@@ -1244,8 +1244,8 @@ try:
                     }
                     </script>
                 </div>
-                """
-                st.components.v1.html(nikkei_html, height=300)
+            """
+            st.components.v1.html(nikkei_html, height=300)
         else:
             st.info("👆 Complete los parámetros en el sidebar y haga clic en 'Calcular' para ver los resultados")
         
