@@ -1101,8 +1101,8 @@ try:
             # Espaciado para alinear con las tarjetas
             st.markdown("<br><br>", unsafe_allow_html=True)
             
-            # Gráfico del bono seleccionado
-            st.markdown(f"## Gráfico {bono_actual['ticker']}")
+            # Minigráfico del bono seleccionado
+            st.markdown(f"## Minigráfico {bono_actual['ticker']}")
             
             bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
@@ -1112,24 +1112,17 @@ try:
                         <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
                     </a>
                 </div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
                 {{
-                "autosize": false,
+                "symbol": "{bono_actual['ticker']}",
                 "width": "100%",
                 "height": "270",
-                "symbol": "{bono_actual['ticker']}",
-                "interval": "D",
-                "timezone": "America/New_York",
-                "theme": "light",
-                "style": "2",
                 "locale": "es",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "hide_volume": true,
-                "save_image": false,
-                "container_id": "tradingview_widget_bono"
+                "dateRange": "12M",
+                "colorTheme": "light",
+                "isTransparent": false,
+                "autosize": false,
+                "largeChartUrl": ""
                 }}
                 </script>
             </div>
