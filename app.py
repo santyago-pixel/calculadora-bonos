@@ -1244,25 +1244,25 @@ try:
             background-color: #1f77b4 !important;
             color: white !important;
             font-weight: bold !important;
-            padding: 6px 4px !important;
+            padding: 5px 3px !important;
             text-align: right !important;
             border: 1px solid #ddd !important;
-            height: 24px !important;
+            height: 22px !important;
         }
         .stTable td {
-            padding: 4px 4px !important;
+            padding: 3px 3px !important;
             text-align: right !important;
             border: 1px solid #ddd !important;
             background-color: white !important;
             color: black !important;
-            height: 20px !important;
+            height: 18px !important;
         }
         .stTable td:first-child {
             text-align: center !important;
             font-weight: bold !important;
         }
         .stTable tbody tr {
-            height: 20px !important;
+            height: 18px !important;
         }
         
         /* Forzar alineación central para fechas */
