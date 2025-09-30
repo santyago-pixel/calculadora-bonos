@@ -113,6 +113,38 @@ st.markdown("""
         line-height: 1.2 !important;
     }
     
+    /* Reducir espaciado en sidebar */
+    .css-1d391kg {
+        padding-top: 0.5rem !important;
+    }
+    
+    .css-1d391kg .element-container {
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    .css-1d391kg .stMarkdown {
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    /* Reducir espaciado en sección principal */
+    .main .block-container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+    
+    .main .element-container {
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    /* Reducir espaciado entre elementos */
+    .stSelectbox, .stDateInput, .stNumberInput, .stButton {
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
     div[data-testid="stMarkdownContainer"] h1 {
         font-size: 1.4rem !important;
     }
