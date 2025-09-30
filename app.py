@@ -1255,11 +1255,43 @@ try:
         
         # Mostrar tabla con formato mejorado
         st.table(df_simple)
+        
+        # Gráfico avanzado del bono seleccionado - Ancho completo
+        st.markdown("## Gráfico Avanzado del Bono")
+        bono_avanzado_html = f"""
+        <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
+            <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+            <div class="tradingview-widget-copyright">
+                <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                    <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                </a>
+            </div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            {{
+            "autosize": false,
+            "width": "100%",
+            "height": "500",
+            "symbol": "{bono_actual['ticker']}",
+            "interval": "D",
+            "timezone": "America/New_York",
+            "theme": "light",
+            "style": "2",
+            "locale": "es",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "hide_volume": true,
+            "save_image": false,
+            "container_id": "tradingview_widget_bono_avanzado"
+            }}
+            </script>
+        </div>
+        """
+        st.components.v1.html(bono_avanzado_html, height=500)
             
     else:
         # Mostrar los 4 gráficos de TradingView cuando no se ha calculado
-        st.markdown("## Mercados Globales")
-        
         # Crear 2 filas de 2 columnas cada una
         col1, col2 = st.columns(2)
         
@@ -1330,6 +1362,9 @@ try:
             </div>
             """
             st.components.v1.html(imv_html, height=300)
+        
+        # Espaciado adicional antes de la tabla de datos de mercado
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
         
         # Widget Market Data - Ancho completo
         st.markdown("## Datos de Mercado")
