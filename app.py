@@ -1272,11 +1272,6 @@ try:
             bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                <div class="tradingview-widget-copyright">
-                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                    </a>
-                </div>
                 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
                 {{
                 "symbol": "{bono_actual['ticker']}",
@@ -1486,11 +1481,6 @@ try:
         bono_avanzado_html = f"""
         <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-            <div class="tradingview-widget-copyright">
-                <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                    <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                </a>
-            </div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
             {{
             "symbol": "{bono_actual['ticker']}",
@@ -1560,11 +1550,6 @@ try:
             sp500_html = """
                 <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                     <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                    <div class="tradingview-widget-copyright">
-                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                        </a>
-                    </div>
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
                     {
                     "symbol": "SPX500",
@@ -1590,11 +1575,6 @@ try:
             imv_html = """
             <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                <div class="tradingview-widget-copyright">
-                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                    </a>
-                </div>
                 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
                 {
                 "symbol": "IMV",
@@ -1622,12 +1602,6 @@ try:
         market_data_html = """
         <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px; margin-top: 0;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
-            <div class="tradingview-widget-copyright" style="font-size: 8px;">
-                <a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank">
-                    <span class="blue-text">Market summary</span>
-                </a>
-                <span class="trademark"> by TradingView</span>
-            </div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
             {
             "colorTheme": "light",
