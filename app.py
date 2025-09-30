@@ -135,6 +135,33 @@ st.markdown("""
         margin-bottom: 0.1rem !important;
     }
     
+    /* Eliminar bordes de widgets de TradingView */
+    .tradingview-widget-container {
+        border: none !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+    }
+    
+    .tradingview-widget-container__widget {
+        border: none !important;
+    }
+    
+    /* Eliminar bordes de iframes de TradingView */
+    iframe[src*="tradingview"] {
+        border: none !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Eliminar bordes de contenedores de Streamlit para TradingView */
+    div[data-testid="stIFrame"] {
+        border: none !important;
+    }
+    
+    /* Eliminar bordes de componentes HTML */
+    .stComponents iframe {
+        border: none !important;
+    }
+    
     /* Reducir tamaño de títulos y alinear arriba */
     .main h1, .main h2, .main h3, 
     .main .element-container h1, .main .element-container h2, .main .element-container h3,
