@@ -1327,7 +1327,7 @@ try:
             {
             "colorTheme": "light",
             "dateRange": "12M",
-            "showChart": true,
+            "showChart": false,
             "locale": "es",
             "width": "100%",
             "height": "800",
@@ -1344,8 +1344,6 @@ try:
             "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
             "belowLineFillColorFallingBottom": "rgba(41, 98, 255, 0)",
             "symbolActiveColor": "rgba(41, 98, 255, 0.12)",
-            "chartHeight": 200,
-            "tableHeight": 600,
             "tabs": [
                 {
                     "title": "Indices",
