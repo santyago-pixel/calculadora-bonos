@@ -716,6 +716,27 @@ try:
     
             # Botón de cálculo
             calcular = st.button("Calcular", type="primary")
+            
+            # Mostrar información del bono seleccionado en el sidebar
+            st.markdown("---")
+            st.markdown("### Información del Bono")
+            
+            # Mapear periodicidad a texto
+            periodicidad_texto = {
+                1: "anual",
+                2: "semestral", 
+                3: "trimestral",
+                4: "trimestral",
+                6: "bimestral",
+                12: "mensual"
+            }.get(bono_actual['periodicidad'], f"{bono_actual['periodicidad']} veces al año")
+            
+            st.markdown(f"**Nombre:** {bono_actual['nombre']}")
+            st.markdown(f"**Tipo:** {bono_actual['tipo_bono']}")
+            st.markdown(f"**Base de cálculo:** {bono_actual['base_calculo']}")
+            st.markdown(f"**Periodicidad:** {periodicidad_texto}")
+            st.markdown(f"**Tasa de cupón:** {bono_actual['tasa_cupon']:.2%}")
+            st.markdown(f"**Ticker:** {bono_actual['ticker']}")
         else:
             calcular = False
             bono_actual = None
@@ -1087,19 +1108,16 @@ try:
         st.table(df_simple)
             
     else:
-        if not bono_seleccionado:
-            st.info("👈 Seleccione un bono en el sidebar para comenzar")
-            
-            # Grid de 4 widgets de TradingView
-            st.markdown("## Mercados Globales")
-            
-            # Crear 2 filas de 2 columnas cada una
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                # S&P 500
-                st.markdown("### S&P 500")
-                sp500_html = """
+        # Mostrar los 4 gráficos de TradingView cuando no se ha calculado
+        st.markdown("## Mercados Globales")
+        
+        # Crear 2 filas de 2 columnas cada una
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # S&P 500
+            st.markdown("### S&P 500")
+            sp500_html = """
                 <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                     <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                     <div class="tradingview-widget-copyright">
@@ -1127,79 +1145,79 @@ try:
                     }
                     </script>
                 </div>
-                """
-                st.components.v1.html(sp500_html, height=300)
-                
-                # Apple Inc.
-                st.markdown("### Apple Inc. (AAPL)")
-                apple_html = """
-                <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
-                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                    <div class="tradingview-widget-copyright">
-                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                        </a>
-                    </div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                    {
-                    "autosize": false,
-                    "width": "100%",
-                    "height": "300",
-                    "symbol": "NASDAQ:AAPL",
-                    "interval": "D",
-                    "timezone": "America/New_York",
-                    "theme": "light",
-                    "style": "1",
-                    "locale": "es",
-                    "toolbar_bg": "#f1f3f6",
-                    "enable_publishing": false,
-                    "hide_top_toolbar": false,
-                    "hide_legend": false,
-                    "save_image": false,
-                    "container_id": "tradingview_widget"
-                    }
-                    </script>
-                </div>
-                """
-                st.components.v1.html(apple_html, height=300)
+            """
+            st.components.v1.html(sp500_html, height=300)
             
-            with col2:
-                # Tesla Inc.
-                st.markdown("### Tesla Inc. (TSLA)")
-                tesla_html = """
-                <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
-                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                    <div class="tradingview-widget-copyright">
-                        <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                            <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                        </a>
-                    </div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                    {
-                    "autosize": false,
-                    "width": "100%",
-                    "height": "300",
-                    "symbol": "NASDAQ:TSLA",
-                    "interval": "D",
-                    "timezone": "America/New_York",
-                    "theme": "light",
-                    "style": "1",
-                    "locale": "es",
-                    "toolbar_bg": "#f1f3f6",
-                    "enable_publishing": false,
-                    "hide_top_toolbar": false,
-                    "hide_legend": false,
-                    "save_image": false,
-                    "container_id": "tradingview_widget"
-                    }
-                    </script>
+            # Apple Inc.
+            st.markdown("### Apple Inc. (AAPL)")
+            apple_html = """
+            <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
+                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                <div class="tradingview-widget-copyright">
+                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                    </a>
                 </div>
-                """
-                st.components.v1.html(tesla_html, height=300)
-                
-                # Nikkei 225 (Asia)
-                st.markdown("### Nikkei 225")
-                nikkei_html = """
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                {
+                "autosize": false,
+                "width": "100%",
+                "height": "300",
+                "symbol": "NASDAQ:AAPL",
+                "interval": "D",
+                "timezone": "America/New_York",
+                "theme": "light",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_widget"
+                }
+                </script>
+            </div>
+            """
+            st.components.v1.html(apple_html, height=300)
+            
+        with col2:
+            # Tesla Inc.
+            st.markdown("### Tesla Inc. (TSLA)")
+            tesla_html = """
+            <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
+                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                <div class="tradingview-widget-copyright">
+                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                    </a>
+                </div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                {
+                "autosize": false,
+                "width": "100%",
+                "height": "300",
+                "symbol": "NASDAQ:TSLA",
+                "interval": "D",
+                "timezone": "America/New_York",
+                "theme": "light",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_widget"
+                }
+                </script>
+            </div>
+            """
+            st.components.v1.html(tesla_html, height=300)
+            
+            # Nikkei 225 (Asia)
+            st.markdown("### Nikkei 225")
+            nikkei_html = """
                 <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                     <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                     <div class="tradingview-widget-copyright">
