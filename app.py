@@ -1089,10 +1089,9 @@ try:
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
         with col2:
             # Espaciado para alinear con las tarjetas
-            st.markdown("<br><br><br>", unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
             
             # Gráfico del bono seleccionado
-            
             bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
