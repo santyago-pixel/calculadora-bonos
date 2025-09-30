@@ -1319,75 +1319,64 @@ try:
         <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
             <div class="tradingview-widget-copyright" style="font-size: 8px;">
-                <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                    <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                <a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank">
+                    <span class="blue-text">Market summary</span>
                 </a>
+                <span class="trademark"> by TradingView</span>
             </div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
             {
             "colorTheme": "light",
-            "dateRange": "12M",
-            "showChart": false,
             "locale": "es",
-            "width": "100%",
-            "height": "800",
             "largeChartUrl": "",
             "isTransparent": false,
             "showSymbolLogo": true,
-            "showFloatingTooltip": false,
-            "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
-            "plotLineColorFalling": "rgba(41, 98, 255, 1)",
-            "gridLineColor": "rgba(240, 243, 250, 0)",
-            "scaleFontColor": "rgba(120, 123, 134, 1)",
-            "belowLineFillColorGrowing": "rgba(41, 98, 255, 0.12)",
-            "belowLineFillColorFalling": "rgba(41, 98, 255, 0.12)",
-            "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
-            "belowLineFillColorFallingBottom": "rgba(41, 98, 255, 0)",
-            "symbolActiveColor": "rgba(41, 98, 255, 0.12)",
-            "tabs": [
+            "backgroundColor": "#FFFFFF",
+            "support_host": "https://www.tradingview.com",
+            "width": "100%",
+            "height": "800",
+            "symbolsGroups": [
                 {
-                    "title": "Indices",
+                    "name": "Indices",
                     "symbols": [
                         {
-                            "s": "SPX500",
-                            "d": "S&P 500"
+                            "name": "SPX500",
+                            "displayName": "S&P 500"
                         },
                         {
-                            "s": "NASDAQ:IXIC",
-                            "d": "NASDAQ"
+                            "name": "NASDAQ:IXIC",
+                            "displayName": "NASDAQ"
                         },
                         {
-                            "s": "DOWI",
-                            "d": "Dow Jones"
+                            "name": "DOWI",
+                            "displayName": "Dow Jones"
                         },
                         {
-                            "s": "IMV",
-                            "d": "Merval"
+                            "name": "IMV",
+                            "displayName": "Merval"
                         }
-                    ],
-                    "originalTitle": "Indices"
+                    ]
                 },
                 {
-                    "title": "Bonos",
+                    "name": "Bonos",
                     "symbols": [
                         {
-                            "s": "GD30D",
-                            "d": "GD30D"
+                            "name": "GD30D",
+                            "displayName": "GD30D"
                         },
                         {
-                            "s": "AL30D",
-                            "d": "AL30D"
+                            "name": "AL30D",
+                            "displayName": "AL30D"
                         },
                         {
-                            "s": "GD29D",
-                            "d": "GD29D"
+                            "name": "GD29D",
+                            "displayName": "GD29D"
                         },
                         {
-                            "s": "AL29D",
-                            "d": "AL29D"
+                            "name": "AL29D",
+                            "displayName": "AL29D"
                         }
-                    ],
-                    "originalTitle": "Bonos"
+                    ]
                 }
             ]
             }
