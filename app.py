@@ -1134,7 +1134,6 @@ try:
             st.markdown("## Bonos Argentinos")
             
             # Crear una tabla personalizada con bonos argentinos
-            st.markdown("### Bonos Argentinos")
             
             # Datos de bonos argentinos (precios aproximados - en una app real vendrían de una API)
             bonos_data = {
