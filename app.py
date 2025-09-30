@@ -1094,7 +1094,6 @@ try:
             st.markdown("<br><br>", unsafe_allow_html=True)
             
             # Gráfico del bono seleccionado
-            st.markdown(f"## {bono_actual['ticker']}")
             
             bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
