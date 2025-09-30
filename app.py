@@ -1422,6 +1422,23 @@ try:
         .stTable table tr td:first-child {
             display: none !important;
         }
+        
+        /* Prevenir scroll automático al hacer clic en Calcular */
+        .main {
+            scroll-behavior: auto !important;
+        }
+        
+        /* Mantener la sección de resultados visible */
+        .main .stColumn:first-child {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 10 !important;
+        }
+        
+        .metrics-grid {
+            position: relative !important;
+            z-index: 5 !important;
+        }
         </style>
         """, unsafe_allow_html=True)
         
@@ -1456,6 +1473,45 @@ try:
         </div>
         """
         st.components.v1.html(bono_avanzado_html, height=500)
+        
+        # JavaScript para prevenir scroll automático al hacer clic en Calcular
+        st.markdown("""
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Interceptar clics en el botón Calcular
+            document.addEventListener('click', function(e) {
+                // Verificar si es el botón Calcular
+                if (e.target.matches('button[data-testid="baseButton-primary"]') || 
+                    e.target.textContent.includes('Calcular')) {
+                    
+                    // Prevenir el comportamiento por defecto
+                    e.preventDefault();
+                    
+                    // Forzar scroll hacia arriba después de un pequeño delay
+                    setTimeout(function() {
+                        window.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: 'auto'
+                        });
+                    }, 100);
+                }
+            });
+            
+            // También interceptar el evento de submit del formulario
+            document.addEventListener('submit', function(e) {
+                e.preventDefault();
+                setTimeout(function() {
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: 'auto'
+                    });
+                }, 100);
+            });
+        });
+        </script>
+        """, unsafe_allow_html=True)
             
     else:
         # Mostrar los 4 gráficos de TradingView cuando no se ha calculado
