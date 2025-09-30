@@ -120,8 +120,19 @@ st.markdown("""
     
     /* Reducir espaciado del título "Información del Bono" */
     .sidebar h3 {
-        margin-top: 0.2rem !important;
-        margin-bottom: 0.2rem !important;
+        margin-top: 0.1rem !important;
+        margin-bottom: 0.1rem !important;
+    }
+    
+    /* Reducir espaciado después del título h3 en sidebar */
+    .sidebar h3 + .stMarkdown {
+        margin-top: 0.1rem !important;
+    }
+    
+    /* Reducir espaciado del contenedor de información del bono */
+    .sidebar .stMarkdown div {
+        margin-top: 0.1rem !important;
+        margin-bottom: 0.1rem !important;
     }
     
     /* Reducir tamaño de títulos y alinear arriba */
@@ -904,13 +915,13 @@ try:
             
             # Información del bono con espaciado reducido
             st.markdown(f"""
-            <div style="line-height: 1.2; margin: 0;">
-                <p style="margin: 0.2rem 0;"><strong>Nombre:</strong> {bono_actual['nombre']}</p>
-                <p style="margin: 0.2rem 0;"><strong>Vencimiento:</strong> {fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A'}</p>
-                <p style="margin: 0.2rem 0;"><strong>Tasa de cupón:</strong> {cupon_vigente_actual:.2%}</p>
-                <p style="margin: 0.2rem 0;"><strong>Periodicidad:</strong> {periodicidad_texto}</p>
-                <p style="margin: 0.2rem 0;"><strong>Base de cálculo:</strong> {bono_actual['base_calculo']}</p>
-                <p style="margin: 0.2rem 0;"><strong>Ticker:</strong> {bono_actual['ticker']}</p>
+            <div style="line-height: 1.1; margin: 0; padding: 0;">
+                <p style="margin: 0.1rem 0; padding: 0;"><strong>Nombre:</strong> {bono_actual['nombre']}</p>
+                <p style="margin: 0.1rem 0; padding: 0;"><strong>Vencimiento:</strong> {fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A'}</p>
+                <p style="margin: 0.1rem 0; padding: 0;"><strong>Tasa de cupón:</strong> {cupon_vigente_actual:.2%}</p>
+                <p style="margin: 0.1rem 0; padding: 0;"><strong>Periodicidad:</strong> {periodicidad_texto}</p>
+                <p style="margin: 0.1rem 0; padding: 0;"><strong>Base de cálculo:</strong> {bono_actual['base_calculo']}</p>
+                <p style="margin: 0.1rem 0; padding: 0;"><strong>Ticker:</strong> {bono_actual['ticker']}</p>
             </div>
             """, unsafe_allow_html=True)
         else:
