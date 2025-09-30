@@ -140,26 +140,61 @@ st.markdown("""
         border: none !important;
         border-radius: 8px !important;
         overflow: hidden !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     
     .tradingview-widget-container__widget {
         border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     
     /* Eliminar bordes de iframes de TradingView */
     iframe[src*="tradingview"] {
         border: none !important;
         border-radius: 8px !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     
     /* Eliminar bordes de contenedores de Streamlit para TradingView */
     div[data-testid="stIFrame"] {
         border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     
     /* Eliminar bordes de componentes HTML */
     .stComponents iframe {
         border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    
+    /* Intentar ocultar bordes internos de TradingView */
+    .tradingview-widget-container * {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    
+    /* Ocultar bordes de elementos específicos de TradingView */
+    .tradingview-widget-container table,
+    .tradingview-widget-container tr,
+    .tradingview-widget-container td,
+    .tradingview-widget-container th {
+        border: none !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+    }
+    
+    /* Aplicar estilos a todos los elementos dentro de TradingView */
+    .tradingview-widget-container iframe {
+        border: none !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     
     /* Reducir tamaño de títulos y alinear arriba */
@@ -1194,9 +1229,12 @@ try:
                 "locale": "es",
                 "dateRange": "12M",
                 "colorTheme": "light",
-                "isTransparent": false,
+                "isTransparent": true,
                 "autosize": false,
-                "largeChartUrl": ""
+                "largeChartUrl": "",
+                "hideTopToolbar": true,
+                "hideLegend": false,
+                "saveImage": false
                 }}
                 </script>
             </div>
@@ -1392,13 +1430,14 @@ try:
             "theme": "light",
             "style": "2",
             "locale": "es",
-            "toolbar_bg": "#f1f3f6",
+            "toolbar_bg": "transparent",
             "enable_publishing": false,
-            "hide_top_toolbar": false,
+            "hide_top_toolbar": true,
             "hide_legend": false,
             "hide_volume": true,
             "save_image": false,
-            "container_id": "tradingview_widget_bono_avanzado"
+            "container_id": "tradingview_widget_bono_avanzado",
+            "backgroundColor": "transparent"
             }}
             </script>
         </div>
@@ -1432,12 +1471,13 @@ try:
                     "theme": "light",
                     "style": "1",
                     "locale": "es",
-                    "toolbar_bg": "#f1f3f6",
+                    "toolbar_bg": "transparent",
                     "enable_publishing": false,
-                    "hide_top_toolbar": false,
+                    "hide_top_toolbar": true,
                     "hide_legend": false,
                     "save_image": false,
-                    "container_id": "tradingview_widget"
+                    "container_id": "tradingview_widget",
+                    "backgroundColor": "transparent"
                     }
                     </script>
                 </div>
@@ -1466,12 +1506,13 @@ try:
                 "theme": "light",
                 "style": "1",
                 "locale": "es",
-                "toolbar_bg": "#f1f3f6",
+                "toolbar_bg": "transparent",
                 "enable_publishing": false,
-                "hide_top_toolbar": false,
+                "hide_top_toolbar": true,
                 "hide_legend": false,
                 "save_image": false,
-                "container_id": "tradingview_widget"
+                "container_id": "tradingview_widget",
+                "backgroundColor": "transparent"
                 }
                 </script>
             </div>
@@ -1497,9 +1538,9 @@ try:
             "colorTheme": "light",
             "locale": "es",
             "largeChartUrl": "",
-            "isTransparent": false,
+            "isTransparent": true,
             "showSymbolLogo": true,
-            "backgroundColor": "#FFFFFF",
+            "backgroundColor": "transparent",
             "support_host": "https://www.tradingview.com",
             "width": "100%",
             "height": "800",
