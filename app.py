@@ -969,7 +969,8 @@ try:
         
         # COLUMNA IZQUIERDA - RESULTADOS
         with col1:
-            
+            # Espaciado para alinear con el gráfico
+            st.markdown("<br>", unsafe_allow_html=True)
             
             # Métricas principales
             st.markdown('<div class="metrics-grid">', unsafe_allow_html=True)
@@ -1090,7 +1091,7 @@ try:
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
         with col2:
             # Espaciado para alinear con las tarjetas
-            st.markdown("<br><br>", unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
             
             # Gráfico del bono seleccionado
             
