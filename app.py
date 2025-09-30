@@ -214,6 +214,61 @@ st.markdown("""
         margin-top: -0.5rem !important;
     }
     
+    /* Evitar desplazamiento automático al hacer clic en botones */
+    .main {
+        scroll-behavior: auto !important;
+    }
+    
+    /* Mantener las tarjetas de resultados visibles */
+    .main .stColumn:first-child {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+    
+    /* Asegurar que las tarjetas no se oculten */
+    .metrics-grid {
+        position: relative !important;
+        z-index: 5 !important;
+    }
+    
+    /* Prevenir desplazamiento automático */
+    .stButton > button {
+        scroll-margin-top: 0 !important;
+    }
+    
+    /* Mantener el foco en las tarjetas */
+    .main .stColumn:first-child .element-container {
+        scroll-margin-top: 0 !important;
+    }
+    
+    /* JavaScript para prevenir desplazamiento automático */
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Prevenir desplazamiento automático al hacer clic en botones
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('button[data-testid="baseButton-primary"]')) {
+                e.preventDefault();
+                // Mantener la posición actual de scroll
+                setTimeout(function() {
+                    window.scrollTo(0, 0);
+                }, 100);
+            }
+        });
+        
+        // Prevenir scroll automático en general
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 0) {
+                // Mantener en la parte superior si hay contenido arriba
+                const firstColumn = document.querySelector('.main .stColumn:first-child');
+                if (firstColumn && firstColumn.getBoundingClientRect().top < 0) {
+                    window.scrollTo(0, 0);
+                }
+            }
+        });
+    });
+    </script>
+    
     /* Reducir tamaño de títulos y alinear arriba */
     .main h1, .main h2, .main h3, 
     .main .element-container h1, .main .element-container h2, .main .element-container h3,
