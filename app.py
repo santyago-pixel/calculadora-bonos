@@ -456,7 +456,7 @@ def calcular_dias(fecha1, fecha2, base_calculo):
         return (fecha2 - fecha1).days
     elif base_calculo == "ACT/ACT":
         return (fecha2 - fecha1).days
-    else:
+        else:
         return (fecha2 - fecha1).days
 
 # Función para calcular YTM usando Newton-Raphson
@@ -514,7 +514,7 @@ def calcular_ytm(precio_dirty, flujos, fechas, fecha_liquidacion, base_calculo="
         npv_val = npv(rate)
         if abs(npv_val) < tolerance:
             break
-        
+    
         derivative = npv_derivative(rate)
         if abs(derivative) < 1e-12:
             break
@@ -769,7 +769,7 @@ try:
             st.markdown(f"**Periodicidad:** {periodicidad_texto}")
             st.markdown(f"**Tasa de cupón:** {bono_actual['tasa_cupon']:.2%}")
             st.markdown(f"**Ticker:** {bono_actual['ticker']}")
-        else:
+            else:
             calcular = False
             bono_actual = None
     
@@ -836,7 +836,7 @@ try:
                 capital_residual,
                 bono_actual['base_calculo']
             )
-        else:
+                else:
             intereses_corridos = 0
         
         # Calcular precio limpio
@@ -871,7 +871,7 @@ try:
         col1, col2 = st.columns([2, 1])
         
         # COLUMNA IZQUIERDA - RESULTADOS
-        with col1:
+                with col1:
             st.markdown("## Resultados del Análisis")
             
             # Información básica
@@ -1000,7 +1000,7 @@ try:
         
         
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
-        with col2:
+                with col2:
             # Espaciado para alinear con las tarjetas
             st.markdown("<br><br>", unsafe_allow_html=True)
             
@@ -1180,9 +1180,9 @@ try:
             """
             st.components.v1.html(sp500_html, height=300)
             
-            # Apple Inc.
-            st.markdown("### Apple Inc. (AAPL)")
-            apple_html = """
+            # GD30D
+            st.markdown("### GD30D")
+            gd30d_html = """
             <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
@@ -1195,9 +1195,9 @@ try:
                 "autosize": false,
                 "width": "100%",
                 "height": "300",
-                "symbol": "NASDAQ:AAPL",
+                "symbol": "GD30D",
                 "interval": "D",
-                "timezone": "America/New_York",
+                "timezone": "America/Argentina/Buenos_Aires",
                 "theme": "light",
                 "style": "1",
                 "locale": "es",
@@ -1211,12 +1211,12 @@ try:
                 </script>
             </div>
             """
-            st.components.v1.html(apple_html, height=300)
+            st.components.v1.html(gd30d_html, height=300)
             
         with col2:
-            # Tesla Inc.
-            st.markdown("### Tesla Inc. (TSLA)")
-            tesla_html = """
+            # IMV Merval
+            st.markdown("### IMV Merval")
+            imv_html = """
             <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
@@ -1229,9 +1229,9 @@ try:
                 "autosize": false,
                 "width": "100%",
                 "height": "300",
-                "symbol": "NASDAQ:TSLA",
+                "symbol": "IMV",
                 "interval": "D",
-                "timezone": "America/New_York",
+                "timezone": "America/Argentina/Buenos_Aires",
                 "theme": "light",
                 "style": "1",
                 "locale": "es",
@@ -1245,11 +1245,11 @@ try:
                 </script>
             </div>
             """
-            st.components.v1.html(tesla_html, height=300)
+            st.components.v1.html(imv_html, height=300)
             
-            # Nikkei 225 (Asia)
-            st.markdown("### Nikkei 225")
-            nikkei_html = """
+            # AL30D
+            st.markdown("### AL30D")
+            al30d_html = """
                 <div class="tradingview-widget-container" style="height: 300px; width: 100%;">
                     <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                     <div class="tradingview-widget-copyright">
@@ -1262,9 +1262,9 @@ try:
                     "autosize": false,
                     "width": "100%",
                     "height": "300",
-                    "symbol": "NIKKEI",
+                    "symbol": "AL30D",
                     "interval": "D",
-                    "timezone": "Asia/Tokyo",
+                    "timezone": "America/Argentina/Buenos_Aires",
                     "theme": "light",
                     "style": "1",
                     "locale": "es",
@@ -1277,7 +1277,7 @@ try:
                     </script>
                 </div>
             """
-            st.components.v1.html(nikkei_html, height=300)
+            st.components.v1.html(al30d_html, height=300)
         
         # Solo mostrar información si hay un bono seleccionado
         if bono_seleccionado and bono_actual is not None:
@@ -1302,5 +1302,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-except Exception as e:
+        except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
