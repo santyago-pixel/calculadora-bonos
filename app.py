@@ -1133,75 +1133,98 @@ try:
             # Tabla de Bonos Argentinos
             st.markdown("## Bonos Argentinos")
             
-            # Crear una tabla personalizada simple
-            st.markdown("### Índices Principales")
+            # Crear una tabla personalizada con bonos argentinos
+            st.markdown("### Bonos Argentinos")
             
-            # Datos de ejemplo (en una aplicación real, estos vendrían de una API)
-            indices_data = {
-                'Índice': ['S&P 500', 'NASDAQ', 'Dow Jones'],
-                'Precio': ['4,500.00', '14,200.00', '35,000.00'],
-                'Cambio': ['+0.5%', '+0.8%', '+0.3%']
+            # Datos de bonos argentinos (precios aproximados - en una app real vendrían de una API)
+            bonos_data = {
+                'Bono': ['GD30D', 'AL30D', 'GD29D', 'AL29D', 'GD28D', 'AL28D'],
+                'Precio': ['$45.20', '$42.80', '$38.50', '$36.90', '$34.20', '$32.10'],
+                'Cambio': ['+1.2%', '+0.8%', '-0.5%', '+0.3%', '-1.1%', '+0.7%']
             }
             
-            # Crear DataFrame
-            df_indices = pd.DataFrame(indices_data)
-            
-            # CSS personalizado para la tabla
+            # CSS personalizado para la tabla de bonos
             st.markdown("""
             <style>
-            .indices-table {
+            .bonos-table {
                 width: 100%;
                 border-collapse: collapse;
-                font-size: 12px;
+                font-size: 11px;
+                margin-top: 10px;
             }
-            .indices-table th {
+            .bonos-table th {
                 background-color: #f0f2f6;
-                padding: 8px 4px;
+                padding: 6px 4px;
                 text-align: left;
                 border: 1px solid #ddd;
                 font-weight: bold;
+                font-size: 10px;
             }
-            .indices-table td {
-                padding: 6px 4px;
+            .bonos-table td {
+                padding: 4px 4px;
                 border: 1px solid #ddd;
                 text-align: right;
+                font-size: 10px;
             }
-            .indices-table td:first-child {
+            .bonos-table td:first-child {
                 text-align: left;
-                width: 25%;
+                width: 20%;
                 font-weight: bold;
             }
-            .indices-table td:not(:first-child) {
-                width: 37.5%;
+            .bonos-table td:not(:first-child) {
+                width: 40%;
+            }
+            .bonos-table .positivo {
+                color: #28a745;
+                font-weight: bold;
+            }
+            .bonos-table .negativo {
+                color: #dc3545;
+                font-weight: bold;
             }
             </style>
             """, unsafe_allow_html=True)
             
             # Mostrar tabla con formato personalizado
             st.markdown("""
-            <table class="indices-table">
+            <table class="bonos-table">
                 <thead>
                     <tr>
-                        <th>Índice</th>
+                        <th>Bono</th>
                         <th>Precio</th>
                         <th>Cambio</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>S&P 500</td>
-                        <td>4,500.00</td>
-                        <td style="color: green;">+0.5%</td>
+                        <td>GD30D</td>
+                        <td>$45.20</td>
+                        <td class="positivo">+1.2%</td>
                     </tr>
                     <tr>
-                        <td>NASDAQ</td>
-                        <td>14,200.00</td>
-                        <td style="color: green;">+0.8%</td>
+                        <td>AL30D</td>
+                        <td>$42.80</td>
+                        <td class="positivo">+0.8%</td>
                     </tr>
                     <tr>
-                        <td>Dow Jones</td>
-                        <td>35,000.00</td>
-                        <td style="color: green;">+0.3%</td>
+                        <td>GD29D</td>
+                        <td>$38.50</td>
+                        <td class="negativo">-0.5%</td>
+                    </tr>
+                    <tr>
+                        <td>AL29D</td>
+                        <td>$36.90</td>
+                        <td class="positivo">+0.3%</td>
+                    </tr>
+                    <tr>
+                        <td>GD28D</td>
+                        <td>$34.20</td>
+                        <td class="negativo">-1.1%</td>
+                    </tr>
+                    <tr>
+                        <td>AL28D</td>
+                        <td>$32.10</td>
+                        <td class="positivo">+0.7%</td>
                     </tr>
                 </tbody>
             </table>
