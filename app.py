@@ -626,6 +626,34 @@ def encontrar_proximo_cupon(fecha_liquidacion, fechas_cupones):
         return None
     return min(fechas_futuras)
 
+# Función para encontrar el cupón vigente
+def encontrar_cupon_vigente(fecha_liquidacion, flujos):
+    """
+    Encuentra el cupón vigente basado en la fecha de liquidación.
+    Busca la fila cuya fecha es la inmediatamente anterior a la fecha de liquidación.
+    """
+    # Convertir fecha_liquidacion a date si es datetime
+    fecha_liq = fecha_liquidacion
+    if hasattr(fecha_liq, 'date'):
+        fecha_liq = fecha_liq.date()
+    
+    # Filtrar fechas anteriores o iguales a la fecha de liquidación
+    fechas_anteriores = []
+    for flujo in flujos:
+        fecha_flujo = flujo['fecha']
+        if hasattr(fecha_flujo, 'date'):
+            fecha_flujo = fecha_flujo.date()
+        
+        if fecha_flujo <= fecha_liq:
+            fechas_anteriores.append((fecha_flujo, flujo['cupon_vigente']))
+    
+    if not fechas_anteriores:
+        return 0.0  # Valor por defecto si no se encuentra
+    
+    # Encontrar la fecha más cercana (inmediatamente anterior)
+    fecha_mas_cercana = max(fechas_anteriores, key=lambda x: x[0])
+    return fecha_mas_cercana[1]
+
 # Cargar datos del Excel
 try:
     df = pd.read_excel('bonos_flujos.xlsx', engine='openpyxl')
@@ -678,12 +706,14 @@ try:
             cupon = safe_float(row.iloc[2])  # Columna C
             capital = safe_float(row.iloc[3])  # Columna D
             total = safe_float(row.iloc[4])  # Columna E
+            cupon_vigente = safe_float(row.iloc[1])  # Columna B - cupón vigente
             
             current_bono['flujos'].append({
                 'fecha': fecha,
                 'cupon': cupon,
                 'capital': capital,
-                'total': total
+                'total': total,
+                'cupon_vigente': cupon_vigente
             })
     
     if current_bono:
@@ -857,6 +887,9 @@ try:
         # Encontrar próximo cupón
         proximo_cupon = encontrar_proximo_cupon(fecha_liquidacion_dt, [flujo['fecha'] for flujo in bono_actual['flujos']])
         
+        # Calcular cupón vigente
+        cupon_vigente = encontrar_cupon_vigente(fecha_liquidacion, bono_actual['flujos'])
+        
         # Mapear periodicidad a texto
         periodicidad_texto = {
             1: "anual",
@@ -916,7 +949,7 @@ try:
                 st.markdown(f'''
                 <div class="metric-card">
                     <div class="metric-label">Cupón Vigente</div>
-                    <div class="metric-value">{bono_actual['tasa_cupon']:.2%}</div>
+                    <div class="metric-value">{cupon_vigente:.2%}</div>
                 </div>
                 ''', unsafe_allow_html=True)
             
