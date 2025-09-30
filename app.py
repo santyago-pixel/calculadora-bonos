@@ -1086,6 +1086,8 @@ try:
         
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
         with col2:
+            # Espaciado para alinear con las tarjetas
+            st.markdown("<br>", unsafe_allow_html=True)
             
             # Gráfico del bono seleccionado
             bono_html = f"""
