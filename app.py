@@ -1429,8 +1429,6 @@ try:
         st.table(df_simple)
         
         # Gráfico del bono seleccionado - Ancho completo (minigráfico expandido)
-        st.markdown(f"## Gráfico del {bono_actual['nombre']}")
-        
         bono_avanzado_html = f"""
         <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
