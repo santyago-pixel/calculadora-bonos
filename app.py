@@ -456,7 +456,7 @@ def calcular_dias(fecha1, fecha2, base_calculo):
         return (fecha2 - fecha1).days
     elif base_calculo == "ACT/ACT":
         return (fecha2 - fecha1).days
-        else:
+    else:
         return (fecha2 - fecha1).days
 
 # Función para calcular YTM usando Newton-Raphson
@@ -769,7 +769,7 @@ try:
             st.markdown(f"**Periodicidad:** {periodicidad_texto}")
             st.markdown(f"**Tasa de cupón:** {bono_actual['tasa_cupon']:.2%}")
             st.markdown(f"**Ticker:** {bono_actual['ticker']}")
-            else:
+        else:
             calcular = False
             bono_actual = None
     
@@ -836,7 +836,7 @@ try:
                 capital_residual,
                 bono_actual['base_calculo']
             )
-                else:
+        else:
             intereses_corridos = 0
         
         # Calcular precio limpio
@@ -871,7 +871,7 @@ try:
         col1, col2 = st.columns([2, 1])
         
         # COLUMNA IZQUIERDA - RESULTADOS
-                with col1:
+        with col1:
             st.markdown("## Resultados del Análisis")
             
             # Información básica
@@ -1000,7 +1000,7 @@ try:
         
         
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
-                with col2:
+        with col2:
             # Espaciado para alinear con las tarjetas
             st.markdown("<br><br>", unsafe_allow_html=True)
             
@@ -1302,5 +1302,5 @@ try:
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
-        except Exception as e:
+except Exception as e:
     st.error(f"❌ Error al cargar los datos: {e}")
