@@ -1122,7 +1122,6 @@ try:
             st.components.v1.html(bono_html, height=270)
             
             # Tabla de Bonos Argentinos
-            st.markdown("## Bonos Argentinos")
             
             # Crear una tabla personalizada con bonos argentinos
             
