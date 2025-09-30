@@ -1137,14 +1137,14 @@ try:
             <style>
             .tradingview-widget-container table tr td:first-child,
             .tradingview-widget-container table tr th:first-child {
-                width: 20% !important;
-                max-width: 20% !important;
-                min-width: 20% !important;
+                width: 10% !important;
+                max-width: 10% !important;
+                min-width: 10% !important;
             }
             .tradingview-widget-container table tr td:not(:first-child),
             .tradingview-widget-container table tr th:not(:first-child) {
-                width: 80% !important;
-                max-width: 80% !important;
+                width: 90% !important;
+                max-width: 90% !important;
             }
             .tradingview-widget-container table {
                 table-layout: fixed !important;
