@@ -1130,41 +1130,66 @@ try:
             
             st.components.v1.html(bono_html, height=270)
             
-            # Gráfico Merval
-            st.markdown("## Gráfico Merval (IMV)")
+            # Tabla de Bonos Argentinos
+            st.markdown("## Bonos Argentinos")
             
-            merval_html = """
-            <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
-                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                <div class="tradingview-widget-copyright">
-                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+            bonos_html = """
+            <div class="tradingview-widget-container" style="height: 270px; width: 100%; font-size: 8px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
+                <div class="tradingview-widget-copyright" style="font-size: 8px;">
+                    <a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">Market summary</span>
                     </a>
+                    <span class="trademark"> by TradingView</span>
                 </div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
                 {
-                "autosize": false,
+                "colorTheme": "light",
+                "locale": "es",
+                "largeChartUrl": "",
+                "isTransparent": false,
+                "showSymbolLogo": true,
+                "backgroundColor": "#FFFFFF",
+                "support_host": "https://www.tradingview.com",
                 "width": "100%",
                 "height": "270",
-                "symbol": "IMV",
-                "interval": "D",
-                "timezone": "America/Argentina/Buenos_Aires",
-                "theme": "light",
-                "style": "2",
-                "locale": "es",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "hide_volume": true,
-                "save_image": false,
-                "container_id": "tradingview_widget_merval"
+                "symbolsGroups": [
+                    {
+                        "name": "Bonos Argentinos",
+                        "symbols": [
+                            {
+                                "name": "GD30D",
+                                "displayName": "GD30D"
+                            },
+                            {
+                                "name": "AL30D",
+                                "displayName": "AL30D"
+                            },
+                            {
+                                "name": "GD29D",
+                                "displayName": "GD29D"
+                            },
+                            {
+                                "name": "AL29D",
+                                "displayName": "AL29D"
+                            },
+                            {
+                                "name": "GD28D",
+                                "displayName": "GD28D"
+                            },
+                            {
+                                "name": "AL28D",
+                                "displayName": "AL28D"
+                            }
+                        ]
+                    }
+                ]
                 }
                 </script>
             </div>
             """
             
-            st.components.v1.html(merval_html, height=270)
+            st.components.v1.html(bonos_html, height=270)
         
         # SECCIÓN FLUJO DE FONDOS - FORMATO MEJORADO
         st.markdown("## Flujo de Fondos")
