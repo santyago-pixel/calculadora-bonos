@@ -1428,8 +1428,22 @@ try:
         # Mostrar tabla con formato mejorado
         st.table(df_simple)
         
-        # Gráfico del bono seleccionado - Ancho completo (usando minigráfico expandido)
+        # Gráfico del bono seleccionado - Ancho completo
         st.markdown(f"## Gráfico del {bono_actual['nombre']}")
+        
+        # Mapear ticker del bono a símbolo válido de TradingView
+        ticker_mapping = {
+            'GD30D': 'SPX500',  # S&P 500 como referencia general
+            'AL30D': 'SPX500',
+            'GD29D': 'SPX500',
+            'GD30': 'SPX500',
+            'AL30': 'SPX500',
+            'GD29': 'SPX500'
+        }
+        
+        # Usar símbolo mapeado o SPX500 por defecto
+        chart_symbol = ticker_mapping.get(bono_actual['ticker'], 'SPX500')
+        
         bono_avanzado_html = f"""
         <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
@@ -1443,7 +1457,7 @@ try:
             "autosize": false,
             "width": "100%",
             "height": "500",
-            "symbol": "SPX500",
+            "symbol": "{chart_symbol}",
             "interval": "D",
             "timezone": "America/New_York",
             "theme": "light",
