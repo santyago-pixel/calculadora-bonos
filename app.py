@@ -414,6 +414,35 @@ st.markdown("""
     button[title*="GitHub"] {
         display: none !important;
     }
+    
+    /* Reducir tamaño de fuentes en widgets de TradingView */
+    iframe[src*="tradingview"] {
+        font-size: 10px !important;
+    }
+    
+    /* Reducir tamaño de fuentes en contenedores de TradingView */
+    div[data-testid="stIFrame"] iframe {
+        font-size: 10px !important;
+    }
+    
+    /* Reducir tamaño de fuentes en elementos de TradingView */
+    .tradingview-widget-container {
+        font-size: 10px !important;
+    }
+    
+    .tradingview-widget-container * {
+        font-size: 10px !important;
+    }
+    
+    /* Reducir tamaño de fuentes en iframes de TradingView */
+    iframe[title*="TradingView"] {
+        font-size: 10px !important;
+    }
+    
+    /* Reducir tamaño de fuentes en todos los iframes */
+    iframe {
+        font-size: 10px !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
