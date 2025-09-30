@@ -1137,14 +1137,24 @@ try:
             <style>
             .tradingview-widget-container table tr td:first-child,
             .tradingview-widget-container table tr th:first-child {
-                width: 25% !important;
-                max-width: 25% !important;
-                min-width: 25% !important;
+                width: 15% !important;
+                max-width: 15% !important;
+                min-width: 15% !important;
             }
             .tradingview-widget-container table tr td:not(:first-child),
             .tradingview-widget-container table tr th:not(:first-child) {
-                width: 75% !important;
-                max-width: 75% !important;
+                width: 85% !important;
+                max-width: 85% !important;
+            }
+            .tradingview-widget-container table {
+                table-layout: fixed !important;
+            }
+            .tradingview-widget-container table tr td:first-child,
+            .tradingview-widget-container table tr th:first-child {
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                padding: 2px 4px !important;
             }
             </style>
             <div class="tradingview-widget-container" style="height: 270px; width: 100%; font-size: 8px;">
