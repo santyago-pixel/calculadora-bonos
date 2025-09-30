@@ -1140,23 +1140,23 @@ try:
                 border-collapse: collapse;
                 font-size: 14px;
                 margin-top: 2px;
-                height: 160px;
+                height: 176px;
             }
             .bonos-table th {
                 background-color: #f0f2f6;
-                padding: 6px 4px;
+                padding: 7px 5px;
                 text-align: left;
                 border: 1px solid #ddd;
                 font-weight: bold;
-                font-size: 11px;
-                height: 24px;
+                font-size: 12px;
+                height: 26px;
             }
             .bonos-table td {
-                padding: 4px 4px;
+                padding: 5px 5px;
                 border: 1px solid #ddd;
                 text-align: right;
-                font-size: 11px;
-                height: 20px;
+                font-size: 12px;
+                height: 22px;
             }
             .bonos-table td:first-child {
                 text-align: left;
@@ -1175,7 +1175,7 @@ try:
                 font-weight: bold;
             }
             .bonos-table tbody tr {
-                height: 20px;
+                height: 22px;
             }
             </style>
             """, unsafe_allow_html=True)
