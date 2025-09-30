@@ -1197,12 +1197,16 @@ try:
                 font-size: 14px;
                 margin-top: 2px;
                 height: 176px;
+                border: 2px solid #64748b !important;
+                border-radius: 8px !important;
+                background-color: #f8f9fa !important;
             }
             .bonos-table th {
-                background-color: #f0f2f6;
+                background-color: #64748b !important;
+                color: white !important;
                 padding: 7px 5px;
                 text-align: center;
-                border: 1px solid #ddd;
+                border: 1px solid #64748b !important;
                 font-weight: bold;
                 font-size: 12px;
                 height: 26px;
