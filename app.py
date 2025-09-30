@@ -654,6 +654,20 @@ def encontrar_cupon_vigente(fecha_liquidacion, flujos):
     fecha_mas_cercana = max(fechas_anteriores, key=lambda x: x[0])
     return fecha_mas_cercana[1]
 
+# Función para encontrar la fecha de vencimiento
+def encontrar_fecha_vencimiento(flujos):
+    """
+    Encuentra la fecha de vencimiento del bono (última fecha de los flujos).
+    """
+    if not flujos:
+        return None
+    
+    # Encontrar la fecha máxima entre todos los flujos
+    fechas = [flujo['fecha'] for flujo in flujos]
+    fecha_vencimiento = max(fechas)
+    
+    return fecha_vencimiento
+
 # Cargar datos del Excel
 try:
     df = pd.read_excel('bonos_flujos.xlsx', engine='openpyxl')
@@ -793,8 +807,11 @@ try:
                 12: "mensual"
             }.get(bono_actual['periodicidad'], f"{bono_actual['periodicidad']} veces al año")
             
+            # Calcular fecha de vencimiento
+            fecha_vencimiento = encontrar_fecha_vencimiento(bono_actual['flujos'])
+            
             st.markdown(f"**Nombre:** {bono_actual['nombre']}")
-            st.markdown(f"**Tipo:** {bono_actual['tipo_bono']}")
+            st.markdown(f"**Vencimiento:** {fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A'}")
             st.markdown(f"**Base de cálculo:** {bono_actual['base_calculo']}")
             st.markdown(f"**Periodicidad:** {periodicidad_texto}")
             st.markdown(f"**Tasa de cupón:** {bono_actual['tasa_cupon']:.2%}")
