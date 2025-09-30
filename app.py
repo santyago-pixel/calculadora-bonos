@@ -1137,9 +1137,9 @@ try:
             
             # Datos de bonos argentinos (precios aproximados - en una app real vendrían de una API)
             bonos_data = {
-                'Bono': ['GD30D', 'AL30D', 'GD29D', 'AL29D', 'GD28D', 'AL28D'],
-                'Precio': ['$45.20', '$42.80', '$38.50', '$36.90', '$34.20', '$32.10'],
-                'Cambio': ['+1.2%', '+0.8%', '-0.5%', '+0.3%', '-1.1%', '+0.7%']
+                'Bono': ['GD30D', 'AL30D', 'GD29D', 'AL29D', 'GD28D'],
+                'Precio': ['$45.20', '$42.80', '$38.50', '$36.90', '$34.20'],
+                'Cambio': ['+1.2%', '+0.8%', '-0.5%', '+0.3%', '-1.1%']
             }
             
             # CSS personalizado para la tabla de bonos
@@ -1225,11 +1225,6 @@ try:
                         <td>GD28D</td>
                         <td>$34.20</td>
                         <td class="negativo">-1.1%</td>
-                    </tr>
-                    <tr>
-                        <td>AL28D</td>
-                        <td>$32.10</td>
-                        <td class="positivo">+0.7%</td>
                     </tr>
                 </tbody>
             </table>
