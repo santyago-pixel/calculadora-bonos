@@ -969,7 +969,6 @@ try:
         
         # COLUMNA IZQUIERDA - RESULTADOS
         with col1:
-            
             # Métricas principales
             st.markdown('<div class="metrics-grid">', unsafe_allow_html=True)
             
@@ -1084,7 +1083,6 @@ try:
                 ''', unsafe_allow_html=True)
             
             st.markdown('</div>', unsafe_allow_html=True)
-        
         
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
         with col2:
