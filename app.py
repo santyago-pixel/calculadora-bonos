@@ -1491,20 +1491,24 @@ try:
                     <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
                 </a>
             </div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
             {{
-            "symbol": "{bono_actual['ticker']}",
+            "autosize": false,
             "width": "100%",
             "height": "500",
+            "symbol": "{bono_actual['ticker']}",
+            "interval": "D",
+            "timezone": "America/New_York",
+            "theme": "light",
+            "style": "1",
             "locale": "es",
-            "dateRange": "12M",
-            "colorTheme": "light",
-            "isTransparent": true,
-            "autosize": false,
-            "largeChartUrl": "",
-            "hideTopToolbar": true,
-            "hideLegend": false,
-            "saveImage": false
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "hide_volume": true,
+            "save_image": false,
+            "container_id": "tradingview_widget_bono_avanzado"
             }}
             </script>
         </div>
