@@ -1615,8 +1615,8 @@ try:
                             "displayName": "NASDAQ"
                         },
                         {
-                            "name": "DOWI",
-                            "displayName": "Dow Jones"
+                            "name": "BOVESPA:IBOV",
+                            "displayName": "Bovespa"
                         },
                         {
                             "name": "IMV",
