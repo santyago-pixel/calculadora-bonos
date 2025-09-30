@@ -1299,6 +1299,89 @@ try:
             """
             st.components.v1.html(imv_html, height=300)
         
+        # Widget Market Data - Ancho completo
+        st.markdown("## Datos de Mercado")
+        market_data_html = """
+        <div class="tradingview-widget-container" style="height: 400px; width: 100%;">
+            <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+            <div class="tradingview-widget-copyright">
+                <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                    <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                </a>
+            </div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+            {
+            "colorTheme": "light",
+            "dateRange": "12M",
+            "showChart": true,
+            "locale": "es",
+            "width": "100%",
+            "height": "400",
+            "largeChartUrl": "",
+            "isTransparent": false,
+            "showSymbolLogo": true,
+            "showFloatingTooltip": false,
+            "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
+            "plotLineColorFalling": "rgba(41, 98, 255, 1)",
+            "gridLineColor": "rgba(240, 243, 250, 0)",
+            "scaleFontColor": "rgba(120, 123, 134, 1)",
+            "belowLineFillColorGrowing": "rgba(41, 98, 255, 0.12)",
+            "belowLineFillColorFalling": "rgba(41, 98, 255, 0.12)",
+            "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
+            "belowLineFillColorFallingBottom": "rgba(41, 98, 255, 0)",
+            "symbolActiveColor": "rgba(41, 98, 255, 0.12)",
+            "tabs": [
+                {
+                    "title": "Indices",
+                    "symbols": [
+                        {
+                            "s": "SPX500",
+                            "d": "S&P 500"
+                        },
+                        {
+                            "s": "NASDAQ:IXIC",
+                            "d": "NASDAQ"
+                        },
+                        {
+                            "s": "DOWI",
+                            "d": "Dow Jones"
+                        },
+                        {
+                            "s": "IMV",
+                            "d": "Merval"
+                        }
+                    ],
+                    "originalTitle": "Indices"
+                },
+                {
+                    "title": "Bonos",
+                    "symbols": [
+                        {
+                            "s": "GD30D",
+                            "d": "GD30D"
+                        },
+                        {
+                            "s": "AL30D",
+                            "d": "AL30D"
+                        },
+                        {
+                            "s": "GD29D",
+                            "d": "GD29D"
+                        },
+                        {
+                            "s": "AL29D",
+                            "d": "AL29D"
+                        }
+                    ],
+                    "originalTitle": "Bonos"
+                }
+            ]
+            }
+            </script>
+        </div>
+        """
+        st.components.v1.html(market_data_html, height=400)
+        
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
     st.info("Asegúrese de que el archivo 'bonos_flujos.xlsx' esté en el directorio correcto")
