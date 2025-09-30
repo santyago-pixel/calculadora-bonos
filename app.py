@@ -1133,53 +1133,59 @@ try:
             # Tabla de Bonos Argentinos
             st.markdown("## Bonos Argentinos")
             
-            bonos_html = """
-            <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
-                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
-                <div class="tradingview-widget-copyright">
-                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
-                    </a>
-                </div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-                {
-                "symbols": [
-                    {
-                        "proName": "BINANCE:GD30DUSDT",
-                        "title": "GD30D"
-                    },
-                    {
-                        "proName": "BINANCE:AL30DUSDT", 
-                        "title": "AL30D"
-                    },
-                    {
-                        "proName": "BINANCE:GD29DUSDT",
-                        "title": "GD29D"
-                    },
-                    {
-                        "proName": "BINANCE:AL29DUSDT",
-                        "title": "AL29D"
-                    },
-                    {
-                        "proName": "BINANCE:GD28DUSDT",
-                        "title": "GD28D"
-                    },
-                    {
-                        "proName": "BINANCE:AL28DUSDT",
-                        "title": "AL28D"
-                    }
-                ],
-                "showSymbolLogo": true,
-                "colorTheme": "light",
-                "isTransparent": false,
-                "displayMode": "adaptive",
-                "locale": "es"
-                }
-                </script>
-            </div>
-            """
+            # Crear mini-símbolos individuales para cada bono
+            bonos_lista = ["GD30D", "AL30D", "GD29D", "AL29D", "GD28D", "AL28D"]
             
-            st.components.v1.html(bonos_html, height=270)
+            st.markdown("### Bonos Argentinos")
+            
+            # Crear 2 columnas para los mini-símbolos
+            col_bono1, col_bono2 = st.columns(2)
+            
+            with col_bono1:
+                for i, bono in enumerate(bonos_lista[:3]):  # Primeros 3 bonos
+                    st.markdown(f"**{bono}**")
+                    bono_mini_html = f"""
+                    <div class="tradingview-widget-container" style="height: 60px; width: 100%; margin-bottom: 10px;">
+                        <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                        {{
+                        "symbol": "{bono}",
+                        "width": "100%",
+                        "height": "60",
+                        "locale": "es",
+                        "dateRange": "1D",
+                        "colorTheme": "light",
+                        "isTransparent": false,
+                        "autosize": false,
+                        "largeChartUrl": ""
+                        }}
+                        </script>
+                    </div>
+                    """
+                    st.components.v1.html(bono_mini_html, height=60)
+            
+            with col_bono2:
+                for i, bono in enumerate(bonos_lista[3:]):  # Últimos 3 bonos
+                    st.markdown(f"**{bono}**")
+                    bono_mini_html = f"""
+                    <div class="tradingview-widget-container" style="height: 60px; width: 100%; margin-bottom: 10px;">
+                        <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                        {{
+                        "symbol": "{bono}",
+                        "width": "100%",
+                        "height": "60",
+                        "locale": "es",
+                        "dateRange": "1D",
+                        "colorTheme": "light",
+                        "isTransparent": false,
+                        "autosize": false,
+                        "largeChartUrl": ""
+                        }}
+                        </script>
+                    </div>
+                    """
+                    st.components.v1.html(bono_mini_html, height=60)
         
         # SECCIÓN FLUJO DE FONDOS - FORMATO MEJORADO
         st.markdown("## Flujo de Fondos")
