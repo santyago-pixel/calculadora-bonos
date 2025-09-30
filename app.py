@@ -1532,10 +1532,11 @@ try:
         st.markdown("<br>", unsafe_allow_html=True)
         
         # Widget Market Data - Ancho completo
-        st.markdown("## Datos de Mercado")
-        st.markdown("<div style='margin-top: -2rem;'>", unsafe_allow_html=True)
         market_data_html = """
-        <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px;">
+        <div style="margin-bottom: 0.5rem;">
+            <h2 style="margin: 0; padding: 0; font-size: 1.2rem; line-height: 1.2;">Datos de Mercado</h2>
+        </div>
+        <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px; margin-top: 0;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
             <div class="tradingview-widget-copyright" style="font-size: 8px;">
                 <a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank">
@@ -1603,7 +1604,6 @@ try:
         </div>
         """
         st.components.v1.html(market_data_html, height=800)
-        st.markdown("</div>", unsafe_allow_html=True)
         
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
