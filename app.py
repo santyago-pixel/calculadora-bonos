@@ -1238,26 +1238,31 @@ try:
         .stTable table {
             width: 100% !important;
             border-collapse: collapse !important;
-            font-size: 14px !important;
+            font-size: 12px !important;
         }
         .stTable th {
             background-color: #1f77b4 !important;
             color: white !important;
             font-weight: bold !important;
-            padding: 8px 5px !important;
+            padding: 6px 4px !important;
             text-align: right !important;
             border: 1px solid #ddd !important;
+            height: 24px !important;
         }
         .stTable td {
-            padding: 6px 5px !important;
+            padding: 4px 4px !important;
             text-align: right !important;
             border: 1px solid #ddd !important;
             background-color: white !important;
             color: black !important;
+            height: 20px !important;
         }
         .stTable td:first-child {
             text-align: center !important;
             font-weight: bold !important;
+        }
+        .stTable tbody tr {
+            height: 20px !important;
         }
         
         /* Forzar alineación central para fechas */
