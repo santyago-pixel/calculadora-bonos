@@ -96,11 +96,11 @@ st.markdown("""
     
     /* Reducir espaciado en el sidebar */
     .sidebar .element-container {
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0.2rem !important;
     }
     
     .sidebar .stMarkdown {
-        margin-bottom: 0.3rem !important;
+        margin-bottom: 0.1rem !important;
     }
     
     .sidebar .stMarkdown p {
@@ -110,7 +110,18 @@ st.markdown("""
     
     /* Reducir espaciado del separador en sidebar */
     .sidebar hr {
-        margin: 0.5rem 0 !important;
+        margin: 0.2rem 0 !important;
+    }
+    
+    /* Eliminar espaciado extra después del botón calcular */
+    .sidebar .stButton {
+        margin-bottom: 0.1rem !important;
+    }
+    
+    /* Reducir espaciado del título "Información del Bono" */
+    .sidebar h3 {
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
     }
     
     /* Reducir tamaño de títulos y alinear arriba */
