@@ -1140,7 +1140,7 @@ try:
                 width: 100%;
                 border-collapse: collapse;
                 font-size: 14px;
-                margin-top: 10px;
+                margin-top: 2px;
                 height: 270px;
             }
             .bonos-table th {
