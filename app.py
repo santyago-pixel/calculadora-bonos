@@ -1644,6 +1644,48 @@ try:
                             "displayName": "AL29D"
                         }
                     ]
+                },
+                {
+                    "name": "Monedas",
+                    "symbols": [
+                        {
+                            "name": "FX_IDC:USDARS",
+                            "displayName": "USD/ARS"
+                        },
+                        {
+                            "name": "FX_IDC:USDEUR",
+                            "displayName": "USD/EUR"
+                        },
+                        {
+                            "name": "FX_IDC:USDGBP",
+                            "displayName": "USD/GBP"
+                        },
+                        {
+                            "name": "FX_IDC:USDJPY",
+                            "displayName": "USD/JPY"
+                        }
+                    ]
+                },
+                {
+                    "name": "Commodities",
+                    "symbols": [
+                        {
+                            "name": "TVC:USOIL",
+                            "displayName": "Petróleo WTI"
+                        },
+                        {
+                            "name": "TVC:UKOIL",
+                            "displayName": "Petróleo Brent"
+                        },
+                        {
+                            "name": "TVC:GOLD",
+                            "displayName": "Oro"
+                        },
+                        {
+                            "name": "TVC:SILVER",
+                            "displayName": "Plata"
+                        }
+                    ]
                 }
             ]
             }
