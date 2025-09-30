@@ -1221,7 +1221,7 @@ try:
         total_con_liquidacion = [f"-{precio_dirty:.1f}"] + [f"{f:.1f}" for f in flujos]
         
         df_simple = pd.DataFrame({
-            'Fecha': [f.strftime('%d/%m/%Y') for f in fechas_con_liquidacion],
+            'Fecha': [f'  {f.strftime("%d/%m/%Y")}  ' for f in fechas_con_liquidacion],
             'Capital': capital_con_liquidacion,
             'Cupón': cupon_con_liquidacion,
             'Total': total_con_liquidacion
@@ -1250,7 +1250,13 @@ try:
             height: 22px !important;
         }
         .stTable table tr th:first-child,
-        .stTable table thead tr th:first-child {
+        .stTable table thead tr th:first-child,
+        .stTable table thead th:first-child,
+        .stTable thead th:first-child {
+            text-align: center !important;
+        }
+        /* Regla más específica para forzar centrado */
+        div[data-testid="stDataFrame"] table thead th:first-child {
             text-align: center !important;
         }
         .stTable td {
