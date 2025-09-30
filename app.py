@@ -1511,8 +1511,8 @@ try:
             """
             st.components.v1.html(imv_html, height=300)
         
-        # Espaciado adicional antes de la tabla de datos de mercado
-        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        # Espaciado reducido antes de la tabla de datos de mercado
+        st.markdown("<br>", unsafe_allow_html=True)
         
         # Widget Market Data - Ancho completo
         st.markdown("## Datos de Mercado")
