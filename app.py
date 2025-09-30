@@ -1113,6 +1113,7 @@ try:
                 "enable_publishing": false,
                 "hide_top_toolbar": false,
                 "hide_legend": false,
+                "hide_volume": true,
                 "save_image": false,
                 "container_id": "tradingview_widget_bono"
                 }}
@@ -1148,6 +1149,7 @@ try:
                 "enable_publishing": false,
                 "hide_top_toolbar": false,
                 "hide_legend": false,
+                "hide_volume": true,
                 "save_image": false,
                 "container_id": "tradingview_widget_merval"
                 }
