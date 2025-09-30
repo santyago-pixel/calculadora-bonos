@@ -969,7 +969,6 @@ try:
         
         # COLUMNA IZQUIERDA - RESULTADOS
         with col1:
-            st.markdown("## Resultados del Análisis")
             
             
             # Métricas principales
