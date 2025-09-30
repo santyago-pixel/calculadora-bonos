@@ -1534,7 +1534,7 @@ try:
         # Widget Market Data - Ancho completo
         market_data_html = """
         <div style="margin-bottom: 0.5rem;">
-            <h2 style="margin: 0; padding: 0; font-size: 1.2rem; line-height: 1.2;">Datos de Mercado</h2>
+            <h3 style="margin: 0; padding: 0; font-size: 1.1rem; line-height: 1.2;">Datos de Mercado</h3>
         </div>
         <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px; margin-top: 0;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
