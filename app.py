@@ -1134,79 +1134,46 @@ try:
             st.markdown("## Bonos Argentinos")
             
             bonos_html = """
-            <style>
-            .tradingview-widget-container table tr td:first-child,
-            .tradingview-widget-container table tr th:first-child {
-                width: 15% !important;
-                max-width: 15% !important;
-                min-width: 15% !important;
-            }
-            .tradingview-widget-container table tr td:not(:first-child),
-            .tradingview-widget-container table tr th:not(:first-child) {
-                width: 85% !important;
-                max-width: 85% !important;
-            }
-            .tradingview-widget-container table {
-                table-layout: fixed !important;
-            }
-            .tradingview-widget-container table tr td:first-child,
-            .tradingview-widget-container table tr th:first-child {
-                white-space: nowrap !important;
-                overflow: hidden !important;
-                text-overflow: ellipsis !important;
-                padding: 2px 4px !important;
-            }
-            </style>
-            <div class="tradingview-widget-container" style="height: 270px; width: 100%; font-size: 8px;">
-                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
-                <div class="tradingview-widget-copyright" style="font-size: 8px;">
-                    <a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Market summary</span>
+            <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
+                <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                <div class="tradingview-widget-copyright">
+                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
                     </a>
-                    <span class="trademark"> by TradingView</span>
                 </div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
                 {
-                "colorTheme": "light",
-                "locale": "es",
-                "largeChartUrl": "",
-                "isTransparent": false,
-                "showSymbolLogo": true,
-                "backgroundColor": "#FFFFFF",
-                "support_host": "https://www.tradingview.com",
-                "width": "100%",
-                "height": "270",
-                "symbolsGroups": [
+                "symbols": [
                     {
-                        "name": "Bonos Argentinos",
-                        "symbols": [
-                            {
-                                "name": "GD30D",
-                                "displayName": "GD30D"
-                            },
-                            {
-                                "name": "AL30D",
-                                "displayName": "AL30D"
-                            },
-                            {
-                                "name": "GD29D",
-                                "displayName": "GD29D"
-                            },
-                            {
-                                "name": "AL29D",
-                                "displayName": "AL29D"
-                            },
-                            {
-                                "name": "GD28D",
-                                "displayName": "GD28D"
-                            },
-                            {
-                                "name": "AL28D",
-                                "displayName": "AL28D"
-                            }
-                        ]
+                        "proName": "BINANCE:GD30DUSDT",
+                        "title": "GD30D"
+                    },
+                    {
+                        "proName": "BINANCE:AL30DUSDT", 
+                        "title": "AL30D"
+                    },
+                    {
+                        "proName": "BINANCE:GD29DUSDT",
+                        "title": "GD29D"
+                    },
+                    {
+                        "proName": "BINANCE:AL29DUSDT",
+                        "title": "AL29D"
+                    },
+                    {
+                        "proName": "BINANCE:GD28DUSDT",
+                        "title": "GD28D"
+                    },
+                    {
+                        "proName": "BINANCE:AL28DUSDT",
+                        "title": "AL28D"
                     }
-                ]
+                ],
+                "showSymbolLogo": true,
+                "colorTheme": "light",
+                "isTransparent": false,
+                "displayMode": "adaptive",
+                "locale": "es"
                 }
                 </script>
             </div>
