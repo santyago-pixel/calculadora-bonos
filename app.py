@@ -94,6 +94,25 @@ st.markdown("""
         margin-top: -1.5rem !important;
     }
     
+    /* Reducir espaciado en el sidebar */
+    .sidebar .element-container {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .sidebar .stMarkdown {
+        margin-bottom: 0.3rem !important;
+    }
+    
+    .sidebar .stMarkdown p {
+        margin: 0.1rem 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Reducir espaciado del separador en sidebar */
+    .sidebar hr {
+        margin: 0.5rem 0 !important;
+    }
+    
     /* Reducir tamaño de títulos y alinear arriba */
     .main h1, .main h2, .main h3, 
     .main .element-container h1, .main .element-container h2, .main .element-container h3,
@@ -851,7 +870,7 @@ try:
             # Botón de cálculo
             calcular = st.button("Calcular", type="primary")
             
-            # Mostrar información del bono seleccionado en el sidebar
+            # Mostrar información del bono seleccionado en el sidebar (más cerca del botón)
             st.markdown("---")
             st.markdown("### Información del Bono")
             
@@ -872,12 +891,17 @@ try:
             from datetime import date
             cupon_vigente_actual = encontrar_cupon_vigente(date.today(), bono_actual['flujos'])
             
-            st.markdown(f"**Nombre:** {bono_actual['nombre']}")
-            st.markdown(f"**Vencimiento:** {fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A'}")
-            st.markdown(f"**Tasa de cupón:** {cupon_vigente_actual:.2%}")
-            st.markdown(f"**Periodicidad:** {periodicidad_texto}")
-            st.markdown(f"**Base de cálculo:** {bono_actual['base_calculo']}")
-            st.markdown(f"**Ticker:** {bono_actual['ticker']}")
+            # Información del bono con espaciado reducido
+            st.markdown(f"""
+            <div style="line-height: 1.2; margin: 0;">
+                <p style="margin: 0.2rem 0;"><strong>Nombre:</strong> {bono_actual['nombre']}</p>
+                <p style="margin: 0.2rem 0;"><strong>Vencimiento:</strong> {fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A'}</p>
+                <p style="margin: 0.2rem 0;"><strong>Tasa de cupón:</strong> {cupon_vigente_actual:.2%}</p>
+                <p style="margin: 0.2rem 0;"><strong>Periodicidad:</strong> {periodicidad_texto}</p>
+                <p style="margin: 0.2rem 0;"><strong>Base de cálculo:</strong> {bono_actual['base_calculo']}</p>
+                <p style="margin: 0.2rem 0;"><strong>Ticker:</strong> {bono_actual['ticker']}</p>
+            </div>
+            """, unsafe_allow_html=True)
         else:
             calcular = False
             bono_actual = None
