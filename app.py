@@ -1496,20 +1496,19 @@ try:
             "autosize": false,
             "width": "100%",
             "height": "500",
-            "symbol": "SPX500",
+            "symbol": "{bono_actual['ticker']}",
             "interval": "D",
             "timezone": "America/New_York",
             "theme": "light",
             "style": "1",
             "locale": "es",
-            "toolbar_bg": "transparent",
+            "toolbar_bg": "#f1f3f6",
             "enable_publishing": false,
             "hide_top_toolbar": false,
             "hide_legend": false,
             "hide_volume": true,
             "save_image": false,
-            "container_id": "tradingview_widget_bono_avanzado",
-            "backgroundColor": "transparent"
+            "container_id": "tradingview_widget_bono_avanzado"
             }}
             </script>
         </div>
