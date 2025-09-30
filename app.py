@@ -1211,6 +1211,12 @@ try:
                 font-size: 12px;
                 height: 26px;
             }
+            .bonos-table th:first-child {
+                border-top-left-radius: 6px !important;
+            }
+            .bonos-table th:last-child {
+                border-top-right-radius: 6px !important;
+            }
             .bonos-table td {
                 padding: 5px 5px;
                 border: 1px solid #ddd;
