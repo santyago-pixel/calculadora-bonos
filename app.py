@@ -1249,7 +1249,8 @@ try:
             border: 1px solid #ddd !important;
             height: 22px !important;
         }
-        .stTable th:first-child {
+        .stTable table tr th:first-child,
+        .stTable table thead tr th:first-child {
             text-align: center !important;
         }
         .stTable td {
