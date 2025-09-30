@@ -983,10 +983,19 @@ try:
             format="%.2f"
         )
     
-            # Botón de cálculo
-            if st.button("Calcular", type="primary"):
-                st.session_state.calcular = True
-            calcular = st.session_state.calcular
+            # Botones de cálculo y volver
+            col_calc, col_volver = st.columns(2)
+            
+            with col_calc:
+                if st.button("Calcular", type="primary", use_container_width=True):
+                    st.session_state.calcular = True
+                calcular = st.session_state.calcular
+            
+            with col_volver:
+                if st.button("Volver", type="secondary", use_container_width=True):
+                    st.session_state.calcular = False
+                    st.session_state.bono_seleccionado = None
+                    st.rerun()
             
             # Mostrar información del bono seleccionado en el sidebar (más cerca del botón)
             st.markdown("---")
