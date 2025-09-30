@@ -1145,7 +1145,7 @@ try:
             .bonos-table th {
                 background-color: #f0f2f6;
                 padding: 7px 5px;
-                text-align: left;
+                text-align: center;
                 border: 1px solid #ddd;
                 font-weight: bold;
                 font-size: 12px;
@@ -1154,12 +1154,12 @@ try:
             .bonos-table td {
                 padding: 5px 5px;
                 border: 1px solid #ddd;
-                text-align: right;
+                text-align: center;
                 font-size: 12px;
                 height: 22px;
             }
             .bonos-table td:first-child {
-                text-align: left;
+                text-align: center;
                 width: 20%;
                 font-weight: bold;
             }
