@@ -79,6 +79,21 @@ st.markdown("""
         padding-top: 0rem !important;
     }
     
+    /* Alinear sección de resultados con el título del sidebar */
+    .main .stColumn:first-child {
+        margin-top: -2rem !important;
+    }
+    
+    /* Reducir espaciado entre elementos en la columna principal */
+    .main .stColumn:first-child .element-container {
+        margin-top: -1rem !important;
+    }
+    
+    /* Ajustar espaciado de las tarjetas */
+    .main .stColumn:first-child .metrics-grid {
+        margin-top: -1.5rem !important;
+    }
+    
     /* Reducir tamaño de títulos y alinear arriba */
     .main h1, .main h2, .main h3, 
     .main .element-container h1, .main .element-container h2, .main .element-container h3,
