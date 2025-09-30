@@ -1297,7 +1297,7 @@ try:
             font-size: 12px !important;
         }
         .stTable th {
-            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%) !important;
+            background-color: #64748b !important;
             color: white !important;
             font-weight: bold !important;
             padding: 5px 3px !important;
