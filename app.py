@@ -942,12 +942,25 @@ try:
         # Selección de bono
         nombres_bonos = [bono['nombre'] for bono in bonos_filtrados]
         nombres_bonos.sort()  # Ordenar alfabéticamente
+        
+        # Inicializar session_state si no existe
+        if 'bono_seleccionado' not in st.session_state:
+            st.session_state.bono_seleccionado = None
+        if 'calcular' not in st.session_state:
+            st.session_state.calcular = False
+            
         bono_seleccionado = st.selectbox(
             "Elija un Bono", 
             nombres_bonos,
             index=None,  # Ningún bono seleccionado por defecto
-            placeholder="Seleccione un bono..."
+            placeholder="Seleccione un bono...",
+            key="bono_selectbox"
         )
+        
+        # Actualizar session_state cuando cambia la selección
+        if bono_seleccionado != st.session_state.bono_seleccionado:
+            st.session_state.bono_seleccionado = bono_seleccionado
+            st.session_state.calcular = False
         
         # Solo mostrar inputs si hay un bono seleccionado
         if bono_seleccionado:
@@ -971,7 +984,9 @@ try:
         )
     
             # Botón de cálculo
-            calcular = st.button("Calcular", type="primary")
+            if st.button("Calcular", type="primary"):
+                st.session_state.calcular = True
+            calcular = st.session_state.calcular
             
             # Mostrar información del bono seleccionado en el sidebar (más cerca del botón)
             st.markdown("---")
@@ -1006,11 +1021,14 @@ try:
             </div>
             """, unsafe_allow_html=True)
         else:
-            calcular = False
+            st.session_state.calcular = False
             bono_actual = None
     
     # Contenido principal
-    if calcular and bono_seleccionado:
+    if st.session_state.calcular and st.session_state.bono_seleccionado:
+        # Obtener el bono actual del session_state
+        bono_actual = next(bono for bono in bonos_filtrados if bono['nombre'] == st.session_state.bono_seleccionado)
+        
         # Convertir fecha_liquidacion a datetime para comparación
         fecha_liquidacion_dt = pd.to_datetime(fecha_liquidacion)
         
@@ -1444,6 +1462,15 @@ try:
         
         # Mostrar tabla con formato mejorado
         st.table(df_simple)
+        
+        # Botón para volver a la página de inicio
+        col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+        with col_btn2:
+            if st.button("🏠 Volver a Inicio", key="volver_inicio", use_container_width=True):
+                # Resetear el estado para volver a la página de inicio
+                st.session_state.calcular = False
+                st.session_state.bono_seleccionado = None
+                st.rerun()
         
         # Gráfico del bono seleccionado - Ancho completo (minigráfico expandido)
         bono_avanzado_html = f"""
