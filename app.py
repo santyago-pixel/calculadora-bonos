@@ -1304,7 +1304,7 @@ try:
         st.markdown("""
         <style>
         .stTable {
-            border: 2px solid #64748b !important;
+            border: none !important;
             border-radius: 8px !important;
             background-color: #f8f9fa !important;
         }
