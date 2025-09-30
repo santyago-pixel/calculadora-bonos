@@ -1443,7 +1443,7 @@ try:
             "autosize": false,
             "width": "100%",
             "height": "500",
-            "symbol": "{bono_actual['ticker']}",
+            "symbol": "SPX500",
             "interval": "D",
             "timezone": "America/New_York",
             "theme": "light",
