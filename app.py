@@ -1145,28 +1145,28 @@ try:
                 {
                 "symbols": [
                     {
-                        "proName": "BINANCE:GD30DUSDT",
-                        "title": "GD30D"
+                        "proName": "FX_IDC:USDARS",
+                        "title": "USD/ARS"
                     },
                     {
-                        "proName": "BINANCE:AL30DUSDT", 
-                        "title": "AL30D"
+                        "proName": "TVC:SPX", 
+                        "title": "S&P 500"
                     },
                     {
-                        "proName": "BINANCE:GD29DUSDT",
-                        "title": "GD29D"
+                        "proName": "TVC:NASDAQ",
+                        "title": "NASDAQ"
                     },
                     {
-                        "proName": "BINANCE:AL29DUSDT",
-                        "title": "AL29D"
+                        "proName": "TVC:DJI",
+                        "title": "Dow Jones"
                     },
                     {
-                        "proName": "BINANCE:GD28DUSDT",
-                        "title": "GD28D"
+                        "proName": "TVC:VIX",
+                        "title": "VIX"
                     },
                     {
-                        "proName": "BINANCE:AL28DUSDT",
-                        "title": "AL28D"
+                        "proName": "TVC:TNX",
+                        "title": "10Y Treasury"
                     }
                 ],
                 "showSymbolLogo": true,
