@@ -1244,12 +1244,12 @@ try:
             background-color: #1f77b4 !important;
             color: white !important;
             font-weight: bold !important;
-            padding: 12px 8px !important;
+            padding: 8px 5px !important;
             text-align: right !important;
             border: 1px solid #ddd !important;
         }
         .stTable td {
-            padding: 10px 8px !important;
+            padding: 6px 5px !important;
             text-align: right !important;
             border: 1px solid #ddd !important;
             background-color: white !important;
