@@ -1516,6 +1516,7 @@ try:
         
         # Widget Market Data - Ancho completo
         st.markdown("## Datos de Mercado")
+        st.markdown("<div style='margin-top: -1rem;'>", unsafe_allow_html=True)
         market_data_html = """
         <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
@@ -1585,6 +1586,7 @@ try:
         </div>
         """
         st.components.v1.html(market_data_html, height=800)
+        st.markdown("</div>", unsafe_allow_html=True)
         
 except FileNotFoundError:
     st.error("❌ No se pudo cargar el archivo de datos")
