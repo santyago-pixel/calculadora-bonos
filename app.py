@@ -1140,23 +1140,23 @@ try:
                 border-collapse: collapse;
                 font-size: 14px;
                 margin-top: 2px;
-                height: 270px;
+                height: 200px;
             }
             .bonos-table th {
                 background-color: #f0f2f6;
-                padding: 12px 8px;
+                padding: 8px 6px;
                 text-align: left;
                 border: 1px solid #ddd;
                 font-weight: bold;
-                font-size: 13px;
-                height: 40px;
+                font-size: 12px;
+                height: 30px;
             }
             .bonos-table td {
-                padding: 10px 8px;
+                padding: 6px 6px;
                 border: 1px solid #ddd;
                 text-align: right;
-                font-size: 13px;
-                height: 35px;
+                font-size: 12px;
+                height: 25px;
             }
             .bonos-table td:first-child {
                 text-align: left;
