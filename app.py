@@ -1137,43 +1137,41 @@ try:
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
-                    <a href="https://es.tradingview.com/" rel="noopener nofollow" target="_blank">
-                        <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
+                    <a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">Market summary</span>
                     </a>
+                    <span class="trademark"> by TradingView</span>
                 </div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker.js" async>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
                 {
-                "symbols": [
-                    {
-                        "proName": "FX_IDC:USDARS",
-                        "title": "USD/ARS"
-                    },
-                    {
-                        "proName": "TVC:SPX", 
-                        "title": "S&P 500"
-                    },
-                    {
-                        "proName": "TVC:NASDAQ",
-                        "title": "NASDAQ"
-                    },
-                    {
-                        "proName": "TVC:DJI",
-                        "title": "Dow Jones"
-                    },
-                    {
-                        "proName": "TVC:VIX",
-                        "title": "VIX"
-                    },
-                    {
-                        "proName": "TVC:TNX",
-                        "title": "10Y Treasury"
-                    }
-                ],
-                "showSymbolLogo": true,
                 "colorTheme": "light",
+                "locale": "es",
+                "largeChartUrl": "",
                 "isTransparent": false,
-                "displayMode": "compact",
-                "locale": "es"
+                "showSymbolLogo": true,
+                "backgroundColor": "#FFFFFF",
+                "support_host": "https://www.tradingview.com",
+                "width": "100%",
+                "height": "270",
+                "symbolsGroups": [
+                    {
+                        "name": "Indices",
+                        "symbols": [
+                            {
+                                "name": "SPX500",
+                                "displayName": "S&P 500"
+                            },
+                            {
+                                "name": "NASDAQ:IXIC",
+                                "displayName": "NASDAQ"
+                            },
+                            {
+                                "name": "DOWI",
+                                "displayName": "Dow Jones"
+                            }
+                        ]
+                    }
+                ]
                 }
                 </script>
             </div>
