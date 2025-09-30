@@ -1249,6 +1249,9 @@ try:
             border: 1px solid #ddd !important;
             height: 22px !important;
         }
+        .stTable th:first-child {
+            text-align: center !important;
+        }
         .stTable td {
             padding: 3px 3px !important;
             text-align: right !important;
