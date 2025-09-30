@@ -1148,22 +1148,25 @@ try:
             .bonos-table {
                 width: 100%;
                 border-collapse: collapse;
-                font-size: 11px;
+                font-size: 14px;
                 margin-top: 10px;
+                height: 270px;
             }
             .bonos-table th {
                 background-color: #f0f2f6;
-                padding: 6px 4px;
+                padding: 12px 8px;
                 text-align: left;
                 border: 1px solid #ddd;
                 font-weight: bold;
-                font-size: 10px;
+                font-size: 13px;
+                height: 40px;
             }
             .bonos-table td {
-                padding: 4px 4px;
+                padding: 10px 8px;
                 border: 1px solid #ddd;
                 text-align: right;
-                font-size: 10px;
+                font-size: 13px;
+                height: 35px;
             }
             .bonos-table td:first-child {
                 text-align: left;
@@ -1180,6 +1183,9 @@ try:
             .bonos-table .negativo {
                 color: #dc3545;
                 font-weight: bold;
+            }
+            .bonos-table tbody tr {
+                height: 35px;
             }
             </style>
             """, unsafe_allow_html=True)
