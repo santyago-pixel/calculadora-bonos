@@ -1481,7 +1481,7 @@ try:
         # Mostrar tabla con formato mejorado
         st.table(df_simple)
         
-        # Gráfico avanzado del bono seleccionado - Ancho completo
+        # Gráfico del bono seleccionado - Ancho completo (usando minigráfico expandido)
         st.markdown(f"## Gráfico del {bono_actual['nombre']}")
         bono_avanzado_html = f"""
         <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
@@ -1491,24 +1491,20 @@ try:
                     <span class="blue-text">Seguir todas las cotizaciones en TradingView</span>
                 </a>
             </div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
             {{
-            "autosize": false,
+            "symbol": "{bono_actual['ticker']}",
             "width": "100%",
             "height": "500",
-            "symbol": "{bono_actual['ticker']}",
-            "interval": "D",
-            "timezone": "America/New_York",
-            "theme": "light",
-            "style": "1",
             "locale": "es",
-            "toolbar_bg": "#f1f3f6",
-            "enable_publishing": false,
-            "hide_top_toolbar": false,
-            "hide_legend": false,
-            "hide_volume": true,
-            "save_image": false,
-            "container_id": "tradingview_widget_bono_avanzado"
+            "dateRange": "12M",
+            "colorTheme": "light",
+            "isTransparent": true,
+            "autosize": false,
+            "largeChartUrl": "",
+            "hideTopToolbar": true,
+            "hideLegend": false,
+            "saveImage": false
             }}
             </script>
         </div>
