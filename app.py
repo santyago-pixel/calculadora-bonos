@@ -197,6 +197,23 @@ st.markdown("""
         outline: none !important;
     }
     
+    /* Reducir espaciado del título "Datos de Mercado" */
+    .main h2 {
+        margin-bottom: 0.2rem !important;
+        padding-bottom: 0.2rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Eliminar espaciado extra después de títulos h2 */
+    .main h2 + .stMarkdown {
+        margin-top: -0.5rem !important;
+    }
+    
+    /* Reducir espaciado de elementos después de títulos */
+    .main h2 + div {
+        margin-top: -0.5rem !important;
+    }
+    
     /* Reducir tamaño de títulos y alinear arriba */
     .main h1, .main h2, .main h3, 
     .main .element-container h1, .main .element-container h2, .main .element-container h3,
@@ -1516,7 +1533,7 @@ try:
         
         # Widget Market Data - Ancho completo
         st.markdown("## Datos de Mercado")
-        st.markdown("<div style='margin-top: -1rem;'>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-top: -2rem;'>", unsafe_allow_html=True)
         market_data_html = """
         <div class="tradingview-widget-container" style="height: 800px; width: 100%; font-size: 8px;">
             <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%; font-size: 8px;"></div>
