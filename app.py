@@ -1287,7 +1287,7 @@ try:
         st.markdown("""
         <style>
         .stTable {
-            border: 2px solid #1f77b4 !important;
+            border: 2px solid #64748b !important;
             border-radius: 8px !important;
             background-color: #f8f9fa !important;
         }
@@ -1297,12 +1297,12 @@ try:
             font-size: 12px !important;
         }
         .stTable th {
-            background-color: #1f77b4 !important;
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%) !important;
             color: white !important;
             font-weight: bold !important;
             padding: 5px 3px !important;
             text-align: center !important;
-            border: 1px solid #ddd !important;
+            border: 1px solid #64748b !important;
             height: 22px !important;
         }
         .stTable td {
