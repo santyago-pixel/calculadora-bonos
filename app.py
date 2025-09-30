@@ -1249,15 +1249,6 @@ try:
             # Espaciado para alinear con las tarjetas
             st.markdown("<br>", unsafe_allow_html=True)
             
-            # Botón para volver a la página de inicio (esquina superior derecha)
-            col_btn_left, col_btn_right = st.columns([3, 1])
-            with col_btn_right:
-                if st.button("🏠 Volver a Inicio", key="volver_inicio", type="primary", use_container_width=True):
-                    # Resetear el estado para volver a la página de inicio
-                    st.session_state.calcular = False
-                    st.session_state.bono_seleccionado = None
-                    st.rerun()
-            
             # Gráfico del bono seleccionado
             bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
