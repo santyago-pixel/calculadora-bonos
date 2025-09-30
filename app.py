@@ -1134,6 +1134,29 @@ try:
             st.markdown("## Bonos Argentinos")
             
             bonos_html = """
+            <style>
+            .tradingview-widget-container table tr td:first-child,
+            .tradingview-widget-container table tr th:first-child {
+                width: 20% !important;
+                max-width: 20% !important;
+                min-width: 20% !important;
+            }
+            .tradingview-widget-container table tr td:not(:first-child),
+            .tradingview-widget-container table tr th:not(:first-child) {
+                width: 80% !important;
+                max-width: 80% !important;
+            }
+            .tradingview-widget-container table {
+                table-layout: fixed !important;
+            }
+            .tradingview-widget-container table tr td:first-child,
+            .tradingview-widget-container table tr th:first-child {
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                padding: 4px 6px !important;
+            }
+            </style>
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
                 <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
                 <div class="tradingview-widget-copyright">
