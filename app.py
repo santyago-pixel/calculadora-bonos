@@ -1193,20 +1193,22 @@ try:
             <style>
             .bonos-table {
                 width: 100%;
-                border-collapse: collapse;
+                border-collapse: separate;
+                border-spacing: 0;
                 font-size: 14px;
                 margin-top: 2px;
                 height: 176px;
                 border: 2px solid #64748b !important;
                 border-radius: 8px !important;
                 background-color: #f8f9fa !important;
+                overflow: hidden;
             }
             .bonos-table th {
                 background-color: #64748b !important;
                 color: white !important;
                 padding: 7px 5px;
                 text-align: center;
-                border: 1px solid #64748b !important;
+                border: none !important;
                 font-weight: bold;
                 font-size: 12px;
                 height: 26px;
@@ -1219,10 +1221,15 @@ try:
             }
             .bonos-table td {
                 padding: 5px 5px;
-                border: 1px solid #ddd;
+                border: none !important;
+                border-right: 1px solid #ddd !important;
+                border-bottom: 1px solid #ddd !important;
                 text-align: center;
                 font-size: 12px;
                 height: 22px;
+            }
+            .bonos-table td:last-child {
+                border-right: none !important;
             }
             .bonos-table td:first-child {
                 text-align: center;
