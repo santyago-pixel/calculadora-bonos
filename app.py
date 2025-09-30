@@ -927,7 +927,10 @@ try:
         st.markdown("# CALCULADORA DE BONOS")
         
         # Filtro por tipo de bono
-        tipo_seleccionado = st.selectbox("Tipo de Bono", tipos_bono)
+        if 'tipo_seleccionado' not in st.session_state:
+            st.session_state.tipo_seleccionado = tipos_bono[0]  # "Todos" por defecto
+        
+        tipo_seleccionado = st.selectbox("Tipo de Bono", tipos_bono, key="tipo_selectbox")
         
         # Filtrar bonos por tipo
         if tipo_seleccionado == "Todos":
@@ -993,8 +996,15 @@ try:
             
             with col_volver:
                 if st.button("Volver", type="secondary", use_container_width=True):
+                    # Resetear todas las selecciones
                     st.session_state.calcular = False
                     st.session_state.bono_seleccionado = None
+                    st.session_state.tipo_seleccionado = tipos_bono[0]  # "Todos"
+                    # Limpiar las selecciones de los selectbox
+                    if 'tipo_selectbox' in st.session_state:
+                        del st.session_state['tipo_selectbox']
+                    if 'bono_selectbox' in st.session_state:
+                        del st.session_state['bono_selectbox']
                     st.rerun()
             
             # Mostrar información del bono seleccionado en el sidebar (más cerca del botón)
