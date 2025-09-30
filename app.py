@@ -971,14 +971,6 @@ try:
         with col1:
             st.markdown("## Resultados del Análisis")
             
-            # Información básica
-            st.markdown(f'''
-            <div class="info-bullets">
-                <h4>Datos para el Cálculo</h4>
-                <p><strong>Base de cálculo de días:</strong> {bono_actual['base_calculo']} | <strong>Periodicidad:</strong> {periodicidad_texto}</p>
-                <p><strong>Cupón vigente:</strong> {bono_actual['tasa_cupon']:.2%}</p>
-            </div>
-            ''', unsafe_allow_html=True)
             
             # Métricas principales
             st.markdown('<div class="metrics-grid">', unsafe_allow_html=True)
