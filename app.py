@@ -1221,7 +1221,7 @@ try:
         total_con_liquidacion = [f"-{precio_dirty:.1f}"] + [f"{f:.1f}" for f in flujos]
         
         df_simple = pd.DataFrame({
-            'Fecha': [f'  {f.strftime("%d/%m/%Y")}  ' for f in fechas_con_liquidacion],
+            'Fecha': [f.strftime('%d/%m/%Y') for f in fechas_con_liquidacion],
             'Capital': capital_con_liquidacion,
             'Cupón': cupon_con_liquidacion,
             'Total': total_con_liquidacion
@@ -1245,39 +1245,20 @@ try:
             color: white !important;
             font-weight: bold !important;
             padding: 5px 3px !important;
-            text-align: right !important;
+            text-align: center !important;
             border: 1px solid #ddd !important;
             height: 22px !important;
         }
-        .stTable table tr th:first-child,
-        .stTable table thead tr th:first-child,
-        .stTable table thead th:first-child,
-        .stTable thead th:first-child {
-            text-align: center !important;
-        }
-        /* Regla más específica para forzar centrado */
-        div[data-testid="stDataFrame"] table thead th:first-child {
-            text-align: center !important;
-        }
         .stTable td {
             padding: 3px 3px !important;
-            text-align: right !important;
+            text-align: center !important;
             border: 1px solid #ddd !important;
             background-color: white !important;
             color: black !important;
             height: 18px !important;
         }
-        .stTable td:first-child {
-            text-align: center !important;
-            font-weight: bold !important;
-        }
         .stTable tbody tr {
             height: 18px !important;
-        }
-        
-        /* Forzar alineación central para fechas */
-        .stTable table tr td:first-child {
-            text-align: center !important;
         }
         /* Ocultar la primera columna (índice) */
         .stTable table tr th:first-child,
