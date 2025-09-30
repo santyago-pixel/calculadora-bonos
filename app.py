@@ -1086,6 +1086,7 @@ try:
         
         # COLUMNA DERECHA - GRÁFICOS DE TRADINGVIEW
         with col2:
+            
             # Gráfico del bono seleccionado
             bono_html = f"""
             <div class="tradingview-widget-container" style="height: 270px; width: 100%;">
