@@ -1424,6 +1424,69 @@ def _mobile_css():
             color: #64748b;
             font-size: 0.78rem;
         }
+        .mobile-market-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin: 0.65rem 0;
+            box-shadow: 0 1px 6px rgba(15, 23, 42, 0.05);
+        }
+        .mobile-market-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.6rem;
+            margin-bottom: 0.55rem;
+        }
+        .mobile-market-name {
+            color: #1a237e;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .mobile-market-sub {
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.15rem;
+        }
+        .mobile-market-var {
+            color: #475569;
+            background: #f8fafc;
+            border: 1px solid #eef2f7;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.18rem 0.45rem;
+            white-space: nowrap;
+        }
+        .mobile-market-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.45rem;
+        }
+        .mobile-market-kpi {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.5rem 0.45rem;
+        }
+        .mobile-market-kpi span {
+            color: #64748b;
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 650;
+            line-height: 1.1;
+        }
+        .mobile-market-kpi strong {
+            color: #1f2937;
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-top: 0.18rem;
+            overflow-wrap: anywhere;
+        }
         .stButton > button {
             border-radius: 8px !important;
             min-height: 2.6rem !important;
@@ -1451,6 +1514,52 @@ def _mobile_metricas_html(items):
         for label, value in items
     )
     return f'<div class="mobile-metrics">{cards}</div>'
+
+
+def _mobile_fmt_pct(valor, decimales=2, con_signo=False):
+    if valor is None:
+        return "-"
+    try:
+        if pd.isna(valor):
+            return "-"
+    except TypeError:
+        pass
+    try:
+        valor = float(valor)
+    except (TypeError, ValueError):
+        return "-"
+    signo = "+" if con_signo and valor > 0 else ""
+    return f"{signo}{valor:.{decimales}f}%"
+
+
+def _mobile_fmt_num(valor, decimales=2):
+    if valor is None:
+        return "-"
+    try:
+        if pd.isna(valor):
+            return "-"
+    except TypeError:
+        pass
+    return formatear_numero(valor, decimales)
+
+
+def _mobile_market_card_html(row, metricas):
+    metric_html = "".join(
+        f'<div class="mobile-market-kpi"><span>{_esc_html(label)}</span><strong>{_esc_html(value)}</strong></div>'
+        for label, value in metricas
+    )
+    return (
+        '<div class="mobile-market-card">'
+        '<div class="mobile-market-head">'
+        '<div>'
+        f'<div class="mobile-market-name">{_esc_html(row.get("Activo", "-"))}</div>'
+        f'<div class="mobile-market-sub">{_esc_html(row.get("Vencimiento", "-"))}</div>'
+        '</div>'
+        f'<div class="mobile-market-var">{_esc_html(_mobile_fmt_pct(row.get("Var. Diaria %"), 2, True))}</div>'
+        '</div>'
+        f'<div class="mobile-market-grid">{metric_html}</div>'
+        '</div>'
+    )
 
 
 def _mobile_info_bono_html(bono):
@@ -1712,18 +1821,286 @@ def _mobile_render_flujos(bonos, tipos_bono):
         st.info("Ingresá nominales para ver próximos pagos.")
 
 
+def _mobile_rows_flujos_mercado(bonos, tipos_a_mostrar):
+    fecha_hoy = get_next_business_day()
+    precios_todos = {
+        **obtener_precios_data912('arg_bonds'),
+        **obtener_precios_data912('arg_corp'),
+    }
+    filas = []
+    for bono in bonos:
+        if bono.get('tipo_bono') not in tipos_a_mostrar:
+            continue
+        ticker = bono.get('ticker', '').strip()
+        if not ticker or ticker == 'SPX500':
+            continue
+        ticker_api = ticker.upper()
+        if len(ticker_api) == 4:
+            ticker_api = ticker_api + 'D'
+        precio_data = precios_todos.get(ticker_api)
+        if not precio_data or not precio_data.get('c'):
+            continue
+        precio = precio_data['c']
+        if precio <= 0:
+            continue
+        try:
+            precio_manual = obtener_precio_manual_monitor(bono.get('tipo_bono', 'Otros'), bono['nombre'])
+            precio_calculo = precio_manual if precio_manual is not None else precio
+            flujos = []
+            fechas = []
+            for flujo in bono.get('flujos', []):
+                if flujo['fecha'] > fecha_hoy:
+                    flujos.append(flujo['total'])
+                    fechas.append(flujo['fecha'])
+            if not flujos:
+                continue
+            capital_residual = 100 - sum([
+                f['capital'] for f in bono['flujos'] if f['fecha'] <= fecha_hoy
+            ])
+            todas_fechas = [f['fecha'] for f in bono['flujos']]
+            fecha_ultimo_cupon = encontrar_ultimo_cupon(fecha_hoy, todas_fechas, bono.get('fecha_emision'))
+            intereses_corridos = calcular_intereses_corridos(
+                fecha_hoy,
+                fecha_ultimo_cupon,
+                bono['tasa_cupon'],
+                capital_residual,
+                bono['base_calculo'],
+            ) if fecha_ultimo_cupon else 0
+            ytm_efectiva = calcular_ytm(
+                precio_calculo, flujos, fechas, fecha_hoy,
+                bono['base_calculo'], bono['periodicidad']
+            )
+            if (1 + ytm_efectiva) <= 0:
+                continue
+            tir_semestral = 2 * ((1 + ytm_efectiva) ** (1 / 2) - 1)
+            duracion_macaulay = calcular_duracion_macaulay(
+                flujos, fechas, fecha_hoy, ytm_efectiva, bono['base_calculo']
+            )
+            ytm_anualizada = bono['periodicidad'] * ((1 + ytm_efectiva) ** (1 / bono['periodicidad']) - 1)
+            duracion_modificada = calcular_duracion_modificada(
+                duracion_macaulay,
+                ytm_anualizada / bono['periodicidad'],
+                bono['periodicidad'],
+            )
+            cupon_vigente = encontrar_cupon_vigente(fecha_hoy, bono['flujos'])
+            fecha_vcto = encontrar_fecha_vencimiento(bono['flujos'])
+            filas.append({
+                'Activo': bono['nombre'],
+                'Ticker': ticker,
+                'Tipo': bono.get('tipo_bono', 'Otros'),
+                'Vencimiento': fecha_vcto.strftime('%d/%m/%Y') if fecha_vcto else '-',
+                'Precio': precio_calculo,
+                'Precio Mercado': precio,
+                'Int. Corridos': round(intereses_corridos, 4),
+                'Cap. Residual': round(capital_residual, 2),
+                'Cupón Vigente': round(cupon_vigente * 100, 4),
+                'TIR Semestral': round(tir_semestral * 100, 2),
+                'Dur. Modificada': round(duracion_modificada, 2),
+                'Var. Diaria %': precio_data.get('pct_change'),
+                'Precio Manual': precio_manual,
+            })
+        except Exception:
+            continue
+    return filas
+
+
+def _mobile_rows_lecaps_mercado(bonos):
+    fecha_hoy_dt = get_next_business_day()
+    fecha_hoy = fecha_hoy_dt.date() if hasattr(fecha_hoy_dt, 'date') else fecha_hoy_dt
+    precios_todos = {
+        **obtener_precios_data912('arg_bonds'),
+        **obtener_precios_data912('arg_corp'),
+        **obtener_precios_data912('arg_notes'),
+    }
+    filas = []
+    for bono in bonos:
+        if bono.get('tipo_bono') != 'Lecaps & Boncaps':
+            continue
+        ticker = bono.get('ticker', '').strip().upper()
+        if not ticker:
+            continue
+        precio_data = precios_todos.get(ticker)
+        if not precio_data or not precio_data.get('c'):
+            continue
+        precio = precio_data['c']
+        if precio <= 0:
+            continue
+        precio_manual = obtener_precio_manual_monitor(bono.get('tipo_bono'), bono['nombre'])
+        precio_calculo = precio_manual if precio_manual is not None else precio
+        mat = bono.get('maturity')
+        if not mat:
+            continue
+        mat_date = mat.date() if hasattr(mat, 'date') else mat
+        dr = max((mat_date - fecha_hoy).days, 0)
+        if dr == 0:
+            continue
+        vf = bono.get('valor_final', 0) or 0
+        tna = (vf - precio_calculo) / precio_calculo / dr * 365 if precio_calculo > 0 else None
+        tea = (1 + (vf - precio_calculo) / precio_calculo) ** (365.0 / dr) - 1 if precio_calculo > 0 and dr > 0 else None
+        tem = (1 + tea) ** (1 / 12) - 1 if tea is not None else None
+        filas.append({
+            'Activo': bono['nombre'],
+            'Tipo': bono.get('tipo_bono'),
+            'Vencimiento': mat_date.strftime('%d/%m/%Y'),
+            'Precio': precio_calculo,
+            'Precio Mercado': precio,
+            'TNA': round(tna * 100, 2) if tna is not None else None,
+            'TEM': round(tem * 100, 2) if tem is not None else None,
+            'Vida Media': round(dr / 365.0, 2),
+            'Días Rem.': dr,
+            'Valor Final': round(vf, 4),
+            'Var. Diaria %': precio_data.get('pct_change'),
+            'Precio Manual': precio_manual,
+        })
+    return filas
+
+
+def _mobile_rows_cer_mercado(bonos):
+    fecha_hoy_dt = get_next_business_day()
+    fecha_hoy = fecha_hoy_dt.date() if hasattr(fecha_hoy_dt, 'date') else fecha_hoy_dt
+    precios_todos = {
+        **obtener_precios_data912('arg_bonds'),
+        **obtener_precios_data912('arg_corp'),
+        **obtener_precios_data912('arg_notes'),
+    }
+    cer_settl, _ = obtener_cer_settlement(fecha_hoy)
+    filas = []
+    for bono in bonos:
+        if bono.get('tipo_bono') != 'Bonos CER':
+            continue
+        ticker = bono.get('ticker', '').strip().upper()
+        if not ticker:
+            continue
+        precio_data = precios_todos.get(ticker)
+        if not precio_data or not precio_data.get('c'):
+            continue
+        precio = precio_data['c']
+        if precio <= 0:
+            continue
+        precio_manual = obtener_precio_manual_monitor(bono.get('tipo_bono'), bono['nombre'])
+        precio_calculo = precio_manual if precio_manual is not None else precio
+        mat = bono.get('maturity')
+        if not mat:
+            continue
+        mat_date = mat.date() if hasattr(mat, 'date') else mat
+        dr = max((mat_date - fecha_hoy).days, 0)
+        if dr == 0:
+            continue
+        cer_base = bono.get('cer_base') or 0
+        factor_cer = round(cer_settl / cer_base, 4) if cer_settl and cer_base else None
+        if factor_cer and precio_calculo > 0:
+            tir_anual = (factor_cer * 100 / precio_calculo) ** (365.0 / dr) - 1
+            tir_mensual = (1 + tir_anual) ** (30 / 360) - 1
+        else:
+            tir_anual = None
+            tir_mensual = None
+        vm = dr / 365.0
+        dur_mod = vm / (1 + tir_anual) if tir_anual is not None and vm > 0 else None
+        filas.append({
+            'Activo': bono['nombre'],
+            'Tipo': bono.get('tipo_bono'),
+            'Vencimiento': mat_date.strftime('%d/%m/%Y'),
+            'Factor CER': factor_cer,
+            'Precio': precio_calculo,
+            'Precio Mercado': precio,
+            'TIR Anual': round(tir_anual * 100, 2) if tir_anual is not None else None,
+            'TIR Mensual': round(tir_mensual * 100, 2) if tir_mensual is not None else None,
+            'Dur. Modificada': round(dur_mod, 2) if dur_mod is not None else None,
+            'Días Rem.': dr,
+            'Var. Diaria %': precio_data.get('pct_change'),
+            'Precio Manual': precio_manual,
+        })
+    return filas
+
+
+def _mobile_render_mercado(bonos):
+    segmento = st.selectbox(
+        "Mercado",
+        ["Soberano USD", "Soberano ARS", "Corporativos USD"],
+        key="mobile_mercado_segmento",
+    )
+    with st.spinner("Cargando mercado..."):
+        if segmento == "Soberano USD":
+            filas = _mobile_rows_flujos_mercado(bonos, ['Soberano USD'])
+            filas = sorted(filas, key=lambda r: (r.get('Ticker', ''), r.get('Dur. Modificada') or 0))
+            tipo_fila = 'usd'
+        elif segmento == "Corporativos USD":
+            filas = _mobile_rows_flujos_mercado(bonos, ['Corporativo Ley NY', 'Corporativo Ley ARG'])
+            filas = sorted(filas, key=lambda r: (r.get('Activo', ''), r.get('Dur. Modificada') or 0))
+            tipo_fila = 'usd'
+        else:
+            filas = _mobile_rows_lecaps_mercado(bonos) + _mobile_rows_cer_mercado(bonos)
+            filas = sorted(filas, key=lambda r: (r.get('Tipo', ''), r.get('Días Rem.') or 99999))
+            tipo_fila = 'ars'
+
+    if not filas:
+        st.info("No hay precios disponibles en este momento.")
+        return
+
+    for row in filas:
+        if tipo_fila == 'usd':
+            metricas = [
+                ("Precio", _mobile_fmt_num(row.get('Precio'), 2)),
+                ("TIR Sem.", _mobile_fmt_pct(row.get('TIR Semestral'))),
+                ("Dur.", _mobile_fmt_num(row.get('Dur. Modificada'), 2)),
+            ]
+            detalles = [
+                ("Ticker", row.get('Ticker')),
+                ("Intereses corridos", _mobile_fmt_num(row.get('Int. Corridos'), 4)),
+                ("Capital residual", _mobile_fmt_num(row.get('Cap. Residual'), 2)),
+                ("Cupón vigente", _mobile_fmt_pct(row.get('Cupón Vigente'), 4)),
+                ("Precio mercado", _mobile_fmt_num(row.get('Precio Mercado'), 2)),
+                ("Precio manual", _mobile_fmt_num(row.get('Precio Manual'), 2)),
+            ]
+        elif row.get('Tipo') == 'Lecaps & Boncaps':
+            metricas = [
+                ("Precio", _mobile_fmt_num(row.get('Precio'), 2)),
+                ("TNA", _mobile_fmt_pct(row.get('TNA'))),
+                ("Días", str(row.get('Días Rem.', '-'))),
+            ]
+            detalles = [
+                ("Tipo", row.get('Tipo')),
+                ("TEM", _mobile_fmt_pct(row.get('TEM'))),
+                ("Vida media", _mobile_fmt_num(row.get('Vida Media'), 2)),
+                ("Valor final", _mobile_fmt_num(row.get('Valor Final'), 4)),
+                ("Precio mercado", _mobile_fmt_num(row.get('Precio Mercado'), 2)),
+                ("Precio manual", _mobile_fmt_num(row.get('Precio Manual'), 2)),
+            ]
+        else:
+            metricas = [
+                ("Precio", _mobile_fmt_num(row.get('Precio'), 2)),
+                ("TIR Anual", _mobile_fmt_pct(row.get('TIR Anual'))),
+                ("Dur.", _mobile_fmt_num(row.get('Dur. Modificada'), 2)),
+            ]
+            detalles = [
+                ("Tipo", row.get('Tipo')),
+                ("TIR mensual", _mobile_fmt_pct(row.get('TIR Mensual'))),
+                ("Factor CER", _mobile_fmt_num(row.get('Factor CER'), 4)),
+                ("Días rem.", str(row.get('Días Rem.', '-'))),
+                ("Precio mercado", _mobile_fmt_num(row.get('Precio Mercado'), 2)),
+                ("Precio manual", _mobile_fmt_num(row.get('Precio Manual'), 2)),
+            ]
+
+        st.markdown(_mobile_market_card_html(row, metricas), unsafe_allow_html=True)
+        with st.expander(f"Detalle {row.get('Activo', '')}"):
+            for label, value in detalles:
+                st.write(f"**{label}:** {value if value is not None else '-'}")
+
+
 def render_mobile_app(bonos, tipos_bono):
     _mobile_css()
     st.markdown("# Calculadora de Bonos")
     st.caption("Vista móvil resumida")
     modo = st.radio(
         "Modo",
-        ["Rendimiento", "Flujos"],
+        ["Mercado", "Rendimiento", "Flujos"],
         horizontal=True,
         label_visibility="collapsed",
         key="mobile_modo",
     )
-    if modo == "Rendimiento":
+    if modo == "Mercado":
+        _mobile_render_mercado(bonos)
+    elif modo == "Rendimiento":
         _mobile_render_rendimiento(bonos, tipos_bono)
     else:
         _mobile_render_flujos(bonos, tipos_bono)
