@@ -1447,12 +1447,7 @@ def _mobile_css():
 
 def _mobile_metricas_html(items):
     cards = "".join(
-        f"""
-        <div class="mobile-metric">
-            <div class="mobile-metric-label">{_esc_html(label)}</div>
-            <div class="mobile-metric-value">{value}</div>
-        </div>
-        """
+        f'<div class="mobile-metric"><div class="mobile-metric-label">{_esc_html(label)}</div><div class="mobile-metric-value">{value}</div></div>'
         for label, value in items
     )
     return f'<div class="mobile-metrics">{cards}</div>'
