@@ -1642,21 +1642,6 @@ def _mobile_render_rendimiento(bonos, tipos_bono):
         unsafe_allow_html=True,
     )
 
-    flujo_rows = ""
-    for fecha, total, capital in metricas['flujos'][:6]:
-        cupon = total - capital
-        flujo_rows += (
-            '<div class="mobile-flow-row">'
-            f'<div><strong>{fecha.strftime("%d/%m/%Y")}</strong><br>'
-            f'<span>Cupón {formatear_numero(cupon, 1)} · Capital {formatear_numero(capital, 1) if capital else "-"}</span></div>'
-            f'<strong>{formatear_numero(total, 1)}</strong>'
-            '</div>'
-        )
-    st.markdown(
-        f'<div class="mobile-card"><div class="mobile-card-title">Próximos flujos</div>{flujo_rows}</div>',
-        unsafe_allow_html=True,
-    )
-
 
 def _mobile_render_flujos(bonos, tipos_bono):
     if 'mobile_flujos_bonos' not in st.session_state:
