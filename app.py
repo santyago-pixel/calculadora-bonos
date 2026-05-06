@@ -1286,6 +1286,476 @@ def obtener_precio_manual_monitor(tipo_bono, row_id):
     return normalizar_precio_manual_monitor(st.session_state.get(_manual_price_state_key(tabla_id, row_id)))
 
 
+def _es_vista_mobile():
+    try:
+        return st.query_params.get("mobile") == "1"
+    except Exception:
+        return False
+
+
+def _inyectar_detector_mobile():
+    st.components.v1.html(
+        """
+        <script>
+        (function() {
+            var url = new URL(window.parent.location.href);
+            var current = url.searchParams.get("mobile");
+            var isMobile = window.parent.matchMedia("(max-width: 767px)").matches ||
+                (window.parent.navigator.maxTouchPoints > 0 && window.parent.innerWidth <= 900);
+
+            if (isMobile && current !== "1") {
+                url.searchParams.set("mobile", "1");
+                window.parent.location.replace(url.toString());
+            } else if (!isMobile && current === "1") {
+                url.searchParams.delete("mobile");
+                window.parent.location.replace(url.toString());
+            }
+        })();
+        </script>
+        """,
+        height=0,
+    )
+
+
+def _mobile_css():
+    st.markdown(
+        """
+        <style>
+        [data-testid="stSidebar"], [data-testid="collapsedControl"],
+        [data-testid="stSidebarCollapseButton"], [data-testid="stToolbar"],
+        [data-testid="stDecoration"], [data-testid="stStatusWidget"],
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+        .stApp, .stApp > div {
+            background: #f4f6fb !important;
+            color: #1f2937 !important;
+        }
+        [data-testid="stMainBlockContainer"],
+        .main .block-container {
+            max-width: 100vw !important;
+            padding: 0.75rem 0.75rem 1.25rem !important;
+        }
+        h1, h2, h3 {
+            color: #1f2937 !important;
+            letter-spacing: 0 !important;
+        }
+        div[data-testid="stMarkdownContainer"] h1 {
+            font-size: 1.25rem !important;
+            margin: 0.15rem 0 0.55rem !important;
+        }
+        div[data-testid="stMarkdownContainer"] h2 {
+            font-size: 1.05rem !important;
+            margin: 0.85rem 0 0.4rem !important;
+        }
+        div[data-testid="stMarkdownContainer"] h3 {
+            font-size: 0.95rem !important;
+            margin: 0.75rem 0 0.35rem !important;
+        }
+        .mobile-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .mobile-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.85rem;
+            box-shadow: 0 1px 6px rgba(15, 23, 42, 0.05);
+        }
+        .mobile-card-title {
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.55rem;
+            text-transform: uppercase;
+        }
+        .mobile-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+        .mobile-metric {
+            background: #f8fafc;
+            border: 1px solid #eef2f7;
+            border-radius: 8px;
+            padding: 0.65rem 0.55rem;
+            min-height: 64px;
+        }
+        .mobile-metric-label {
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 600;
+            line-height: 1.15;
+        }
+        .mobile-metric-value {
+            color: #1a237e;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-top: 0.25rem;
+            overflow-wrap: anywhere;
+        }
+        .mobile-info-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.75rem;
+            border-bottom: 1px solid #edf2f7;
+            padding: 0.38rem 0;
+            font-size: 0.86rem;
+        }
+        .mobile-info-row span:first-child {
+            color: #64748b;
+        }
+        .mobile-info-row span:last-child {
+            color: #1f2937;
+            font-weight: 650;
+            text-align: right;
+        }
+        .mobile-flow-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.5rem;
+            border-bottom: 1px solid #edf2f7;
+            padding: 0.5rem 0;
+            font-size: 0.86rem;
+        }
+        .mobile-flow-row strong {
+            color: #1a237e;
+        }
+        .mobile-flow-row span {
+            color: #64748b;
+            font-size: 0.78rem;
+        }
+        .stButton > button {
+            border-radius: 8px !important;
+            min-height: 2.6rem !important;
+            font-weight: 700 !important;
+        }
+        div[data-testid="stSelectbox"] div[role="combobox"],
+        div[data-testid="stDateInput"] input,
+        div[data-testid="stNumberInput"] input,
+        div[data-testid="stTextInput"] input {
+            min-height: 2.55rem !important;
+            font-size: 1rem !important;
+        }
+        div[data-testid="stNumberInput"] button {
+            display: none !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _mobile_metricas_html(items):
+    cards = "".join(
+        f"""
+        <div class="mobile-metric">
+            <div class="mobile-metric-label">{_esc_html(label)}</div>
+            <div class="mobile-metric-value">{value}</div>
+        </div>
+        """
+        for label, value in items
+    )
+    return f'<div class="mobile-metrics">{cards}</div>'
+
+
+def _mobile_info_bono_html(bono):
+    if bono.get('tipo_bono') in ('Lecaps & Boncaps', 'Bonos CER'):
+        vencimiento = bono.get('maturity')
+    else:
+        vencimiento = encontrar_fecha_vencimiento(bono.get('flujos', []))
+    vencimiento_txt = vencimiento.strftime('%d/%m/%Y') if vencimiento and hasattr(vencimiento, 'strftime') else '-'
+    cupon = bono.get('tasa_cupon', 0) or 0
+    rows = [
+        ("Nombre", bono.get('nombre', '-')),
+        ("Vencimiento", vencimiento_txt),
+        ("Cupón", f"{cupon:.2%}"),
+        ("Ticker", bono.get('ticker', '-')),
+    ]
+    body = "".join(
+        f'<div class="mobile-info-row"><span>{_esc_html(k)}</span><span>{_esc_html(v)}</span></div>'
+        for k, v in rows
+    )
+    return f'<div class="mobile-card"><div class="mobile-card-title">Bono</div>{body}</div>'
+
+
+def _mobile_precio_default(bono):
+    precio_manual = obtener_precio_manual_monitor(bono.get('tipo_bono'), bono.get('nombre'))
+    if precio_manual is not None:
+        return float(precio_manual)
+    ticker = bono.get('ticker', '').strip()
+    if ticker and ticker != 'SPX500':
+        precio = obtener_precio_data912(ticker)
+        if precio and precio > 0:
+            return float(precio)
+    return 0.0
+
+
+def _mobile_calcular_bono_flujos(bono, fecha_liquidacion, precio_dirty):
+    fecha_liq_dt = pd.to_datetime(fecha_liquidacion)
+    flujos = []
+    fechas = []
+    flujos_capital = []
+    for flujo in bono.get('flujos', []):
+        if flujo['fecha'] > fecha_liq_dt:
+            flujos.append(flujo['total'])
+            fechas.append(flujo['fecha'])
+            flujos_capital.append(flujo['capital'])
+    if not flujos:
+        return None
+
+    ytm_efectiva = calcular_ytm(
+        precio_dirty,
+        flujos,
+        fechas,
+        fecha_liquidacion,
+        bono['base_calculo'],
+        bono['periodicidad'],
+    )
+    ytm_anualizada = bono['periodicidad'] * ((1 + ytm_efectiva) ** (1 / bono['periodicidad']) - 1)
+    duracion_macaulay = calcular_duracion_macaulay(
+        flujos, fechas, fecha_liquidacion, ytm_efectiva, bono['base_calculo']
+    )
+    duracion_modificada = calcular_duracion_modificada(
+        duracion_macaulay,
+        ytm_anualizada / bono['periodicidad'],
+        bono['periodicidad'],
+    )
+    capital_residual = 100 - sum([
+        flujo['capital'] for flujo in bono['flujos'] if flujo['fecha'] <= fecha_liq_dt
+    ])
+    fecha_ultimo_cupon = encontrar_ultimo_cupon(
+        fecha_liq_dt, [flujo['fecha'] for flujo in bono['flujos']], bono.get('fecha_emision')
+    )
+    intereses_corridos = calcular_intereses_corridos(
+        fecha_liquidacion,
+        fecha_ultimo_cupon,
+        bono['tasa_cupon'],
+        capital_residual,
+        bono['base_calculo'],
+    ) if fecha_ultimo_cupon else 0
+    precio_limpio = precio_dirty - intereses_corridos
+    vida_media = calcular_vida_media(flujos_capital, fechas, fecha_liquidacion, bono['base_calculo'])
+    proximo_cupon = encontrar_proximo_cupon(fecha_liq_dt, [flujo['fecha'] for flujo in bono['flujos']])
+
+    return {
+        'ytm_efectiva': ytm_efectiva,
+        'ytm_anualizada': ytm_anualizada,
+        'duracion_modificada': duracion_modificada,
+        'duracion_macaulay': duracion_macaulay,
+        'intereses_corridos': intereses_corridos,
+        'precio_limpio': precio_limpio,
+        'capital_residual': capital_residual,
+        'vida_media': vida_media,
+        'proximo_cupon': proximo_cupon,
+        'flujos': list(zip(fechas, flujos, flujos_capital)),
+    }
+
+
+def _mobile_render_rendimiento(bonos, tipos_bono):
+    tipos = ["Seleccione un Tipo"] + tipos_bono
+    tipo = st.selectbox("Tipo de bono", tipos, key="mobile_tipo_rend")
+    bonos_filtrados = bonos if tipo == "Seleccione un Tipo" else [b for b in bonos if b['tipo_bono'] == tipo]
+    nombres = sorted([b['nombre'] for b in bonos_filtrados])
+    nombre = st.selectbox("Bono", nombres, index=None, placeholder="Seleccione un bono...", key="mobile_bono_rend")
+    if not nombre:
+        st.info("Seleccioná un bono para ver la calculadora resumida.")
+        return
+
+    bono = next((b for b in bonos_filtrados if b['nombre'] == nombre), None)
+    if not bono:
+        st.warning("No se encontró el bono seleccionado.")
+        return
+
+    st.markdown(_mobile_info_bono_html(bono), unsafe_allow_html=True)
+
+    fecha_liq = st.date_input(
+        "Fecha de liquidación",
+        value=get_next_business_day(),
+        format="DD/MM/YYYY",
+        key="mobile_fecha_liq",
+    )
+    precio_key = f"mobile_precio_{_slugify_monitor(nombre)}"
+    if precio_key not in st.session_state:
+        st.session_state[precio_key] = _mobile_precio_default(bono)
+    precio = st.number_input(
+        "Precio dirty",
+        min_value=0.0,
+        step=0.01,
+        format="%.2f",
+        key=precio_key,
+    )
+
+    tipo_bono = bono.get('tipo_bono')
+    if tipo_bono == 'Lecaps & Boncaps':
+        mat = bono.get('maturity')
+        mat_date = mat.date() if hasattr(mat, 'date') else mat
+        dr = max((mat_date - fecha_liq).days, 0) if mat_date else 0
+        vf = bono.get('valor_final', 0) or 0
+        tna = (vf - precio) / precio / dr * 365 if precio > 0 and dr > 0 else None
+        tea = (1 + (vf - precio) / precio) ** (365.0 / dr) - 1 if precio > 0 and dr > 0 else None
+        tem = (1 + tea) ** (1 / 12) - 1 if tea is not None else None
+        dur_mod = (dr / 365.0) / (1 + tea) if tea is not None and dr > 0 else None
+        st.markdown(
+            '<div class="mobile-card"><div class="mobile-card-title">Resultado</div>' +
+            _mobile_metricas_html([
+                ("TNA", f"{tna:.4%}" if tna is not None else "-"),
+                ("TEM", f"{tem:.4%}" if tem is not None else "-"),
+                ("Dur. Mod.", formatear_numero(dur_mod, 2) if dur_mod is not None else "-"),
+                ("Días Rem.", str(dr) if dr > 0 else "-"),
+            ]) + '</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    if tipo_bono == 'Bonos CER':
+        mat = bono.get('maturity')
+        mat_date = mat.date() if hasattr(mat, 'date') else mat
+        dr = max((mat_date - fecha_liq).days, 0) if mat_date else 0
+        cer_settlement, _ = obtener_cer_settlement(fecha_liq)
+        cer_base = bono.get('cer_base') or 0
+        factor_cer = (cer_settlement / cer_base) if cer_settlement and cer_base else None
+        tir_real = (factor_cer * 100 / precio) ** (365.0 / dr) - 1 if precio > 0 and dr > 0 and factor_cer else None
+        tir_mensual = (1 + tir_real) ** (30 / 360) - 1 if tir_real is not None else None
+        dur_mod = (dr / 365.0) / (1 + tir_real) if tir_real is not None and dr > 0 else None
+        st.markdown(
+            '<div class="mobile-card"><div class="mobile-card-title">Resultado</div>' +
+            _mobile_metricas_html([
+                ("TIR anual", f"{tir_real:.4%}" if tir_real is not None else "-"),
+                ("TIR mensual", f"{tir_mensual:.4%}" if tir_mensual is not None else "-"),
+                ("Dur. Mod.", formatear_numero(dur_mod, 2) if dur_mod is not None else "-"),
+                ("Factor CER", formatear_numero(factor_cer, 4) if factor_cer else "-"),
+            ]) + '</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    metricas = _mobile_calcular_bono_flujos(bono, fecha_liq, precio)
+    if not metricas:
+        st.warning("No hay flujos futuros para calcular.")
+        return
+
+    st.markdown(
+        '<div class="mobile-card"><div class="mobile-card-title">Resultado</div>' +
+        _mobile_metricas_html([
+            ("TIR efectiva", f"{metricas['ytm_efectiva']:.4%}"),
+            ("TIR anual", f"{metricas['ytm_anualizada']:.4%}"),
+            ("Dur. Mod.", f"{formatear_numero(metricas['duracion_modificada'], 2)} años"),
+            ("Precio limpio", formatear_numero(metricas['precio_limpio'], 4)),
+            ("Int. corridos", formatear_numero(metricas['intereses_corridos'], 4)),
+            ("Próx. cupón", metricas['proximo_cupon'].strftime('%d/%m/%Y') if metricas['proximo_cupon'] else "-"),
+        ]) + '</div>',
+        unsafe_allow_html=True,
+    )
+
+    flujo_rows = ""
+    for fecha, total, capital in metricas['flujos'][:6]:
+        cupon = total - capital
+        flujo_rows += (
+            '<div class="mobile-flow-row">'
+            f'<div><strong>{fecha.strftime("%d/%m/%Y")}</strong><br>'
+            f'<span>Cupón {formatear_numero(cupon, 1)} · Capital {formatear_numero(capital, 1) if capital else "-"}</span></div>'
+            f'<strong>{formatear_numero(total, 1)}</strong>'
+            '</div>'
+        )
+    st.markdown(
+        f'<div class="mobile-card"><div class="mobile-card-title">Próximos flujos</div>{flujo_rows}</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def _mobile_render_flujos(bonos, tipos_bono):
+    if 'mobile_flujos_bonos' not in st.session_state:
+        st.session_state.mobile_flujos_bonos = []
+
+    tipos = ["Seleccione un Tipo"] + tipos_bono
+    tipo = st.selectbox("Tipo de bono", tipos, key="mobile_tipo_flujos")
+    bonos_filtrados = bonos if tipo == "Seleccione un Tipo" else [b for b in bonos if b['tipo_bono'] == tipo]
+    bonos_filtrados = [b for b in bonos_filtrados if b.get('flujos')]
+    nombres = sorted([b['nombre'] for b in bonos_filtrados])
+    nombre = st.selectbox("Agregar bono", nombres, index=None, placeholder="Seleccione un bono...", key="mobile_agregar_flujo")
+    if nombre and nombre not in [b['nombre'] for b in st.session_state.mobile_flujos_bonos]:
+        bono = next((b for b in bonos_filtrados if b['nombre'] == nombre), None)
+        if bono:
+            st.session_state.mobile_flujos_bonos.append({'nombre': nombre, 'nominales': 0, 'precio': _mobile_precio_default(bono)})
+            st.rerun()
+
+    if not st.session_state.mobile_flujos_bonos:
+        st.info("Agregá bonos para ver un flujo resumido.")
+        return
+
+    total_nominales = 0
+    flujos_agregados = {}
+    for i, item in enumerate(list(st.session_state.mobile_flujos_bonos)):
+        bono = next((b for b in bonos if b['nombre'] == item['nombre']), None)
+        if not bono:
+            continue
+        st.markdown(f"### {item['nombre']}")
+        nominales = st.number_input("Nominales", min_value=0, step=1000, key=f"mobile_nom_{i}_{_slugify_monitor(item['nombre'])}")
+        precio = st.number_input("Precio", min_value=0.0, step=0.01, format="%.2f", value=float(item.get('precio') or 0.0), key=f"mobile_px_{i}_{_slugify_monitor(item['nombre'])}")
+        if st.button("Quitar", key=f"mobile_quitar_{i}_{_slugify_monitor(item['nombre'])}", use_container_width=True):
+            st.session_state.mobile_flujos_bonos.pop(i)
+            st.rerun()
+        item['nominales'] = nominales
+        item['precio'] = precio
+        total_nominales += nominales
+        if nominales <= 0:
+            continue
+        factor = nominales / 100.0
+        for flujo in bono.get('flujos', []):
+            fecha = flujo['fecha']
+            if fecha > pd.Timestamp.now():
+                flujos_agregados.setdefault(fecha, 0.0)
+                flujos_agregados[fecha] += flujo['total'] * factor
+
+    proximos = sorted(flujos_agregados.items(), key=lambda x: x[0])[:8]
+    st.markdown(
+        '<div class="mobile-card"><div class="mobile-card-title">Resumen</div>' +
+        _mobile_metricas_html([
+            ("Bonos", str(len(st.session_state.mobile_flujos_bonos))),
+            ("Nominales", formatear_numero(total_nominales, 0)),
+        ]) + '</div>',
+        unsafe_allow_html=True,
+    )
+    if proximos:
+        rows = "".join(
+            '<div class="mobile-flow-row">'
+            f'<strong>{fecha.strftime("%d/%m/%Y")}</strong>'
+            f'<strong>{formatear_numero(total, 2)}</strong>'
+            '</div>'
+            for fecha, total in proximos
+        )
+        st.markdown(
+            f'<div class="mobile-card"><div class="mobile-card-title">Próximos pagos</div>{rows}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.info("Ingresá nominales para ver próximos pagos.")
+
+
+def render_mobile_app(bonos, tipos_bono):
+    _mobile_css()
+    st.markdown("# Calculadora de Bonos")
+    st.caption("Vista móvil resumida")
+    modo = st.radio(
+        "Modo",
+        ["Rendimiento", "Flujos"],
+        horizontal=True,
+        label_visibility="collapsed",
+        key="mobile_modo",
+    )
+    st.markdown('<div class="mobile-shell">', unsafe_allow_html=True)
+    if modo == "Rendimiento":
+        _mobile_render_rendimiento(bonos, tipos_bono)
+    else:
+        _mobile_render_flujos(bonos, tipos_bono)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
 # Cargar datos del Excel
 try:
     import openpyxl as _openpyxl
@@ -1565,6 +2035,11 @@ try:
 
     # Generar tipos de bonos automáticamente a partir de los bonos procesados
     tipos_bono = sorted(set(b['tipo_bono'] for b in bonos))
+
+    _inyectar_detector_mobile()
+    if _es_vista_mobile():
+        render_mobile_app(bonos, tipos_bono)
+        st.stop()
 
     # Sidebar
     with st.sidebar:
