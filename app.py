@@ -1352,11 +1352,6 @@ def _mobile_css():
             font-size: 0.95rem !important;
             margin: 0.75rem 0 0.35rem !important;
         }
-        .mobile-shell {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
         .mobile-card {
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -1748,12 +1743,10 @@ def render_mobile_app(bonos, tipos_bono):
         label_visibility="collapsed",
         key="mobile_modo",
     )
-    st.markdown('<div class="mobile-shell">', unsafe_allow_html=True)
     if modo == "Rendimiento":
         _mobile_render_rendimiento(bonos, tipos_bono)
     else:
         _mobile_render_flujos(bonos, tipos_bono)
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 # Cargar datos del Excel
