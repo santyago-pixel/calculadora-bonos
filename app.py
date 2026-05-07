@@ -1558,8 +1558,8 @@ def _mobile_css():
             font-size: 1rem !important;
         }
         div[data-testid="stSelectbox"] div[role="combobox"] {
-            background: #e8eefc !important;
-            border: 1px solid #bfdbfe !important;
+            background: #dbe7fb !important;
+            border: 1px solid #93c5fd !important;
             border-radius: 8px !important;
             color: #1f2937 !important;
             font-weight: 700 !important;
