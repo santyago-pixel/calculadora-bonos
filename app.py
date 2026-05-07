@@ -1429,7 +1429,7 @@ def _mobile_css():
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             padding: 0.8rem;
-            margin: 0.65rem 0;
+            margin: 0.35rem 0 0.12rem;
             box-shadow: 0 1px 6px rgba(15, 23, 42, 0.05);
         }
         .mobile-market-head {
@@ -1519,8 +1519,8 @@ def _mobile_css():
             font-weight: 800 !important;
         }
         div[data-testid="stExpander"] {
-            margin-top: -0.25rem !important;
-            margin-bottom: 0.2rem !important;
+            margin-top: -0.45rem !important;
+            margin-bottom: -0.45rem !important;
         }
         div[data-testid="stExpander"] details {
             border-radius: 8px !important;
@@ -2071,7 +2071,7 @@ def _mobile_rows_cer_mercado(bonos):
 
 def _mobile_render_mercado(bonos):
     segmento = st.selectbox(
-        "Mercado",
+        "Resumen de Mercado",
         ["Soberano USD", "Soberano ARS", "Corporativos USD"],
         key="mobile_mercado_segmento",
     )
