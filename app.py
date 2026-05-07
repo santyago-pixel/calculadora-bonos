@@ -1538,7 +1538,7 @@ def _mobile_css():
             margin: 0 !important;
         }
         div[data-testid="stExpander"] details > div {
-            padding: 0.35rem 0.65rem 0.55rem !important;
+            padding: 0.35rem 0.65rem 1rem !important;
         }
         div[data-testid="stExpander"] details > div p {
             font-size: 0.78rem !important;
