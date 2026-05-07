@@ -1557,6 +1557,23 @@ def _mobile_css():
             min-height: 2.55rem !important;
             font-size: 1rem !important;
         }
+        div[data-testid="stSelectbox"] div[role="combobox"] {
+            background: #e8eefc !important;
+            border: 1px solid #bfdbfe !important;
+            border-radius: 8px !important;
+            color: #1f2937 !important;
+            font-weight: 700 !important;
+            min-height: 2.75rem !important;
+        }
+        div[data-testid="stSelectbox"] div[role="combobox"] p,
+        div[data-testid="stSelectbox"] div[role="combobox"] span {
+            color: #1f2937 !important;
+            font-weight: 700 !important;
+        }
+        div[data-testid="stSelectbox"] svg {
+            color: #1d4ed8 !important;
+            fill: #1d4ed8 !important;
+        }
         div[data-testid="stNumberInput"] button {
             display: none !important;
         }
