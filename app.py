@@ -1506,6 +1506,9 @@ def _mobile_css():
             justify-content: center !important;
             padding: 0.35rem 0.75rem !important;
         }
+        div[data-testid="stRadio"] input[type="radio"] {
+            accent-color: #1d4ed8 !important;
+        }
         div[data-testid="stRadio"] label:has(input:checked) {
             background: #1d4ed8 !important;
             color: #ffffff !important;
@@ -1514,6 +1517,32 @@ def _mobile_css():
         div[data-testid="stRadio"] label:has(input:checked) span {
             color: #ffffff !important;
             font-weight: 800 !important;
+        }
+        div[data-testid="stExpander"] {
+            margin-top: -0.25rem !important;
+            margin-bottom: 0.2rem !important;
+        }
+        div[data-testid="stExpander"] details {
+            border-radius: 8px !important;
+        }
+        div[data-testid="stExpander"] summary {
+            min-height: 1.9rem !important;
+            padding: 0.25rem 0.6rem !important;
+            font-size: 0.78rem !important;
+            line-height: 1.1 !important;
+        }
+        div[data-testid="stExpander"] summary p {
+            font-size: 0.78rem !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+        }
+        div[data-testid="stExpander"] details > div {
+            padding: 0.35rem 0.65rem 0.55rem !important;
+        }
+        div[data-testid="stExpander"] details > div p {
+            font-size: 0.78rem !important;
+            line-height: 1.15 !important;
+            margin: 0.15rem 0 !important;
         }
         .stButton > button {
             border-radius: 8px !important;
