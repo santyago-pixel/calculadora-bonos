@@ -1519,7 +1519,7 @@ def _mobile_css():
             font-weight: 800 !important;
         }
         div[data-testid="stExpander"] {
-            margin-top: -0.45rem !important;
+            margin-top: 0 !important;
             margin-bottom: -0.45rem !important;
         }
         div[data-testid="stExpander"] details {
