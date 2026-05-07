@@ -1449,6 +1449,7 @@ def _mobile_css():
             color: #64748b;
             font-size: 0.76rem;
             font-weight: 700;
+            margin-left: 0.22rem;
             white-space: nowrap;
         }
         .mobile-market-sub {
