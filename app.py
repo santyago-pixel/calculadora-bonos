@@ -1493,6 +1493,28 @@ def _mobile_css():
             margin-top: 0.18rem;
             overflow-wrap: anywhere;
         }
+        div[data-testid="stRadio"] [role="radiogroup"] {
+            background: #e8eefc !important;
+            border: 1px solid #bfdbfe !important;
+            border-radius: 8px !important;
+            padding: 0.18rem !important;
+            gap: 0.18rem !important;
+        }
+        div[data-testid="stRadio"] label {
+            border-radius: 7px !important;
+            min-height: 2.35rem !important;
+            justify-content: center !important;
+            padding: 0.35rem 0.75rem !important;
+        }
+        div[data-testid="stRadio"] label:has(input:checked) {
+            background: #1d4ed8 !important;
+            color: #ffffff !important;
+        }
+        div[data-testid="stRadio"] label:has(input:checked) p,
+        div[data-testid="stRadio"] label:has(input:checked) span {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+        }
         .stButton > button {
             border-radius: 8px !important;
             min-height: 2.6rem !important;
@@ -2054,8 +2076,6 @@ def _mobile_render_mercado(bonos):
                 ("Intereses corridos", _mobile_fmt_num(row.get('Int. Corridos'), 4)),
                 ("Capital residual", _mobile_fmt_num(row.get('Cap. Residual'), 2)),
                 ("Cupón vigente", _mobile_fmt_pct(row.get('Cupón Vigente'), 4)),
-                ("Precio mercado", _mobile_fmt_num(row.get('Precio Mercado'), 2)),
-                ("Precio manual", _mobile_fmt_num(row.get('Precio Manual'), 2)),
             ]
         elif row.get('Tipo') == 'Lecaps & Boncaps':
             metricas = [
@@ -2068,8 +2088,6 @@ def _mobile_render_mercado(bonos):
                 ("TEM", _mobile_fmt_pct(row.get('TEM'))),
                 ("Vida media", _mobile_fmt_num(row.get('Vida Media'), 2)),
                 ("Valor final", _mobile_fmt_num(row.get('Valor Final'), 4)),
-                ("Precio mercado", _mobile_fmt_num(row.get('Precio Mercado'), 2)),
-                ("Precio manual", _mobile_fmt_num(row.get('Precio Manual'), 2)),
             ]
         else:
             metricas = [
@@ -2082,8 +2100,6 @@ def _mobile_render_mercado(bonos):
                 ("TIR mensual", _mobile_fmt_pct(row.get('TIR Mensual'))),
                 ("Factor CER", _mobile_fmt_num(row.get('Factor CER'), 4)),
                 ("Días rem.", str(row.get('Días Rem.', '-'))),
-                ("Precio mercado", _mobile_fmt_num(row.get('Precio Mercado'), 2)),
-                ("Precio manual", _mobile_fmt_num(row.get('Precio Manual'), 2)),
             ]
 
         st.markdown(_mobile_market_card_html(row, metricas), unsafe_allow_html=True)
