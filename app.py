@@ -1445,6 +1445,12 @@ def _mobile_css():
             font-weight: 800;
             line-height: 1.2;
         }
+        .mobile-market-date {
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
         .mobile-market-sub {
             color: #64748b;
             font-size: 0.75rem;
@@ -1552,8 +1558,7 @@ def _mobile_market_card_html(row, metricas):
         '<div class="mobile-market-card">'
         '<div class="mobile-market-head">'
         '<div>'
-        f'<div class="mobile-market-name">{_esc_html(row.get("Activo", "-"))}</div>'
-        f'<div class="mobile-market-sub">{_esc_html(row.get("Vencimiento", "-"))}</div>'
+        f'<div class="mobile-market-name">{_esc_html(row.get("Activo", "-"))} <span class="mobile-market-date">{_esc_html(row.get("Vencimiento", "-"))}</span></div>'
         '</div>'
         f'<div class="mobile-market-var">{_esc_html(_mobile_fmt_pct(row.get("Var. Diaria %"), 2, True))}</div>'
         '</div>'
@@ -1704,7 +1709,7 @@ def _mobile_render_rendimiento(bonos, tipos_bono):
             _mobile_metricas_html([
                 ("TNA", f"{tna:.4%}" if tna is not None else "-"),
                 ("TEM", f"{tem:.4%}" if tem is not None else "-"),
-                ("Dur. Mod.", formatear_numero(dur_mod, 2) if dur_mod is not None else "-"),
+                ("Duration", formatear_numero(dur_mod, 2) if dur_mod is not None else "-"),
                 ("Días Rem.", str(dr) if dr > 0 else "-"),
             ]) + '</div>',
             unsafe_allow_html=True,
@@ -1726,7 +1731,7 @@ def _mobile_render_rendimiento(bonos, tipos_bono):
             _mobile_metricas_html([
                 ("TIR anual", f"{tir_real:.4%}" if tir_real is not None else "-"),
                 ("TIR mensual", f"{tir_mensual:.4%}" if tir_mensual is not None else "-"),
-                ("Dur. Mod.", formatear_numero(dur_mod, 2) if dur_mod is not None else "-"),
+                ("Duration", formatear_numero(dur_mod, 2) if dur_mod is not None else "-"),
                 ("Factor CER", formatear_numero(factor_cer, 4) if factor_cer else "-"),
             ]) + '</div>',
             unsafe_allow_html=True,
@@ -1743,7 +1748,7 @@ def _mobile_render_rendimiento(bonos, tipos_bono):
         _mobile_metricas_html([
             ("TIR efectiva", f"{metricas['ytm_efectiva']:.4%}"),
             ("TIR anual", f"{metricas['ytm_anualizada']:.4%}"),
-            ("Dur. Mod.", f"{formatear_numero(metricas['duracion_modificada'], 2)} años"),
+            ("Duration", f"{formatear_numero(metricas['duracion_modificada'], 2)} años"),
             ("Precio limpio", formatear_numero(metricas['precio_limpio'], 4)),
             ("Int. corridos", formatear_numero(metricas['intereses_corridos'], 4)),
             ("Próx. cupón", metricas['proximo_cupon'].strftime('%d/%m/%Y') if metricas['proximo_cupon'] else "-"),
@@ -2042,7 +2047,7 @@ def _mobile_render_mercado(bonos):
             metricas = [
                 ("Precio", _mobile_fmt_num(row.get('Precio'), 2)),
                 ("TIR Sem.", _mobile_fmt_pct(row.get('TIR Semestral'))),
-                ("Dur.", _mobile_fmt_num(row.get('Dur. Modificada'), 2)),
+                ("Duration", _mobile_fmt_num(row.get('Dur. Modificada'), 2)),
             ]
             detalles = [
                 ("Ticker", row.get('Ticker')),
@@ -2070,7 +2075,7 @@ def _mobile_render_mercado(bonos):
             metricas = [
                 ("Precio", _mobile_fmt_num(row.get('Precio'), 2)),
                 ("TIR Anual", _mobile_fmt_pct(row.get('TIR Anual'))),
-                ("Dur.", _mobile_fmt_num(row.get('Dur. Modificada'), 2)),
+                ("Duration", _mobile_fmt_num(row.get('Dur. Modificada'), 2)),
             ]
             detalles = [
                 ("Tipo", row.get('Tipo')),
@@ -2093,17 +2098,15 @@ def render_mobile_app(bonos, tipos_bono):
     st.caption("Vista móvil resumida")
     modo = st.radio(
         "Modo",
-        ["Mercado", "Rendimiento", "Flujos"],
+        ["Mercado", "Calculadora"],
         horizontal=True,
         label_visibility="collapsed",
         key="mobile_modo",
     )
     if modo == "Mercado":
         _mobile_render_mercado(bonos)
-    elif modo == "Rendimiento":
+    elif modo == "Calculadora":
         _mobile_render_rendimiento(bonos, tipos_bono)
-    else:
-        _mobile_render_flujos(bonos, tipos_bono)
 
 
 # Cargar datos del Excel
