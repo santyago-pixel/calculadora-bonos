@@ -1334,7 +1334,7 @@ def _mobile_css():
         [data-testid="stMainBlockContainer"],
         .main .block-container {
             max-width: 100vw !important;
-            padding: 0.75rem 0.75rem 1.25rem !important;
+            padding: 0.05rem 0.75rem 1.25rem !important;
         }
         h1, h2, h3 {
             color: #1f2937 !important;
@@ -1342,7 +1342,7 @@ def _mobile_css():
         }
         div[data-testid="stMarkdownContainer"] h1 {
             font-size: 1.25rem !important;
-            margin: 0.15rem 0 0.55rem !important;
+            margin: 0 0 0.45rem !important;
         }
         div[data-testid="stMarkdownContainer"] h2 {
             font-size: 1.05rem !important;
